@@ -1,0 +1,14 @@
+key01:
+key05:
+  key15: value15
+  key12: newvalue12
+key07: value07
+columns:
+- name: col01
+  type: string
+- name: col02
+  type: numeric
+- name: first_name
+  type: Boogers
+  precision: 123456789
+x: [1,2,3,]

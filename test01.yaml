@@ -1,0 +1,18 @@
+--- !<tag:framesquared.com,2015:test>
+key01: value01
+key02: true
+key03: 123
+key04: 123.45
+key05:
+  key11: value
+  key12: true
+  key13: 123
+  key14: 123.45
+columns:
+- name: id
+  type: uuid
+  auto: true
+- name: first_name
+  type: string
+  precision: 255
+  not null: true
