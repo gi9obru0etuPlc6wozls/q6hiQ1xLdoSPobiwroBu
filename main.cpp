@@ -146,28 +146,17 @@ nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch
         ++i;
     }
 
-    std::cout << "--------: " << std::endl;
-
-    i = 0;
     std::cout << std::string(level * 4, ' ') << "patch array:" << patch.type_name() << std::endl;
     for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
         std::string key = it.value().at("name");
 
-        std::cout << std::string(level * 4, ' ') << "Patch Element:" << i << " value name: " << key << std::endl;
-
         if (columnMap.find(key) != columnMap.end()) {
-            int j = columnMap[key];
-
-            std::cout << "Key: " << key << " Found at: " << j << std::endl;
-            merge(target[j], *it);
+            merge(target[columnMap[key]], *it);
         }
         else {
-            std::cout << "Not Found / push_back: " << key << std::endl;
             target.push_back(*it);
         }
-        ++i;
     }
-    std::cout << "--------: " << std::endl;
 }
 
 nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
