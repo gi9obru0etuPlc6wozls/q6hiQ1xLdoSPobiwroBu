@@ -134,19 +134,10 @@ nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch
     if (target.type() != json::value_t::array || patch.type() != json::value_t::array)
         throw "Columns must be array";
 
-    std::cout << std::string(level * 4, ' ') << "merge_columns:" << patch.type_name() << std::endl;
-
-
-    std::cout << std::string(level * 4, ' ') << "target array:" << target.type_name() << std::endl;
     for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-        std::cout << std::string(level * 4, ' ') << "Target Element:" << i << " value name: " << it.value().at("name")
-                  << std::endl;
-
         columnMap[it.value().at("name")] = i;
         ++i;
     }
-
-    std::cout << std::string(level * 4, ' ') << "patch array:" << patch.type_name() << std::endl;
     for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
         std::string key = it.value().at("name");
 
@@ -167,11 +158,11 @@ nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
 
     switch (patch.type()) {
         case json::value_t::object:
-            std::cout << std::string(level * 4, ' ') << "object:" << patch.type_name() << std::endl;
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
                 std::string key = it.key();
 
-                std::cout << std::string(level * 4, ' ') << "Key:" << key;
+                std::cout << std::string(level * 4, ' ') << "Key:" << key;  // TODO: fails with out this line
+
                 if (key == "columns") {
                     merge_columns(target[key], *it);
                 } else if (target.count(key)) {
@@ -195,7 +186,6 @@ nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
         case json::value_t::number_float:
         case json::value_t::number_integer:
         case json::value_t::number_unsigned:
-            std::cout << std::string(level * 4, ' ') << "scalar:" << patch.type_name();
             target = patch;
             break;
 
