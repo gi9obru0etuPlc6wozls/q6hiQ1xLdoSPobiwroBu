@@ -1,14 +1,20 @@
-key01:
-key05:
-  key15: value15
-  key12: newvalue12
-key07: value07
+--- !<tag:framesquared.com,2015:migration>
+migration:
+  direction: up
+  serial: 65535
+alter table: invoice
+temporary: true
+not exists: true
+unlogged: true
+xlike: billto
 columns:
-- name: col01
+- name: col03
+  type: newtype
+  precision: 255
+- name: col04
   type: string
-- name: col02
-  type: numeric
-- name: first_name
-  type: Boogers
-  precision: 123456789
-x: [1,2,3,]
+  precision: 255
+  not null: true
+- name: col05
+  type: string
+  precision: 128

@@ -1,18 +1,20 @@
---- !<tag:framesquared.com,2015:test>
-key01: value01
-key02: true
-key03: 123
-key04: 123.45
-key05:
-  key11: value
-  key12: true
-  key13: 123
-  key14: 123.45
+--- !<tag:framesquared.com,2015:migration>
+migration:
+  direction: up
+  serial: 65535
+create table: invoice
+temporary: true
+not exists: true
+unlogged: true
+xlike: billto
 columns:
-- name: id
+- name: col01
   type: uuid
   auto: true
-- name: first_name
+- name: col02
   type: string
   precision: 255
   not null: true
+- name: col03
+  type: string
+  precision: 512
