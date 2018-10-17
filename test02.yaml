@@ -11,10 +11,12 @@ columns:
 - name: col03
   type: newtype
   precision: 255
+
 - name: col04
   type: string
   precision: 255
   not null: true
+
 - name: col05
   type: string
   precision: 128

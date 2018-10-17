@@ -1,0 +1,29 @@
+{
+    "alter table": "invoice",
+    "columns": [
+        {
+            "name": "col03",
+            "precision": 255,
+            "type": "newtype"
+        },
+        {
+            "name": "col04",
+            "not null": true,
+            "precision": 255,
+            "type": "string"
+        },
+        {
+            "name": "col05",
+            "precision": 128,
+            "type": "string"
+        }
+    ],
+    "migration": {
+        "direction": "up",
+        "serial": 65535
+    },
+    "not exists": true,
+    "temporary": true,
+    "unlogged": true,
+    "xlike": "billto"
+}

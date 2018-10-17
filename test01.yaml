@@ -11,10 +11,12 @@ columns:
 - name: col01
   type: uuid
   auto: true
+
 - name: col02
   type: string
   precision: 255
   not null: true
+
 - name: col03
   type: string
   precision: 512

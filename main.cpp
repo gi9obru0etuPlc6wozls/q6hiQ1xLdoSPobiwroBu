@@ -10,6 +10,7 @@ using json = nlohmann::json;
 using namespace inja;
 
 #include <iostream>
+#include <fstream>
 #include <nlohmann/json.hpp>
 #include <iomanip> // for std::setw
 
@@ -42,9 +43,13 @@ nlohmann::json YAMLtoJSON(const YAML::Node &node) {
             }
             break;
         case YAML::NodeType::Sequence: // ...
-            for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
-                data[i] = YAMLtoJSON(*n_it);
-                ++i;
+            if (node.begin() == node.end()) {
+                data = json::array();
+            } else {
+                for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
+                    data[i] = YAMLtoJSON(*n_it);
+                    ++i;
+                }
             }
             break;
         case YAML::NodeType::Map: // ...
@@ -120,7 +125,7 @@ nlohmann::json YAMLtoJSON(const YAML::Node &node) {
 //    return data;
 //}
 
-nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch);
+void merge(nlohmann::json &target, const nlohmann::json &patch);
 
 nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch) {
 
@@ -135,7 +140,7 @@ nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch
 
     for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
         columnMap[it.value().at("name")] = i;
-        std::cout << "Name: " << it.value().type_name() << std::endl;
+        //std::cout << "Name: " << it.value().type_name() << std::endl;
         ++i;
     }
 
@@ -150,7 +155,7 @@ nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch
     }
 }
 
-nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
+void merge(nlohmann::json &target, const nlohmann::json &patch) {
 
     int i = 0;
 
@@ -167,13 +172,14 @@ nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
             }
             break;
 
-//        case json::value_t::array:
+        case json::value_t::array:
+            std::cout << "not supported:" << patch.type_name() << std::endl;
 //            throw new std::exception(); // TODO:: how to merge generic arrays?
 //            std::cout << std::string(level * 4, ' ') << "array:" << patch.type_name() << std::endl;
 //            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
 //                std::cout << std::string(level * 4, ' ') << "Element:" << ++i;
 //            }
-//            break;
+            break;
 
         case json::value_t::string:
         case json::value_t::boolean:
@@ -191,13 +197,31 @@ nlohmann::json merge(nlohmann::json &target, const nlohmann::json &patch) {
 
 
 int main() {
-    YAML::Node targetYaml = YAML::LoadFile("../test01.yaml");
+
+    YAML::Node targetYaml;
+
+    try {
+        targetYaml = YAML::LoadFile("../target.json");
+    }
+    catch (YAML::BadFile &e) {
+        // TODO: Initalize with defaults from YAML config?
+        targetYaml["columns"] = YAML::Load("[]");
+        std::cout << "targetYaml: " << targetYaml << std::endl;
+        std::cout << "BadFile exception" << std::endl;
+    }
+
     YAML::Node patchYaml = YAML::LoadFile("../test02.yaml");
 
-    nlohmann::json target = YAMLtoJSON(targetYaml);
-    nlohmann::json patch = YAMLtoJSON(patchYaml);
-    merge(target, patch);
+    nlohmann::json targetJson = YAMLtoJSON(targetYaml);
+    nlohmann::json patchJson = YAMLtoJSON(patchYaml);
+    merge(targetJson, patchJson);
 
     std::cout << std::endl;
-    std::cout << "Target: " << target.dump(4) << std::endl;
+    std::cout << "Target: " << targetJson.dump(4) << std::endl;
+
+    std::ofstream targetFile("../target.json");
+    targetFile << targetJson.dump(4);
+    targetFile.close();
+
+    return 0;
 }
