@@ -64,70 +64,24 @@ nlohmann::json YAMLtoJSON(const YAML::Node &node) {
     return data;
 }
 
-//nlohmann::json YAMLdebug(const YAML::Node &node) {
-//    int i = 0;
-//    nlohmann::json data;
-//
-//    level++;
-//    std::cout << std::string(level * 4, ' ') << "";
-//
-//    switch (node.Type()) {
-//        case YAML::NodeType::Null: // ...
-//            std::cout << "Null" << std::endl;
-//            data = nullptr;
-//            break;
-//        case YAML::NodeType::Scalar: // ...
-//            std::cout << "Scalar: ";
-//            try {
-//                std::cout << "bool: " << node.as<bool>();
-//                data = node.as<bool>();
-//            }
-//            catch (YAML::BadConversion &x) {
-//                try {
-//                    std::cout << "int: " << node.as<int>();
-//                    data = node.as<int>();
-//                }
-//                catch (YAML::BadConversion &x) {
-//                    try {
-//                        data = node.as<double>();
-//                        std::cout << "double: " << node.as<double>();
-//                    }
-//                    catch (YAML::BadConversion &x) {
-//                        std::cout << "string: " << node.as<std::string>();
-//                        data = node.as<std::string>();
-//                    }
-//                }
-//            }
-//            std::cout << std::endl;
-//            break;
-//        case YAML::NodeType::Sequence: // ...
-//            std::cout << "Sequence" << std::endl;
-//            for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
-//                std::cout << std::string(level * 4, ' ') << "Element:" << i; // << std::endl;
-//                data[i] = YAMLdebug(*n_it);
-//                ++i;
-//            }
-//            break;
-//        case YAML::NodeType::Map: // ...
-//            std::cout << "Map" << std::endl;
-//            for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
-//                std::cout << std::string(level * 4, ' ') << "Key:" << n_it->first.as<std::string>(); // << std::endl;
-//                data[n_it->first.as<std::string>()] = YAMLdebug(n_it->second);
-//            }
-//            break;
-//        case YAML::NodeType::Undefined: // ...
-//            std::cout << "Undefined" << std::endl;
-//            break;
-//    }
-//
-//    level--;
-//
-//    return data;
-//}
+class MergeException : std::exception {
+private:
+    char const *e;
+
+public:
+    MergeException(char const *e) {
+        this->e =  e;
+    }
+
+    virtual const char *what() const throw() {
+        return e;
+    }
+};
 
 void merge(nlohmann::json &target, const nlohmann::json &patch);
+void merge_columns(nlohmann::json &target, const nlohmann::json &patch);
 
-nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch) {
+void merge_columns(nlohmann::json &target, const nlohmann::json &patch) {
 
     std::map<std::string, int> columnMap;
 
@@ -136,7 +90,7 @@ nlohmann::json merge_columns(nlohmann::json &target, const nlohmann::json &patch
     int i = 0;
 
     if (target.type() != json::value_t::array || patch.type() != json::value_t::array)
-        throw "Columns must be array";
+        throw new MergeException("Not json::value_t::array");
 
     for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
         columnMap[it.value().at("name")] = i;
