@@ -1,6 +1,8 @@
 --- !<tag:framesquared.com,2015:config>
 template:
   create table:
+    logged: true
+    temporary: false
     columns: []
 sequence:
   columns: name

@@ -2,6 +2,17 @@
     "alter table": "invoice",
     "columns": [
         {
+            "auto": true,
+            "name": "col01",
+            "type": "uuid"
+        },
+        {
+            "name": "col02",
+            "not null": true,
+            "precision": 255,
+            "type": "string"
+        },
+        {
             "name": "col03",
             "precision": 255,
             "type": "newtype"
@@ -18,6 +29,7 @@
             "type": "string"
         }
     ],
+    "create table": "invoice",
     "migration": {
         "direction": "up",
         "serial": 65535

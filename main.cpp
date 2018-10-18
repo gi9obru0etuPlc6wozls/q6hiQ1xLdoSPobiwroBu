@@ -70,7 +70,7 @@ private:
 
 public:
     MergeException(char const *e) {
-        this->e =  e;
+        this->e = e;
     }
 
     virtual const char *what() const throw() {
@@ -78,48 +78,18 @@ public:
     }
 };
 
-void merge(nlohmann::json &target, const nlohmann::json &patch);
-void merge_columns(nlohmann::json &target, const nlohmann::json &patch);
+void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "");
 
-void merge_columns(nlohmann::json &target, const nlohmann::json &patch) {
+void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
 
+    int i = 0;
     std::map<std::string, int> columnMap;
-
-    std::string column[3] = {"name", "precision", "not null"}; // TODO: Make a config
-
-    int i = 0;
-
-    if (target.type() != json::value_t::array || patch.type() != json::value_t::array)
-        throw new MergeException("Not json::value_t::array");
-
-    for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-        columnMap[it.value().at("name")] = i;
-        //std::cout << "Name: " << it.value().type_name() << std::endl;
-        ++i;
-    }
-
-    for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-        std::string key = it.value().at("name");
-
-        if (columnMap.find(key) != columnMap.end()) {
-            merge(target[columnMap[key]], *it);
-        } else {
-            target.push_back(*it);
-        }
-    }
-}
-
-void merge(nlohmann::json &target, const nlohmann::json &patch) {
-
-    int i = 0;
 
     switch (patch.type()) {
         case json::value_t::object:
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-                if (it.key() == "columns") {
-                    merge_columns(target[it.key()], *it);
-                } else if (target.count(it.key())) {
-                    merge(target[it.key()], *it);
+                if (target.count(it.key())) {
+                    merge(target[it.key()], *it, it.key());
                 } else {
                     target[it.key()] = *it;
                 }
@@ -127,12 +97,27 @@ void merge(nlohmann::json &target, const nlohmann::json &patch) {
             break;
 
         case json::value_t::array:
-            std::cout << "not supported:" << patch.type_name() << std::endl;
-//            throw new std::exception(); // TODO:: how to merge generic arrays?
-//            std::cout << std::string(level * 4, ' ') << "array:" << patch.type_name() << std::endl;
-//            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-//                std::cout << std::string(level * 4, ' ') << "Element:" << ++i;
-//            }
+            std::cout << "key: " << key << " not supported:" << patch.type_name() << std::endl;
+
+            if (target.type() != json::value_t::array)
+                throw new MergeException("Not json::value_t::array");
+
+            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+                columnMap[it.value().at("name")] = i;
+                //std::cout << "Name: " << it.value().type_name() << std::endl;
+                ++i;
+            }
+
+            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+                std::string key = it.value().at("name");
+
+                if (columnMap.find(key) != columnMap.end()) {
+                    merge(target[columnMap[key]], *it);
+                } else {
+                    target.push_back(*it);
+                }
+            }
+
             break;
 
         case json::value_t::string:
@@ -152,10 +137,13 @@ void merge(nlohmann::json &target, const nlohmann::json &patch) {
 
 int main() {
 
+    nlohmann::json config = YAMLtoJSON(YAML::LoadFile("../config.yaml"));
+    std::cout << "config: " << config.dump(4) << std::endl;
+
     YAML::Node targetYaml;
 
     try {
-        targetYaml = YAML::LoadFile("../target.json");
+        targetYaml = YAML::LoadFile("../test01.yaml");
     }
     catch (YAML::BadFile &e) {
         // TODO: Initalize with defaults from YAML config?
