@@ -5,7 +5,10 @@ template:
     temporary: false
     columns: []
 sequence:
-  columns: name
+  merge:
+    columns: name
+  exapnd:
+    name: [name,type,precision]
 map:
   db_type:
     string: character varying

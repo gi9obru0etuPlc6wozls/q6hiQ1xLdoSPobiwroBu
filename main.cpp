@@ -78,7 +78,34 @@ public:
     }
 };
 
+class 
+
 void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "");
+void merge_sequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "name");
+void expand_sequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key[]);
+
+
+void merge_sequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
+    int i = 0;
+    std::map<std::string, int> columnMap;
+    std::string key;
+
+    for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+        columnMap[it.value().at("name")] = i;
+        ++i;
+    }
+
+    for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+        key = it.value().at("name");
+
+        if (columnMap.find(key) != columnMap.end()) {
+            merge(target[columnMap[key]], *it);
+        } else {
+            target.push_back(*it);
+        }
+    }
+}
+
 
 void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
 
@@ -97,26 +124,12 @@ void merge(nlohmann::json &target, const nlohmann::json &patch, const std::strin
             break;
 
         case json::value_t::array:
-            std::cout << "key: " << key << " not supported:" << patch.type_name() << std::endl;
+            std::cout << "key: " << key << " merge sequence:" << patch.type_name() << std::endl;
 
             if (target.type() != json::value_t::array)
                 throw new MergeException("Not json::value_t::array");
 
-            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-                columnMap[it.value().at("name")] = i;
-                //std::cout << "Name: " << it.value().type_name() << std::endl;
-                ++i;
-            }
-
-            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-                std::string key = it.value().at("name");
-
-                if (columnMap.find(key) != columnMap.end()) {
-                    merge(target[columnMap[key]], *it);
-                } else {
-                    target.push_back(*it);
-                }
-            }
+            merge_sequence(target, patch);
 
             break;
 
