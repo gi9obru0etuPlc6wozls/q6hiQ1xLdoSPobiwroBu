@@ -7,24 +7,51 @@ void f() {
 
 typedef void (*fpt)();
 
+class fpclass {
+
+    typedef  void (fpclass::*mfp_t)();
+
+public:
+    void (*fpa)();// = &fpclass::method_a; // &myfoo::foo;
+
+    void method_a() {
+        std::cout << "hello from method_a\n";
+    }
+
+    void method_b() {
+
+        mfp_t p = &fpclass::method_a;   // FredMemFn p = &Fred::f;
+
+                p();
+        std::cout << "hello from method_b\n";
+    }
+};
+
+
+
 int main() {
 
-    Processor p;
+    fpclass fpc;
 
-    p.loadConfig("../config.yaml");
+    fpc.method_b();
 
-    std::string patch = "../test01.yaml";
-
-    fpt fp = &f;
-
-    std::map<std::string, fpt> fm;
-
-    fm["dylan"] = &f;
-    
-    f();
-    (*fp)();
-    (*fm["dylan"])();
-    fm["dylan"]();
+//    Processor p;
+//
+//
+//    p.loadConfig("../config.yaml");
+//
+//    std::string patch = "../test01.yaml";
+//
+//    fpt fp = &f;
+//
+//    std::map<std::string, fpt> fm;
+//
+//    fm["dylan"] = &f;
+//
+//    f();
+//    (*fp)();
+//    (*fm["dylan"])();
+//    fm["dylan"]();
 
 
 
