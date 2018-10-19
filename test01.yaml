@@ -3,20 +3,20 @@ migration:
   direction: up
   serial: 65535
 create table: invoice
-temporary: true
-not exists: true
-unlogged: true
-xlike: billto
-columns:
-- name: col01
-  type: uuid
-  auto: true
+  temporary: true
+  not exists: true
+  unlogged: true
+  xlike: billto
+  columns:
+  - name: col01
+    type: uuid
+    auto: true
 
-- name: col02
-  type: string
-  precision: 255
-  not null: true
+  - name: col02
+    type: string
+    precision: 255
+    not null: true
 
-- name: col03
-  type: string
-  precision: 512
+  - name: col03
+    type: string
+    precision: 512

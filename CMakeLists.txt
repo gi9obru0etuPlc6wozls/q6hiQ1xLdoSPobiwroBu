@@ -3,6 +3,6 @@ project(fs2_template02)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(fs2_migration01 main.cpp)
+add_executable(fs2_migration01 main.cpp Processor.cpp Processor.h)
 
 target_link_libraries(fs2_migration01 yaml-cpp)
