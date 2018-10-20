@@ -50,36 +50,54 @@ nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
     return data;
 }
 
+Processor::Processor() {
+    std::cout << "Processor::Processor()" << std::endl;
+    processorFunctions["migration"] = &Processor::migration;
+    processorFunctions["create table"] = &Processor::createTable;
+    processorFunctions["alter table"] = &Processor::alterTable;
+}
+
+Processor::Processor(std::string filename) : Processor() {
+    loadConfig(filename);
+}
+
+Processor::Processor(nlohmann::json &config) : Processor() {
+    this->config = config;
+}
+
 void Processor::loadConfig(std::string filename) {
     config = YAMLtoJSON(YAML::LoadFile(filename));
     std::cout << "config: " << config.dump(4) << std::endl;
 }
 
-Processor::Processor() {}
-
-Processor::Processor(std::string filename) {
-    loadConfig(filename);
-}
-
-Processor::Processor(nlohmann::json &config) {
-    this->config = config;
-}
-
-void Processor::process(std::string filename) {
-    process(YAMLtoJSON(YAML::LoadFile(filename)));
+void Processor::process(const char *const filename) {
+    std::string fn = filename;
+    process(YAMLtoJSON(YAML::LoadFile(fn)));
 }
 
 void Processor::process(const nlohmann::json &source) {
 
+    std::cout << "Processor::process()" << std::endl;
+
     if (source.type() != json::value_t::object)
         throw new MergeException("Not json::value_t::object");
 
-    for (json::const_iterator it = source.begin(); it != source.end(); ++it) {
+    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it) {
+        std::string key = n_it.key();
 
+        std::cout << "key: " << key << std::endl;
+
+        if (processorFunctions.find(key) == processorFunctions.end()) {
+            throw new MergeException("No matching processorFunction");
+        }
+
+        if (!(this->*processorFunctions[key])(key, n_it.value())) {
+            throw new MergeException("processorFunction returned error");
+        }
     }
 }
 
-void Processor::merge_sequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
+void Processor::mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
     int i = 0;
     std::map<std::string, int> columnMap;
     std::string key;
@@ -108,22 +126,24 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
 
     switch (patch.type()) {
         case json::value_t::object:
+            std::cout << "key: " << key << " merge object:" << patch.type_name() << std::endl;
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
                 if (target.count(it.key())) {
                     merge(target[it.key()], *it, it.key());
                 } else {
+                    std::cout << "Assigning: " << std::endl;
                     target[it.key()] = *it;
                 }
             }
             break;
 
         case json::value_t::array:
-            std::cout << "key: " << key << " merge sequence:" << patch.type_name() << std::endl;
+            std::cout << "key: " << key << " merge array:" << patch.type_name() << std::endl;
 
             if (target.type() != json::value_t::array)
                 throw new MergeException("Not json::value_t::array");
 
-            merge_sequence(target, patch);
+            mergeSequence(target, patch);
 
             break;
 
@@ -132,6 +152,7 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
         case json::value_t::number_float:
         case json::value_t::number_integer:
         case json::value_t::number_unsigned:
+            std::cout << "key: " << key << " merge scalar:" << patch.type_name() << std::endl;
             target = patch;
             break;
 
@@ -139,4 +160,37 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
             std::cout << "unknown:" << patch.type_name() << std::endl;
             break;
     }
+}
+
+bool Processor::migration(const std::string &key, const nlohmann::json &value) {
+    std::cout << "Processor::migration()" << std::endl;
+
+    nlohmann::json target;
+
+    merge(target, value);
+
+    return true;
+}
+
+bool Processor::createTable(const std::string &key, const nlohmann::json &value) {
+    std::cout << "Processor::createTable()" << std::endl;
+    nlohmann::json target;
+
+    try {
+        target = config.at("template").at(key);
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        // Do nothing
+    }
+
+    std::cout << "target: " << target.dump(4) << std::endl;
+    merge(target, value);
+    std::cout << "target: " << target.dump(4) << std::endl;
+
+    return true;
+}
+
+bool Processor::alterTable(const std::string &key, const nlohmann::json &value) {
+    std::cout << "Processor::alterTable()" << std::endl;
+    return true;
 }

@@ -38,17 +38,24 @@ public:
 
     void loadConfig(std::string filename);
 
-    void process(std::string filename);
+    void process(const char *filename);
+//    void process(const std::string &filename);
     void process(const nlohmann::json &source);
 
 private:
+    typedef bool (Processor::*memberFunction)(const std::string &key, const nlohmann::json &value);
+    std::map<std::string, memberFunction> processorFunctions;
 
     nlohmann::json config;
 
     nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
     void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "");
-    void merge_sequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "name");
+    void mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "name");
+
+    bool migration(const std::string &key, const nlohmann::json &value);
+    bool createTable(const std::string &key, const nlohmann::json &value);
+    bool alterTable(const std::string &key, const nlohmann::json &value);
 };
 
 #endif //FS2_TEMPLATE02_PROCESSOR_H

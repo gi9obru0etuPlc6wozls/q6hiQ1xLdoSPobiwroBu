@@ -2,7 +2,8 @@
 migration:
   direction: up
   serial: 65535
-create table: invoice
+create table:
+  name: invoice
   temporary: true
   not exists: true
   unlogged: true
@@ -11,12 +12,10 @@ create table: invoice
   - name: col01
     type: uuid
     auto: true
-
   - name: col02
     type: string
     precision: 255
     not null: true
-
   - name: col03
     type: string
     precision: 512
