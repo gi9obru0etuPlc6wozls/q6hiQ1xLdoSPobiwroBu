@@ -1,39 +1,43 @@
 #include <iostream>
 #include "Processor.h"
 
-void f() {
-    std::cout << "I'm in function f" << std::endl;
-}
-
-typedef void (*fpt)();
-
 class fpclass {
 
-    typedef  void (fpclass::*mfp_t)();
-
 public:
-    void (*fpa)();// = &fpclass::method_a; // &myfoo::foo;
+
+    typedef void (fpclass::*fp_t)();
+    std::map<std::string, fp_t> x;
+
+    fp_t a;
+
+    fpclass() {
+        std::cout << "hello from fpclass\n";
+
+        x["migration"] = &fpclass::method_a;
+        x["create table"] = &fpclass::method_a;
+
+        a = &fpclass::method_a;
+    }
 
     void method_a() {
         std::cout << "hello from method_a\n";
     }
 
     void method_b() {
-
-        mfp_t p = &fpclass::method_a;   // FredMemFn p = &Fred::f;
-
-                p();
         std::cout << "hello from method_b\n";
+
+        (this->*a)();
     }
 };
 
 
 
+
 int main() {
 
-    fpclass fpc;
+    fpclass c;
 
-    fpc.method_b();
+    c.method_b();
 
 //    Processor p;
 //
