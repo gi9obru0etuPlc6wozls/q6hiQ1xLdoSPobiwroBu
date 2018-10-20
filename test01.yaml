@@ -19,3 +19,4 @@ create table:
   - name: col03
     type: string
     precision: 512
+  - name: [col99,string,256]

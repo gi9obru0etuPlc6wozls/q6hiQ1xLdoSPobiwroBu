@@ -7,7 +7,7 @@ template:
 sequence:
   merge:
     columns: name
-  exapnd:
+  expand:
     name: [name,type,precision]
 map:
   db_type:

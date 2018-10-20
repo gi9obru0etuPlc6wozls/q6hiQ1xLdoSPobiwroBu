@@ -51,7 +51,8 @@ private:
     nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
     void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "");
-    void mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "name");
+//    void mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "name");
+    void mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &key);
 
     bool migration(const std::string &key, const nlohmann::json &value);
     bool createTable(const std::string &key, const nlohmann::json &value);
