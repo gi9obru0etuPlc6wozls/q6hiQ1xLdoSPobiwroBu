@@ -123,7 +123,7 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
     int i = 0;
     std::map<std::string, int> columnMap;
     std::string matchKey;
-    std::string mergeKey;
+    std::string matchValue;
 
     switch (patch.type()) {
         case json::value_t::object:
@@ -149,10 +149,10 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
             }
 
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-                mergeKey = it.value().at(matchKey);
+                matchValue = it.value().at(matchKey);
 
-                if (columnMap.find(mergeKey) != columnMap.end()) {
-                    merge(target[columnMap[mergeKey]], *it);
+                if (columnMap.find(matchValue) != columnMap.end()) {
+                    merge(target[columnMap[matchValue]], *it);
                 } else {
                     target.push_back(*it);
                 }
