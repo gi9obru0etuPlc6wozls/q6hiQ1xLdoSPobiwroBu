@@ -97,33 +97,33 @@ void Processor::process(const nlohmann::json &source) {
     }
 }
 
-void Processor::mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
-    int i = 0;
-    std::map<std::string, int> columnMap;
-    std::string key;
-
-    for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-        columnMap[it.value().at(mergeKey)] = i;
-        ++i;
-    }
-
-    for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-        key = it.value().at(mergeKey);
-
-        if (columnMap.find(key) != columnMap.end()) {
-            merge(target[columnMap[key]], *it);
-        } else {
-            target.push_back(*it);
-        }
-    }
-}
-
+//void Processor::mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
+//    int i = 0;
+//    std::map<std::string, int> columnMap;
+//    std::string key;
+//
+//    for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+//        columnMap[it.value().at(mergeKey)] = i;
+//        ++i;
+//    }
+//
+//    for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+//        key = it.value().at(mergeKey);
+//
+//        if (columnMap.find(key) != columnMap.end()) {
+//            merge(target[columnMap[key]], *it);
+//        } else {
+//            target.push_back(*it);
+//        }
+//    }
+//}
 
 void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
 
     int i = 0;
     std::map<std::string, int> columnMap;
-    nlohmann::json j;
+    std::string matchKey;
+    std::string mergeKey;
 
     switch (patch.type()) {
         case json::value_t::object:
@@ -139,27 +139,24 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
             break;
 
         case json::value_t::array:
-            // sequence:
-            //  merge:
-            //    columns: name
-            //  expand:
-            //    name: [name,type,precision]
             std::cout << "key: " << key << " merge array:" << patch.type_name() << std::endl;
 
-            if (target.type() != json::value_t::array)
-                throw new MergeException("Not json::value_t::array");
+            matchKey = config.at("sequence").at("merge").at(key);
 
-            try {
-                j = config.at("sequence").at("merge").at(key);
-                std::cout << "j1: " << j.dump(4) << std::endl;
-            }
-            catch (nlohmann::json::out_of_range &e) {
-                j = config.at("sequence").at("expand").at(key);
-                std::cout << "j2: " << j.dump(4) << std::endl;
-                exit(200);
+            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+                columnMap[it.value().at(matchKey)] = i;
+                ++i;
             }
 
-            mergeSequence(target, patch, j);
+            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+                mergeKey = it.value().at(matchKey);
+
+                if (columnMap.find(mergeKey) != columnMap.end()) {
+                    merge(target[columnMap[mergeKey]], *it);
+                } else {
+                    target.push_back(*it);
+                }
+            }
 
             break;
 

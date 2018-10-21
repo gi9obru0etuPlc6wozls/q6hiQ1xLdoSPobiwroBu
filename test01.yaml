@@ -16,7 +16,3 @@ create table:
     type: string
     precision: 255
     not null: true
-  - name: col03
-    type: string
-    precision: 512
-  - name: [col99,string,256]

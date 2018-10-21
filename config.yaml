@@ -7,8 +7,6 @@ template:
 sequence:
   merge:
     columns: name
-  expand:
-    name: [name,type,precision]
 map:
   db_type:
     string: character varying
