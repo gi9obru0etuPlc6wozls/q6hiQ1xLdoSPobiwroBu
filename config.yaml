@@ -1,6 +1,7 @@
 --- !<tag:framesquared.com,2015:config>
 paths:
   migrations: ../migrations
+  meta: ../metadata
 template:
   create table:
     logged: true
@@ -9,6 +10,14 @@ template:
 sequence:
   merge:
     columns: name
+genertor:
+  create table:
+  - inga: path_to_inja_file
+    data: patch
+    out: /path/to/output/{{ file_name }}.ext
+  - inga: path_to_inja_file
+    data: patch
+    out: /path/to/output/{{ file_name }}.ext
 map:
   db_type:
     string: character varying
