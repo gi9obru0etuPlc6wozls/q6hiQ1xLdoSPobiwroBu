@@ -1,0 +1,8 @@
+--- !<tag:framesquared.com,2015:migration>
+serial: 512
+history:
+  - serial: 512
+    date: 2018-10-22 00:00:00
+    files:
+    - 000512_create_table_invoice.sql
+    - 000512_alter_table_items.sql

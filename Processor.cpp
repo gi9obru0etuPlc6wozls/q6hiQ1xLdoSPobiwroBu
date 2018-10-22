@@ -213,7 +213,9 @@ nlohmann::json Processor::read(const std::string &filename) {
 bool Processor::migration(const std::string &key, const nlohmann::json &value) {
     std::cout << "Processor::migration()" << std::endl;
 
-    scanmigrations(".");
+    std::string migrationPath = config.at("paths").at("migrations");
+
+    scanmigrations(migrationPath);
 
     nlohmann::json target;
 

@@ -1,4 +1,6 @@
 --- !<tag:framesquared.com,2015:config>
+paths:
+  migrations: ../migrations
 template:
   create table:
     logged: true

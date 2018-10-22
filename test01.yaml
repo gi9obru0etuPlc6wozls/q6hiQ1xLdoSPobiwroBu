@@ -16,3 +16,7 @@ create table:
     type: string
     precision: 255
     not null: true
+  - name: col03
+    type: oldtype
+    precision: 512
+
