@@ -2,21 +2,22 @@
 migration:
   direction: up
   serial: 65535
-alter table: invoice
-temporary: true
-not exists: true
-unlogged: true
-xlike: billto
-columns:
-- name: col03
-  type: newtype
-  precision: 255
+alter table:
+  name: invoice
+  temporary: true
+  not exists: true
+  unlogged: true
+  xlike: billto
+  columns:
+  - name: col03
+    type: newtype
+    precision: 255
 
-- name: col04
-  type: string
-  precision: 255
-  not null: true
+  - name: col04
+    type: string
+    precision: 255
+    not null: true
 
-- name: col05
-  type: string
-  precision: 128
+  - name: col05
+    type: string
+    precision: 128

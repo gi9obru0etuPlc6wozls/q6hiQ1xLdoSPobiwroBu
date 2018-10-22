@@ -1,5 +1,9 @@
 //
 // Created by jwc on 10/19/18.
+#include <fstream>
+#include <iomanip>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "Processor.h"
 
 nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
@@ -97,27 +101,6 @@ void Processor::process(const nlohmann::json &source) {
     }
 }
 
-//void Processor::mergeSequence(nlohmann::json &target, const nlohmann::json &patch, const std::string &mergeKey) {
-//    int i = 0;
-//    std::map<std::string, int> columnMap;
-//    std::string key;
-//
-//    for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-//        columnMap[it.value().at(mergeKey)] = i;
-//        ++i;
-//    }
-//
-//    for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-//        key = it.value().at(mergeKey);
-//
-//        if (columnMap.find(key) != columnMap.end()) {
-//            merge(target[columnMap[key]], *it);
-//        } else {
-//            target.push_back(*it);
-//        }
-//    }
-//}
-
 void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
 
     int i = 0;
@@ -175,8 +158,62 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
     }
 }
 
+void Processor::scanmigrations(const std::string &dirname) {
+    std::cout << "Processor::scanmigrations(): " << dirname << std::endl;
+
+    DIR *dir;
+    struct dirent *dirent;
+    struct stat fileInfo;
+
+    if ((dir = opendir(dirname.c_str())) == NULL) {
+        throw new MergeException("Could not open directory.");
+    }
+
+    while ((dirent = readdir(dir)) != NULL) {
+        std::string s = dirname + "/" + dirent->d_name;
+        std::cout << "s: " << s << std::endl;
+
+        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+            continue;
+        }
+
+        stat(s.c_str(), &fileInfo);
+        if (S_ISDIR(fileInfo.st_mode)) {
+            scanmigrations(s);
+        }
+    }
+    closedir(dir);
+}
+
+void Processor::write(const std::string &filename, const nlohmann::json &value) {
+    std::ofstream writeStream(filename);
+
+    if (!writeStream.is_open()) {
+        throw new MergeException("Unable to open file for writing");
+    }
+
+    writeStream << std::setw(4) << value << std::endl;
+    writeStream.close();
+}
+
+nlohmann::json Processor::read(const std::string &filename) {
+    std::ifstream readStream(filename);
+
+    if (!readStream.is_open()) {
+        throw new MergeException("Unable to open file for reading");
+    }
+
+    nlohmann::json j;
+    readStream >> j;
+
+    readStream.close();
+    return j;
+}
+
 bool Processor::migration(const std::string &key, const nlohmann::json &value) {
     std::cout << "Processor::migration()" << std::endl;
+
+    scanmigrations(".");
 
     nlohmann::json target;
 
@@ -186,7 +223,8 @@ bool Processor::migration(const std::string &key, const nlohmann::json &value) {
 }
 
 bool Processor::createTable(const std::string &key, const nlohmann::json &value) {
-    std::cout << "Processor::createTable()" << std::endl;
+    std::cout << "Processor::createlTable()" << std::endl;
+    std::cout << "value: " << value.dump(4) << std::endl;
     nlohmann::json target;
 
     try {
@@ -200,10 +238,20 @@ bool Processor::createTable(const std::string &key, const nlohmann::json &value)
     merge(target, value);
     std::cout << "target: " << target.dump(4) << std::endl;
 
+    write("target.json", target);
+
     return true;
 }
 
 bool Processor::alterTable(const std::string &key, const nlohmann::json &value) {
     std::cout << "Processor::alterTable()" << std::endl;
+
+    nlohmann::json target = read("target.json");
+    std::cout << "target: " << target.dump(4) << std::endl;
+    merge(target, value);
+    std::cout << "target: " << target.dump(4) << std::endl;
+
+    write("target.json", target);
+
     return true;
 }

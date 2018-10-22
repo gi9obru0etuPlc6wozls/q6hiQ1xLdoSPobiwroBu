@@ -4,7 +4,8 @@
 int main() {
 
     Processor p("../config.yaml");
-    p.process("../test01.yaml");
+    p.process("../test02.yaml");
+
 //
 //
 //    p.loadConfig("../config.yaml");
