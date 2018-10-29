@@ -31,36 +31,33 @@ public:
 class Processor {
 public:
 
-
-    Processor();
     Processor(std::string filename);
-    Processor(nlohmann::json &config);
 
-    void loadConfig(std::string filename);
-
-    void process(const char *filename);
-    void process(const std::string &filename);
     void process(const nlohmann::json &source);
+
+    void scanMigrations(std::string direction);
 
 private:
     typedef bool (Processor::*memberFunction)(const std::string &key, const nlohmann::json &value);
+
     std::map<std::string, memberFunction> processorFunctions;
 
+    std::string migrationsDir;
     nlohmann::json config;
+    nlohmann::json batch;
 
     nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
-
     void write(const std::string &filename, const nlohmann::json &value);
     nlohmann::json read(const std::string &filename);
-
-    void scanmigrations(const std::string &dirname);
 
     void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "");
 
     bool migration(const std::string &key, const nlohmann::json &value);
     bool createTable(const std::string &key, const nlohmann::json &value);
     bool alterTable(const std::string &key, const nlohmann::json &value);
+
+    void scanMigrations(std::string &md, std::string &direction);
 };
 
 #endif //FS2_TEMPLATE02_PROCESSOR_H

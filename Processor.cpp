@@ -54,51 +54,21 @@ nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
     return data;
 }
 
-Processor::Processor() {
+Processor::Processor(std::string filename) {
     std::cout << "Processor::Processor()" << std::endl;
+
     processorFunctions["migration"] = &Processor::migration;
     processorFunctions["create table"] = &Processor::createTable;
     processorFunctions["alter table"] = &Processor::alterTable;
-}
 
-Processor::Processor(std::string filename) : Processor() {
-    loadConfig(filename);
-}
-
-Processor::Processor(nlohmann::json &config) : Processor() {
-    this->config = config;
-}
-
-void Processor::loadConfig(std::string filename) {
     config = YAMLtoJSON(YAML::LoadFile(filename));
     std::cout << "config: " << config.dump(4) << std::endl;
-}
 
-void Processor::process(const char *const filename) {
-    std::string fn = filename;
-    process(YAMLtoJSON(YAML::LoadFile(fn)));
-}
+    migrationsDir = config.at("paths").at("migrations dir");
 
-void Processor::process(const nlohmann::json &source) {
-
-    std::cout << "Processor::process()" << std::endl;
-
-    if (source.type() != json::value_t::object)
-        throw new MergeException("Not json::value_t::object");
-
-    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it) {
-        std::string key = n_it.key();
-
-        std::cout << "key: " << key << std::endl;
-
-        if (processorFunctions.find(key) == processorFunctions.end()) {
-            throw new MergeException("No matching processorFunction");
-        }
-
-        if (!(this->*processorFunctions[key])(key, n_it.value())) {
-            throw new MergeException("processorFunction returned error");
-        }
-    }
+    std::string batchFile = config.at("paths").at("batch file");
+    batch = read(batchFile);
+    std::cout << "batch: " << batch.dump(4) << std::endl;
 }
 
 void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
@@ -158,33 +128,6 @@ void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const
     }
 }
 
-void Processor::scanmigrations(const std::string &dirname) {
-    std::cout << "Processor::scanmigrations(): " << dirname << std::endl;
-
-    DIR *dir;
-    struct dirent *dirent;
-    struct stat fileInfo;
-
-    if ((dir = opendir(dirname.c_str())) == NULL) {
-        throw new MergeException("Could not open directory.");
-    }
-
-    while ((dirent = readdir(dir)) != NULL) {
-        std::string s = dirname + "/" + dirent->d_name;
-        std::cout << "s: " << s << std::endl;
-
-        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
-            continue;
-        }
-
-        stat(s.c_str(), &fileInfo);
-        if (S_ISDIR(fileInfo.st_mode)) {
-            scanmigrations(s);
-        }
-    }
-    closedir(dir);
-}
-
 void Processor::write(const std::string &filename, const nlohmann::json &value) {
     std::ofstream writeStream(filename);
 
@@ -210,12 +153,123 @@ nlohmann::json Processor::read(const std::string &filename) {
     return j;
 }
 
+/*
+ ************************************************
+ *
+ * User input:
+ *  direction: up/down
+ *  batch number: [+/-]###
+ *
+ *  batch.json
+ *   current batch: ###
+ *   array of batches: batch #, filenames
+ *
+ *  migration files
+ */
+
+
+void Processor::scanMigrations(std::string direction) {
+    scanMigrations(migrationsDir, direction);
+}
+
+void Processor::scanMigrations(std::string &md, std::string &direction) {
+
+    std::cout << "Processor::scanMigrations(): " << md << std::endl;
+
+    DIR *dir;
+    struct dirent *dirent;
+    struct stat fileInfo;
+
+    if ((dir = opendir(md.c_str())) == NULL) {
+        throw new MergeException("Could not open directory.");
+    }
+
+    while ((dirent = readdir(dir)) != NULL) {
+        std::string s = md + "/" + dirent->d_name;
+
+        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+            continue;
+        }
+
+        stat(s.c_str(), &fileInfo);
+        if (S_ISDIR(fileInfo.st_mode)) {
+            scanMigrations(s, direction);
+        } else if (!S_ISREG(fileInfo.st_mode)) {
+            throw new MergeException("Unknown file type");
+        }
+
+        if (strlen(dirent->d_name) > 5 && !strcmp(dirent->d_name + strlen(dirent->d_name) - 5, ".yaml")) {
+            YAML::Node migration = YAML::LoadFile(s)["migration"];
+
+            if (!migration.IsMap()) {
+                std::cout << "Migration key not found, skipping: " << s << std::endl;
+                continue;
+            }
+
+            YAML::Node batchNode = migration["batch"];
+
+            if (!batchNode.IsScalar()) {
+                std::cout << "Error getting batch, skipping: " << s << std::endl;
+                continue;
+            }
+
+            int fileBatch = batchNode.as<int>();
+
+            YAML::Node directionNode = migration["direction"];
+
+            if (!batchNode.IsScalar()) {
+                std::cout << "Error getting direction, skipping: " << s << std::endl;
+                continue;
+            }
+
+            std::string fileDirection = directionNode.as<std::string>();
+
+            if (fileDirection != direction) continue;
+
+            std::cout << "batch: " << batch.dump(4) << std::endl;
+            std::cout << "s: " << s << std::endl;
+
+            batch["batches"][fileBatch]["date"] = "20181031 12:34:56";
+            batch["batches"][fileBatch]["files"] = json::array();
+            batch["batches"][fileBatch]["files"].push_back(s);
+
+            std::cout << "batch: " << batch.dump(4) << std::endl;
+
+
+        }
+    }
+    closedir(dir);
+}
+
+/*
+ * process a single migration file
+ */
+void Processor::process(const nlohmann::json &source) {
+
+    std::cout << "Processor::process()" << std::endl;
+
+    if (source.type() != json::value_t::object)
+        throw new MergeException("Not json::value_t::object");
+
+    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it) {
+        std::string key = n_it.key();
+
+        std::cout << "key: " << key << std::endl;
+
+        if (processorFunctions.find(key) == processorFunctions.end()) {
+            throw new MergeException("No matching processorFunction");
+        }
+
+        if (!(this->*processorFunctions[key])(key, n_it.value())) {
+            throw new MergeException("processorFunction returned error");
+        }
+    }
+}
+
 bool Processor::migration(const std::string &key, const nlohmann::json &value) {
     std::cout << "Processor::migration()" << std::endl;
 
-    std::string migrationPath = config.at("paths").at("migrations");
-
-    scanmigrations(migrationPath);
+    //scanmigrations(migrationsDir);
 
     nlohmann::json target;
 

@@ -1,7 +1,7 @@
 --- !<tag:framesquared.com,2015:migration>
 migration:
   direction: up
-  serial: 65535
+  batch: 5
 create table:
   name: invoice
   temporary: true
@@ -19,4 +19,10 @@ create table:
   - name: col03
     type: oldtype
     precision: 512
+  array_a: [1,2,3]
+  array_b:
+    - 1
+    - 2
+    - 3
+
 

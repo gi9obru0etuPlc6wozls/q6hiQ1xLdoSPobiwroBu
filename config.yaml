@@ -1,6 +1,7 @@
 --- !<tag:framesquared.com,2015:config>
 paths:
-  migrations: ../migrations
+  migrations dir: ../migrations
+  batch file: ../migrations/batch.json
   meta: ../metadata
 template:
   create table:
