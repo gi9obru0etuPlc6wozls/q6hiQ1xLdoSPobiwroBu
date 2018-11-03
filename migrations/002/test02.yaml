@@ -1,9 +1,7 @@
 --- !<tag:framesquared.com,2015:migration>
-migration:
-  direction: up
-  serial: 65535
-alter table:
-  name: invoice
+serial: 5
+up:
+- alter table: invoice
   temporary: true
   not exists: true
   unlogged: true

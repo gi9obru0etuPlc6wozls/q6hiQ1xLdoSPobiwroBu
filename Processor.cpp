@@ -66,24 +66,25 @@ Processor::Processor(std::string filename) {
 
     migrationsDir = config.at("paths").at("migrations dir");
 
-    std::string batchFile = config.at("paths").at("batch file");
-    batch = read(batchFile);
-    std::cout << "batch: " << batch.dump(4) << std::endl;
+    batchFile = config.at("paths").at("batch file");
+    batches = read(batchFile);
+    std::cout << "batch: " << batches.dump(4) << std::endl;
 }
 
-void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key) {
+void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
 
     int i = 0;
     std::map<std::string, int> columnMap;
     std::string matchKey;
     std::string matchValue;
+    std::string newPath = path + "/" + key;
 
     switch (patch.type()) {
         case json::value_t::object:
-            std::cout << "key: " << key << " merge object:" << patch.type_name() << std::endl;
+            std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
                 if (target.count(it.key())) {
-                    merge(target[it.key()], *it, it.key());
+                    merge(target[it.key()], *it, it.key(), newPath);
                 } else {
                     std::cout << "Assigning: " << std::endl;
                     target[it.key()] = *it;
@@ -168,12 +169,13 @@ nlohmann::json Processor::read(const std::string &filename) {
  */
 
 
-void Processor::scanMigrations(std::string direction) {
-    scanMigrations(migrationsDir, direction);
+void Processor::scanMigrations() {
+    batches["batches"] = nullptr;
+    scanMigrations(migrationsDir);
+    write(batchFile,batches);
 }
 
-void Processor::scanMigrations(std::string &md, std::string &direction) {
-
+void Processor::scanMigrations(std::string &md) {
     std::cout << "Processor::scanMigrations(): " << md << std::endl;
 
     DIR *dir;
@@ -193,52 +195,69 @@ void Processor::scanMigrations(std::string &md, std::string &direction) {
 
         stat(s.c_str(), &fileInfo);
         if (S_ISDIR(fileInfo.st_mode)) {
-            scanMigrations(s, direction);
+            scanMigrations(s);
         } else if (!S_ISREG(fileInfo.st_mode)) {
             throw new MergeException("Unknown file type");
         }
 
         if (strlen(dirent->d_name) > 5 && !strcmp(dirent->d_name + strlen(dirent->d_name) - 5, ".yaml")) {
-            YAML::Node migration = YAML::LoadFile(s)["migration"];
+            YAML::Node migration = YAML::LoadFile(s);
 
             if (!migration.IsMap()) {
-                std::cout << "Migration key not found, skipping: " << s << std::endl;
+                std::cout << "Migration not a map, skipping: " << s << std::endl;
                 continue;
             }
 
-            YAML::Node batchNode = migration["batch"];
-
-            if (!batchNode.IsScalar()) {
-                std::cout << "Error getting batch, skipping: " << s << std::endl;
+            YAML::Node serialNode = migration["serial"];
+            if (!serialNode.IsScalar()) {
+                std::cout << "Serial not found, skipping: " << s << std::endl;
                 continue;
             }
+            int serial = serialNode.as<int>();
+            std::cout << "serial: " << serial << std::endl;
 
-            int fileBatch = batchNode.as<int>();
+            YAML::Node upNode = migration["up"];
 
-            YAML::Node directionNode = migration["direction"];
-
-            if (!batchNode.IsScalar()) {
-                std::cout << "Error getting direction, skipping: " << s << std::endl;
-                continue;
+            if (upNode.size() > 0) {
+                if (!upNode.IsSequence()) {
+                    throw new MergeException("Invalid UP YAML::Node type");
+                }
+                updateBatch(serial, s, "up", upNode);
             }
 
-            std::string fileDirection = directionNode.as<std::string>();
+            YAML::Node downNode = migration["down"];
 
-            if (fileDirection != direction) continue;
-
-            std::cout << "batch: " << batch.dump(4) << std::endl;
-            std::cout << "s: " << s << std::endl;
-
-            batch["batches"][fileBatch]["date"] = "20181031 12:34:56";
-            batch["batches"][fileBatch]["files"] = json::array();
-            batch["batches"][fileBatch]["files"].push_back(s);
-
-            std::cout << "batch: " << batch.dump(4) << std::endl;
-
-
+            if (downNode.size() > 0) {
+                if (!downNode.IsSequence()) {
+                    throw new MergeException("Invalid DOWN YAML::Node type");
+                }
+                updateBatch(serial, s, "down", downNode);
+            }
         }
     }
     closedir(dir);
+}
+
+void Processor::updateBatch(const int serial, const std::string &filename, const std::string &direction, const YAML::Node &yamlNode) {
+    std::cout << "Processor::scanMigrations()"  << std::endl;
+
+    nlohmann::json batch;
+    nlohmann::json node = YAMLtoJSON(yamlNode);
+    std::cout << "node: "  <<  node.dump(4) << std::endl;
+
+    try {
+        batch = batches.at("batches");
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        batches["batches"][serial] = nullptr;
+    }
+
+    for (json::iterator it = node.begin(); it != node.end(); ++it) {
+        batches["batches"][serial].push_back(*it);
+    }
+
+    std::cout << "batches: "  <<  batches.dump(4) << std::endl;
+    std::cout << "batch.type_name(): "  <<  batch.type_name() << std::endl;
 }
 
 /*

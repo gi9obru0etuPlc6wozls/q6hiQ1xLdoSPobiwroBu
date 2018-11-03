@@ -4,7 +4,7 @@
 int main() {
 
     Processor p("../config.yaml");
-    p.scanMigrations("up");
+    p.scanMigrations();
     //p.migrate();
 
     return 0;
