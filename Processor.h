@@ -33,9 +33,12 @@ public:
 
     Processor(std::string filename);
 
+    void scanMigrations();
+
     void process(const nlohmann::json &source);
 
-    void scanMigrations();
+    void migrate(const std::string &argument);
+    void rollback(const std::string &argument);
 
 private:
     typedef bool (Processor::*memberFunction)(const std::string &key, const nlohmann::json &value);
@@ -46,7 +49,7 @@ private:
     std::string batchFile;
 
     nlohmann::json config;
-    nlohmann::json batches;
+    nlohmann::json migrations;
 
     nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
@@ -55,12 +58,12 @@ private:
 
     void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
 
-    bool migration(const std::string &key, const nlohmann::json &value);
     bool createTable(const std::string &key, const nlohmann::json &value);
     bool alterTable(const std::string &key, const nlohmann::json &value);
 
     void scanMigrations(std::string &md);
-    void updateBatch(const int serial, const std::string &filename, const std::string &direction, const YAML::Node &yamlNode);
+    void updateMigration(const int serial, const std::string &filename, const std::string &direction,
+                         const YAML::Node &yamlNode);
 };
 
 #endif //FS2_TEMPLATE02_PROCESSOR_H

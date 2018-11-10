@@ -1,5 +1,5 @@
 --- !<tag:framesquared.com,2015:migration>
-serial: 5
+serial: 10
 up:
 - alter table: invoice
   temporary: true
