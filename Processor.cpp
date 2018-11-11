@@ -265,8 +265,16 @@ void Processor::updateMigration(const int serial, const std::string &filename, c
 
 void Processor::migrate(const std::string &argument) {
 
+    nlohmann::json startNode;
+
     nlohmann::json currentNode = migrations.at("current");
     std::cout << "currentNode: " << currentNode << std::endl;
+
+    nlohmann::json migrationNodes = migrations.at("migrations");
+    std::cout << "migrationNodes: " << migrationNodes << std::endl;
+
+
+    
 
     // fs2 migrate
     // fs2 migrate +1
