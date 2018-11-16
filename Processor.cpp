@@ -64,11 +64,107 @@ Processor::Processor(std::string filename) {
     std::cout << "config: " << config.dump(4) << std::endl;
 
     migrationsDir = config.at("paths").at("migrations dir");
-    batchFile = config.at("paths").at("batch file");
+    migrationFile = config.at("paths").at("migrations file");
 
-    migrations = read(batchFile);
+    try {
+        migrationData = read(migrationFile);
+    }
+    catch (MergeException *e) {
+        migrationData = config.at("migration data");
+        write(migrationFile,migrationData);
+    }
 
-    std::cout << "batch: " << migrations.dump(4) << std::endl;
+    initMigrations();
+
+    std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
+}
+
+void Processor::scanMigrations() {
+    std::cout << "Processor::scanMigrations()"  << std::endl;
+
+    migrationData["migrations"] = json::array();
+    scanMigrations(migrationsDir);
+    write(migrationFile,migrationData);
+
+    initMigrations();
+}
+
+void Processor::initMigrations() {
+    std::cout << "Processor::initMigrations()" << std::endl;
+
+    if (migrationData.at("migrations").begin() == migrationData.at("migrations").end()) {
+        std::cout << "No migrations" << std::endl;
+    }
+    else {
+        it = migrationData.at("migrations").begin();
+
+        nlohmann::json j = *it;
+
+        std::cout << "j: " << j << std::endl;
+    }
+}
+
+void Processor::scanMigrations(std::string &md) {
+    std::cout << "Processor::scanMigrations(): " << md << std::endl;
+
+    DIR *dir;
+    struct dirent *dirent;
+    struct stat fileInfo;
+
+    if ((dir = opendir(md.c_str())) == NULL) {
+        throw new MergeException("Could not open directory.");
+    }
+
+    while ((dirent = readdir(dir)) != NULL) {
+        std::string s = md + "/" + dirent->d_name;
+
+        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+            continue;
+        }
+
+        stat(s.c_str(), &fileInfo);
+        if (S_ISDIR(fileInfo.st_mode)) {
+            scanMigrations(s);
+        } else if (!S_ISREG(fileInfo.st_mode)) {
+            throw new MergeException("Unknown file type");
+        }
+
+        if (strlen(dirent->d_name) > 5 && !strcmp(dirent->d_name + strlen(dirent->d_name) - 5, ".yaml")) {
+            YAML::Node migration = YAML::LoadFile(s);
+
+            if (!migration.IsMap()) {
+                std::cout << "Migration not a map, skipping: " << s << std::endl;
+                continue;
+            }
+
+            YAML::Node serialNode = migration["serial"];
+            if (!serialNode.IsScalar()) {
+                std::cout << "Serial not IsScalar, skipping: " << s << std::endl;
+                continue;
+            }
+            int serial = serialNode.as<int>();
+            std::cout << "serial: " << serial << std::endl;
+
+            YAML::Node upNode = migration["up"];
+
+            if (upNode.size() > 0) {
+                if (!upNode.IsSequence()) {
+                    throw new MergeException("Invalid UP YAML::Node type");
+                }
+                setMigration(serial, s, "up", upNode);
+            }
+
+            YAML::Node downNode = migration["down"];
+
+            if (downNode.size() > 0) {
+                if (!downNode.IsSequence()) {
+                    throw new MergeException("Invalid DOWN YAML::Node type");
+                }
+                setMigration(serial, s, "down", downNode);
+            }
+        }
+    }
+    closedir(dir);
 }
 
 void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
@@ -154,127 +250,42 @@ nlohmann::json Processor::read(const std::string &filename) {
     return j;
 }
 
-/*
- ************************************************
- *
- * User input:
- *  direction: up/down
- *  batch number: [+/-]###
- *
- *  batch.json
- *   current batch: ###
- *   array of migrations: batch #, filenames
- *
- *  migration files
- */
+void Processor::setMigration(const int serial, const std::string &filename, const std::string &direction,
+                             const YAML::Node &yamlNode) {
 
-
-void Processor::scanMigrations() {
-    migrations["migrations"] = nullptr;
-    scanMigrations(migrationsDir);
-    write(batchFile,migrations);
-}
-
-void Processor::scanMigrations(std::string &md) {
-    std::cout << "Processor::scanMigrations(): " << md << std::endl;
-
-    DIR *dir;
-    struct dirent *dirent;
-    struct stat fileInfo;
-
-    if ((dir = opendir(md.c_str())) == NULL) {
-        throw new MergeException("Could not open directory.");
-    }
-
-    while ((dirent = readdir(dir)) != NULL) {
-        std::string s = md + "/" + dirent->d_name;
-
-        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
-            continue;
-        }
-
-        stat(s.c_str(), &fileInfo);
-        if (S_ISDIR(fileInfo.st_mode)) {
-            scanMigrations(s);
-        } else if (!S_ISREG(fileInfo.st_mode)) {
-            throw new MergeException("Unknown file type");
-        }
-
-        if (strlen(dirent->d_name) > 5 && !strcmp(dirent->d_name + strlen(dirent->d_name) - 5, ".yaml")) {
-            YAML::Node migration = YAML::LoadFile(s);
-
-            if (!migration.IsMap()) {
-                std::cout << "Migration not a map, skipping: " << s << std::endl;
-                continue;
-            }
-
-            YAML::Node serialNode = migration["serial"];
-            if (!serialNode.IsScalar()) {
-                std::cout << "Serial not IsScalar, skipping: " << s << std::endl;
-                continue;
-            }
-            int serial = serialNode.as<int>();
-            std::cout << "serial: " << serial << std::endl;
-
-            YAML::Node upNode = migration["up"];
-
-            if (upNode.size() > 0) {
-                if (!upNode.IsSequence()) {
-                    throw new MergeException("Invalid UP YAML::Node type");
-                }
-                updateMigration(serial, s, "up", upNode);
-            }
-
-            YAML::Node downNode = migration["down"];
-
-            if (downNode.size() > 0) {
-                if (!downNode.IsSequence()) {
-                    throw new MergeException("Invalid DOWN YAML::Node type");
-                }
-                updateMigration(serial, s, "down", downNode);
-            }
-        }
-    }
-    closedir(dir);
-}
-
-void Processor::updateMigration(const int serial, const std::string &filename, const std::string &direction,
-                                const YAML::Node &yamlNode) {
-    std::cout << "Processor::updateMigration()"  << std::endl;
-
-    nlohmann::json migration;
+    std::cout << "Processor::setMigration()"  << std::endl;
     nlohmann::json node = YAMLtoJSON(yamlNode);
+    nlohmann::json *migration;
     std::cout << "node: "  <<  node.dump(4) << std::endl;
 
     try {
-        migration = migrations.at("migrations");
+        migration = &migrationData.at("migrations").at(serial);
+        std::cout << "found migration: "  <<  (*migration).dump(4) << std::endl;
     }
     catch (nlohmann::json::out_of_range &e) {
-        migrations["migrations"][serial][direction] = nullptr;
+        migrationData["migrations"][serial]["serial"] = serial;
+        migrationData["migrations"][serial][direction] = nlohmann::json::array();
+        migration = &migrationData.at("migrations").at(serial);
+        std::cout << "create migration: "  <<  (*migration).dump(4) << std::endl;
     }
-
-    migrations["migrations"][serial]["serial"] = serial;
 
     for (json::iterator it = node.begin(); it != node.end(); ++it) {
-        migrations["migrations"][serial][direction].push_back(*it);
+        std::cout << "it: "  <<  (*it).dump(4) << std::endl;
+        (*migration)[direction].push_back(*it);
     }
 
-    std::cout << "migrations: "  <<  migrations.dump(4) << std::endl;
-    std::cout << "migration.type_name(): "  <<  migration.type_name() << std::endl;
+    std::cout << "migrations: "  <<  migrationData.dump(4) << std::endl;
 }
 
 void Processor::migrate(const std::string &argument) {
 
     nlohmann::json startNode;
 
-    nlohmann::json currentNode = migrations.at("current");
+    nlohmann::json currentNode = migrationData.at("current");
     std::cout << "currentNode: " << currentNode << std::endl;
 
-    nlohmann::json migrationNodes = migrations.at("migrations");
+    nlohmann::json migrationNodes = migrationData.at("migrations");
     std::cout << "migrationNodes: " << migrationNodes << std::endl;
-
-
-    
 
     // fs2 migrate
     // fs2 migrate +1
@@ -285,7 +296,7 @@ void Processor::migrate(const std::string &argument) {
 
 void Processor::rollback(const std::string &argument) {
 
-    nlohmann::json currentNode = migrations.at("current");
+    nlohmann::json currentNode = migrationData.at("current");
     std::cout << "currentNode: " << currentNode << std::endl;
 
     // fs2 rollback

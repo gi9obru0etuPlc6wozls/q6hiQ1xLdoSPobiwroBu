@@ -46,10 +46,11 @@ private:
     std::map<std::string, memberFunction> processorFunctions;
 
     std::string migrationsDir;
-    std::string batchFile;
+    std::string migrationFile;
 
     nlohmann::json config;
-    nlohmann::json migrations;
+    nlohmann::json migrationData;
+    nlohmann::json::iterator it;
 
     nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
@@ -62,8 +63,11 @@ private:
     bool alterTable(const std::string &key, const nlohmann::json &value);
 
     void scanMigrations(std::string &md);
-    void updateMigration(const int serial, const std::string &filename, const std::string &direction,
-                         const YAML::Node &yamlNode);
+    void setMigration(const int serial, const std::string &filename, const std::string &direction,
+                      const YAML::Node &yamlNode);
+
+    void initMigrations();
+
 };
 
 #endif //FS2_TEMPLATE02_PROCESSOR_H

@@ -1,7 +1,7 @@
 --- !<tag:framesquared.com,2015:config>
 paths:
   migrations dir: ../migrations
-  batch file: ../migrations/batch.json
+  migrations file: ../migrations/migrationData.json
   meta: ../metadata
 template:
   create table:
@@ -19,6 +19,9 @@ genertor:
   - inga: path_to_inja_file
     data: patch
     out: /path/to/output/{{ file_name }}.ext
+migration data:
+  current: null
+  migrations: []
 map:
   db_type:
     string: character varying
