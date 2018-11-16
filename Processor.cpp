@@ -92,16 +92,20 @@ void Processor::scanMigrations() {
 void Processor::initMigrations() {
     std::cout << "Processor::initMigrations()" << std::endl;
 
+
     if (migrationData.at("migrations").begin() == migrationData.at("migrations").end()) {
         std::cout << "No migrations" << std::endl;
+        return;
     }
-    else {
+    else {}
+
+
         it = migrationData.at("migrations").begin();
 
         nlohmann::json j = *it;
 
         std::cout << "j: " << j << std::endl;
-    }
+
 }
 
 void Processor::scanMigrations(std::string &md) {
@@ -256,13 +260,17 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
     std::cout << "Processor::setMigration()"  << std::endl;
     nlohmann::json node = YAMLtoJSON(yamlNode);
     nlohmann::json *migration;
-    std::cout << "node: "  <<  node.dump(4) << std::endl;
+    bool out_of_range = false;
 
     try {
         migration = &migrationData.at("migrations").at(serial);
         std::cout << "found migration: "  <<  (*migration).dump(4) << std::endl;
     }
     catch (nlohmann::json::out_of_range &e) {
+        out_of_range = true;
+    }
+
+    if (out_of_range || migration->is_null()) {
         migrationData["migrations"][serial]["serial"] = serial;
         migrationData["migrations"][serial][direction] = nlohmann::json::array();
         migration = &migrationData.at("migrations").at(serial);
@@ -274,7 +282,9 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
         (*migration)[direction].push_back(*it);
     }
 
-    std::cout << "migrations: "  <<  migrationData.dump(4) << std::endl;
+
+
+    std::cout << "3. Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
 
 void Processor::migrate(const std::string &argument) {

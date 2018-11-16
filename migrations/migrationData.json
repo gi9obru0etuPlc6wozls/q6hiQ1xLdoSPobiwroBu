@@ -7,38 +7,8 @@
         null,
         null,
         {
-            "down": [
-                {
-                    "drop table": "invoice"
-                }
-            ],
             "serial": 5,
             "up": [
-                {
-                    "alter table": "invoice",
-                    "columns": [
-                        {
-                            "name": "col03",
-                            "precision": 255,
-                            "type": "newtype"
-                        },
-                        {
-                            "name": "col04",
-                            "not null": true,
-                            "precision": 255,
-                            "type": "string"
-                        },
-                        {
-                            "name": "col05",
-                            "precision": 128,
-                            "type": "string"
-                        }
-                    ],
-                    "not exists": true,
-                    "temporary": true,
-                    "unlogged": true,
-                    "xlike": "billto"
-                },
                 {
                     "columns": [
                         {
@@ -72,6 +42,40 @@
                         }
                     ],
                     "create table": "invoice_items"
+                }
+            ]
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+            "serial": 10,
+            "up": [
+                {
+                    "alter table": "invoice",
+                    "columns": [
+                        {
+                            "name": "col03",
+                            "precision": 255,
+                            "type": "newtype"
+                        },
+                        {
+                            "name": "col04",
+                            "not null": true,
+                            "precision": 255,
+                            "type": "string"
+                        },
+                        {
+                            "name": "col05",
+                            "precision": 128,
+                            "type": "string"
+                        }
+                    ],
+                    "not exists": true,
+                    "temporary": true,
+                    "unlogged": true,
+                    "xlike": "billto"
                 }
             ]
         }

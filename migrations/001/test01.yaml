@@ -21,5 +21,3 @@ up:
   - name: item_no
     type: string
     precision: 255
-down:
-- drop table: invoice
