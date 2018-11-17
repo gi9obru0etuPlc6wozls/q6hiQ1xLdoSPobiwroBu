@@ -66,7 +66,7 @@ private:
     void setMigration(const int serial, const std::string &filename, const std::string &direction,
                       const YAML::Node &yamlNode);
 
-    void initMigrations();
+    void initIterator();
 
 };
 

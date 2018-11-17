@@ -71,41 +71,52 @@ Processor::Processor(std::string filename) {
     }
     catch (MergeException *e) {
         migrationData = config.at("migration data");
-        write(migrationFile,migrationData);
+        write(migrationFile, migrationData);
     }
 
-    initMigrations();
+    initIterator();
 
     std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
 
 void Processor::scanMigrations() {
-    std::cout << "Processor::scanMigrations()"  << std::endl;
+    std::cout << "Processor::scanMigrations()" << std::endl;
 
     migrationData["migrations"] = json::array();
     scanMigrations(migrationsDir);
-    write(migrationFile,migrationData);
+    write(migrationFile, migrationData);
 
-    initMigrations();
+    initIterator();
 }
 
-void Processor::initMigrations() {
-    std::cout << "Processor::initMigrations()" << std::endl;
+void Processor::initIterator() {
+    std::cout << "Processor::initIterator()" << std::endl;
 
+    nlohmann::json migrationCurrent = migrationData.at("current");
 
-    if (migrationData.at("migrations").begin() == migrationData.at("migrations").end()) {
-        std::cout << "No migrations" << std::endl;
+    if (migrationCurrent.is_null()) {
+        std::cout << "Current migration is null" << std::endl;
         return;
     }
-    else {}
 
+    int currentIndex = migrationCurrent;
+    nlohmann::json *migrations = &migrationData.at("migrations");
 
-        it = migrationData.at("migrations").begin();
+    if ((*migrations).at(currentIndex).is_null()) {
+        throw new MergeException("Migration that current points to is null.");
+    }
 
-        nlohmann::json j = *it;
-
-        std::cout << "j: " << j << std::endl;
-
+    for (it = (*migrations).begin(); it !=  (*migrations).end(); ++it) {
+        if ((*it).is_null()) {
+            continue;
+        }
+        int serial = (*it).at("serial");
+        if (currentIndex == serial) {
+            std::cout << "found serial: " << serial << std::endl;
+            return;
+        }
+    }
+    throw new MergeException("Iterator not found.");
 }
 
 void Processor::scanMigrations(std::string &md) {
@@ -171,7 +182,8 @@ void Processor::scanMigrations(std::string &md) {
     closedir(dir);
 }
 
-void Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
+void
+Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
 
     int i = 0;
     std::map<std::string, int> columnMap;
@@ -257,14 +269,14 @@ nlohmann::json Processor::read(const std::string &filename) {
 void Processor::setMigration(const int serial, const std::string &filename, const std::string &direction,
                              const YAML::Node &yamlNode) {
 
-    std::cout << "Processor::setMigration()"  << std::endl;
+    std::cout << "Processor::setMigration()" << std::endl;
     nlohmann::json node = YAMLtoJSON(yamlNode);
     nlohmann::json *migration;
     bool out_of_range = false;
 
     try {
         migration = &migrationData.at("migrations").at(serial);
-        std::cout << "found migration: "  <<  (*migration).dump(4) << std::endl;
+        std::cout << "found migration: " << (*migration).dump(4) << std::endl;
     }
     catch (nlohmann::json::out_of_range &e) {
         out_of_range = true;
@@ -274,28 +286,15 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
         migrationData["migrations"][serial]["serial"] = serial;
         migrationData["migrations"][serial][direction] = nlohmann::json::array();
         migration = &migrationData.at("migrations").at(serial);
-        std::cout << "create migration: "  <<  (*migration).dump(4) << std::endl;
+        std::cout << "create migration: " << (*migration).dump(4) << std::endl;
     }
 
     for (json::iterator it = node.begin(); it != node.end(); ++it) {
-        std::cout << "it: "  <<  (*it).dump(4) << std::endl;
         (*migration)[direction].push_back(*it);
     }
-
-
-
-    std::cout << "3. Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
 
 void Processor::migrate(const std::string &argument) {
-
-    nlohmann::json startNode;
-
-    nlohmann::json currentNode = migrationData.at("current");
-    std::cout << "currentNode: " << currentNode << std::endl;
-
-    nlohmann::json migrationNodes = migrationData.at("migrations");
-    std::cout << "migrationNodes: " << migrationNodes << std::endl;
 
     // fs2 migrate
     // fs2 migrate +1
@@ -305,9 +304,6 @@ void Processor::migrate(const std::string &argument) {
 
 
 void Processor::rollback(const std::string &argument) {
-
-    nlohmann::json currentNode = migrationData.at("current");
-    std::cout << "currentNode: " << currentNode << std::endl;
 
     // fs2 rollback
     // fs2 rollback -1
