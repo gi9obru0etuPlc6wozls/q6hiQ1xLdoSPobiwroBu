@@ -61,7 +61,7 @@ Processor::Processor(std::string filename) {
     processorFunctions["alter table"] = &Processor::alterTable;
 
     config = YAMLtoJSON(YAML::LoadFile(filename));
-    std::cout << "config: " << config.dump(4) << std::endl;
+    //std::cout << "config: " << config.dump(4) << std::endl;
 
     migrationsDir = config.at("paths").at("migrations dir");
     migrationFile = config.at("paths").at("migrations file");
@@ -74,9 +74,24 @@ Processor::Processor(std::string filename) {
         write(migrationFile, migrationData);
     }
 
-    initIterator();
+    int currentSerial = getCurrentSerial();
+    if (currentSerial != -1)
+        it = findMigration(currentSerial);
 
-    std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
+    //std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
+}
+
+int Processor::getCurrentSerial() {
+    nlohmann::json migrationCurrent = migrationData.at("current");
+
+    if (migrationCurrent.is_null()) {
+        std::cout << "Current migration is null" << std::endl;
+        return -1;
+    }
+
+    int currentSerial = migrationCurrent;
+    if (currentSerial != -1)
+        it = findMigration(currentSerial);
 }
 
 void Processor::scanMigrations() {
@@ -86,17 +101,19 @@ void Processor::scanMigrations() {
     scanMigrations(migrationsDir);
     write(migrationFile, migrationData);
 
-    initIterator();
+    int currentSerial = getCurrentSerial();
+    it = findMigration(currentSerial);
 }
 
-void Processor::initIterator() {
-    std::cout << "Processor::initIterator()" << std::endl;
+nlohmann::json::iterator Processor::findMigration(int serial) {
+    std::cout << "Processor::findMigration()" << std::endl;
 
+    nlohmann::json::iterator migrationIt;
     nlohmann::json migrationCurrent = migrationData.at("current");
 
     if (migrationCurrent.is_null()) {
         std::cout << "Current migration is null" << std::endl;
-        return;
+        return migrationIt;
     }
 
     int currentIndex = migrationCurrent;
@@ -106,21 +123,21 @@ void Processor::initIterator() {
         throw new MergeException("Migration that current points to is null.");
     }
 
-    for (it = (*migrations).begin(); it !=  (*migrations).end(); ++it) {
-        if ((*it).is_null()) {
+    for (migrationIt = (*migrations).begin(); migrationIt !=  (*migrations).end(); ++migrationIt) {
+        if ((*migrationIt).is_null()) {
             continue;
         }
-        int serial = (*it).at("serial");
+        int serial = (*migrationIt).at("serial");
         if (currentIndex == serial) {
             std::cout << "found serial: " << serial << std::endl;
-            return;
+            return migrationIt;
         }
     }
     throw new MergeException("Iterator not found.");
 }
 
 void Processor::scanMigrations(std::string &md) {
-    std::cout << "Processor::scanMigrations(): " << md << std::endl;
+    //std::cout << "Processor::scanMigrations(): " << md << std::endl;
 
     DIR *dir;
     struct dirent *dirent;
@@ -295,6 +312,24 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
 }
 
 void Processor::migrate(const std::string &argument) {
+
+    nlohmann::json *migrations = &migrationData.at("migrations");
+    nlohmann::json::iterator start;
+
+    if (it.IsNull()) {
+        start = (*migrations).begin();
+    }
+    else {
+        start = ++it;
+    }
+
+    if (start == (*migrations).end()) {
+        std::cout << "Nothing to migrate" << std::endl;
+        return;
+    }
+
+    std::cout << "start: " << (*start).dump(4) << std::endl;
+
 
     // fs2 migrate
     // fs2 migrate +1

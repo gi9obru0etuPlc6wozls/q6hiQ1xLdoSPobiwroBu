@@ -4,7 +4,7 @@
 int main() {
 
     Processor p("../config.yaml"); // <---
-    p.scanMigrations(); // // fs2 scan
+    //p.scanMigrations(); // // fs2 scan
 
     p.migrate("");
 
