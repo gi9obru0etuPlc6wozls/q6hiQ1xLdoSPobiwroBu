@@ -81,6 +81,20 @@ Processor::Processor(std::string filename) {
     //std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
 
+void Processor::scanMigrations() {
+    std::cout << "Processor::scanMigrations()" << std::endl;
+
+    migrationData["migrations"] = json::array();
+    scanMigrations(migrationsDir);
+    write(migrationFile, migrationData);
+
+    int currentSerial = getCurrentSerial();
+    if (currentSerial != -1)
+        it = findMigration(currentSerial);
+}
+
+
+
 int Processor::getCurrentSerial() {
     nlohmann::json migrationCurrent = migrationData.at("current");
 
@@ -92,17 +106,6 @@ int Processor::getCurrentSerial() {
     int currentSerial = migrationCurrent;
     if (currentSerial != -1)
         it = findMigration(currentSerial);
-}
-
-void Processor::scanMigrations() {
-    std::cout << "Processor::scanMigrations()" << std::endl;
-
-    migrationData["migrations"] = json::array();
-    scanMigrations(migrationsDir);
-    write(migrationFile, migrationData);
-
-    int currentSerial = getCurrentSerial();
-    it = findMigration(currentSerial);
 }
 
 nlohmann::json::iterator Processor::findMigration(int serial) {
@@ -315,6 +318,14 @@ void Processor::migrate(const std::string &argument) {
 
     nlohmann::json *migrations = &migrationData.at("migrations");
     nlohmann::json::iterator start;
+    nlohmann::json::iterator end = (*migrations).end();
+
+    int count = -1;
+    int serial = -1;
+
+    if (!argument.empty()) {
+        
+    }
 
     if (it.IsNull()) {
         start = (*migrations).begin();
@@ -323,15 +334,18 @@ void Processor::migrate(const std::string &argument) {
         start = ++it;
     }
 
-    if (start == (*migrations).end()) {
+    if (start == end) {
         std::cout << "Nothing to migrate" << std::endl;
         return;
     }
 
-    std::cout << "start: " << (*start).dump(4) << std::endl;
-
-
     // fs2 migrate
+    while (start != end) {
+        if (!(*start).is_null()) {
+            std::cout << "start: " << (*start).dump(4) << std::endl;
+        }
+        ++start;
+    }
     // fs2 migrate +1
     // fs2 migrate 5
 
