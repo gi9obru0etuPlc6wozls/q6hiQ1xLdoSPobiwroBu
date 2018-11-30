@@ -16,9 +16,11 @@ genertor:
   - inga: path_to_inja_file
     data: patch
     out: /path/to/output/{{ file_name }}.ext
+    overwrite: true
   - inga: path_to_inja_file
-    data: patch
+    data: target
     out: /path/to/output/{{ file_name }}.ext
+    overwrite: false
 migration data:
   current: null
   migrations: []

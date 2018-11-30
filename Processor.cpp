@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <dirent.h>
+#include <string>
 #include <sys/stat.h>
 #include "Processor.h"
 
@@ -323,16 +324,24 @@ void Processor::migrate(const std::string &argument) {
     int count = -1;
     int serial = -1;
 
-    if (!argument.empty()) {
-        
-    }
-
-    if (it.IsNull()) {
+    if (it.is_null()) {
         start = (*migrations).begin();
     }
     else {
         start = ++it;
     }
+
+    if (!argument.empty()) {
+        end = start;
+        if (argument.substr(0,1) == "+") {
+            count = std::stoi(argument.substr(1,std::string::npos));
+        }
+        else {
+            serial = std::stoi(argument);
+        }
+    }
+
+
 
     if (start == end) {
         std::cout << "Nothing to migrate" << std::endl;
