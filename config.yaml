@@ -21,9 +21,6 @@ genertor:
     data: target
     out: /path/to/output/{{ file_name }}.ext
     overwrite: false
-migration data:
-  current: null
-  migrations: []
 map:
   db_type:
     string: character varying
