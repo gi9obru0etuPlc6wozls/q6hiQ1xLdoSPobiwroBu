@@ -1,0 +1,23 @@
+--- !<tag:framesquared.com,2015:migration>
+serial: 7
+up:
+  - create table: invoice
+    temporary: true
+    not exists: true
+    unlogged: true
+    columns:
+      - name: col01
+        type: uuid
+        auto: true
+      - name: col02
+        type: string
+        precision: 255
+        not null: true
+      - name: col03
+        type: oldtype
+        precision: 512
+  - create table: invoice_items
+    columns:
+      - name: item_no
+        type: string
+        precision: 255

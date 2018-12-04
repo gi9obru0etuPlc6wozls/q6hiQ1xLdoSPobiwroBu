@@ -46,7 +46,45 @@
             ]
         },
         null,
-        null,
+        {
+            "serial": 7,
+            "up": [
+                {
+                    "columns": [
+                        {
+                            "auto": true,
+                            "name": "col01",
+                            "type": "uuid"
+                        },
+                        {
+                            "name": "col02",
+                            "not null": true,
+                            "precision": 255,
+                            "type": "string"
+                        },
+                        {
+                            "name": "col03",
+                            "precision": 512,
+                            "type": "oldtype"
+                        }
+                    ],
+                    "create table": "invoice",
+                    "not exists": true,
+                    "temporary": true,
+                    "unlogged": true
+                },
+                {
+                    "columns": [
+                        {
+                            "name": "item_no",
+                            "precision": 255,
+                            "type": "string"
+                        }
+                    ],
+                    "create table": "invoice_items"
+                }
+            ]
+        },
         null,
         null,
         {

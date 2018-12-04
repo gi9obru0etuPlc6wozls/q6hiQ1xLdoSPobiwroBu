@@ -67,6 +67,8 @@ private:
                       const YAML::Node &yamlNode);
 
     nlohmann::json::iterator findMigration(int serial);
+    bool start();
+    bool next();
     int getCurrentSerial();
 
 };

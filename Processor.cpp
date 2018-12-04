@@ -76,8 +76,10 @@ Processor::Processor(std::string filename) {
     }
 
     int currentSerial = getCurrentSerial();
-    if (currentSerial != -1)
+    if (currentSerial != -1) {
+        std::cout << "setting it to current serial: " << currentSerial << std::endl;
         it = findMigration(currentSerial);
+    }
 
     //std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
@@ -94,9 +96,8 @@ void Processor::scanMigrations() {
         it = findMigration(currentSerial);
 }
 
-
-
 int Processor::getCurrentSerial() {
+    std::cout << "Processor::getCurrentSerial()" << std::endl;
     nlohmann::json migrationCurrent = migrationData.at("current");
 
     if (migrationCurrent.is_null()) {
@@ -105,39 +106,41 @@ int Processor::getCurrentSerial() {
     }
 
     int currentSerial = migrationCurrent;
-    if (currentSerial != -1)
-        it = findMigration(currentSerial);
+    it = findMigration(currentSerial);
+
+    return (*it)["serial"];
 }
 
-nlohmann::json::iterator Processor::findMigration(int serial) {
+nlohmann::json::iterator Processor::findMigration(int targetSerial) {
     std::cout << "Processor::findMigration()" << std::endl;
 
     nlohmann::json::iterator migrationIt;
-    nlohmann::json migrationCurrent = migrationData.at("current");
-
-    if (migrationCurrent.is_null()) {
-        std::cout << "Current migration is null" << std::endl;
-        return migrationIt;
-    }
-
-    int currentIndex = migrationCurrent;
     nlohmann::json *migrations = &migrationData.at("migrations");
 
-    if ((*migrations).at(currentIndex).is_null()) {
-        throw new MergeException("Migration that current points to is null.");
-    }
+//    nlohmann::json migrationCurrent = migrationData.at("current");
+//
+//    if (migrationCurrent.is_null()) {
+//        std::cout << "Current migration is null" << std::endl;
+//        return migrationIt;
+//    }
+//
+//    int currentIndex = migrationCurrent;
+//
+//    if ((*migrations).at(currentIndex).is_null()) {
+//        throw new MergeException("Migration that current points to is null.");
+//    }
 
-    for (migrationIt = (*migrations).begin(); migrationIt !=  (*migrations).end(); ++migrationIt) {
+    for (migrationIt = (*migrations).begin(); migrationIt != (*migrations).end(); ++migrationIt) {
         if ((*migrationIt).is_null()) {
             continue;
         }
         int serial = (*migrationIt).at("serial");
-        if (currentIndex == serial) {
+        if (targetSerial == serial) {
             std::cout << "found serial: " << serial << std::endl;
             return migrationIt;
         }
     }
-    throw new MergeException("Iterator not found.");
+    throw new MergeException("Migration not found.");
 }
 
 void Processor::scanMigrations(std::string &md) {
@@ -315,46 +318,77 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
     }
 }
 
-void Processor::migrate(const std::string &argument) {
-
-    nlohmann::json *migrations = &migrationData.at("migrations");
-    nlohmann::json::iterator start;
-    nlohmann::json::iterator end = (*migrations).end();
-
-    int count = -1;
-    int serial = -1;
+bool Processor::start() {
+    std::cout << "Processor::start()" << std::endl;
 
     if (it.is_null()) {
-        start = (*migrations).begin();
+        it = migrationData.at("migrations").begin();
+    } else {
+        ++it;
     }
-    else {
-        start = ++it;
+
+    while (it != migrationData.at("migrations").end() && (*it).is_null()) {
+        ++it;
     }
+
+    return (it != migrationData.at("migrations").end());
+}
+
+bool Processor::next() {
+    std::cout << "Processor::next()" << std::endl;
+
+    if (it != migrationData.at("migrations").end()) {
+        ++it;
+    }
+
+    while (it != migrationData.at("migrations").end() && (*it).is_null()) {
+        ++it;
+    }
+
+    return (it != migrationData.at("migrations").end());
+}
+
+void Processor::migrate(const std::string &argument) {
 
     if (!argument.empty()) {
-        end = start;
-        if (argument.substr(0,1) == "+") {
-            count = std::stoi(argument.substr(1,std::string::npos));
-        }
-        else {
-            serial = std::stoi(argument);
+        if (argument.substr(0, 1) == "+") {
+
+            int count = std::stoi(argument.substr(1, std::string::npos));
+            int i = 0;
+
+            if (start())
+                do {
+                    ++i;
+                    std::cout << "1 Migration:" << (*it) << std::endl;
+                } while (i < count && next());
+        } else {
+            int serial = std::stoi(argument);
+            int currentSerial = getCurrentSerial();
+            std::cout << "Current: " << currentSerial << " Destination: " << serial << std::endl;
+
+            if (serial <= currentSerial) {
+                std::cout << "Destination less than current migration." << std::endl;
+                return;
+            }
+
+            if (start())
+                do {
+                    int s = (*it)["serial"];
+                    if ((*it)["serial"] > serial) break;
+
+                    std::cout << "s: " << s << " serial: " << serial << std::endl;
+                    std::cout << "2 Migration:" << (*it) << std::endl;
+                } while (next());
         }
     }
-
-
-
-    if (start == end) {
-        std::cout << "Nothing to migrate" << std::endl;
-        return;
+    else {
+        if (start())
+            do {
+                std::cout << "3 Migration:" << (*it) << std::endl;
+            } while (next());
     }
 
     // fs2 migrate
-    while (start != end) {
-        if (!(*start).is_null()) {
-            std::cout << "start: " << (*start).dump(4) << std::endl;
-        }
-        ++start;
-    }
     // fs2 migrate +1
     // fs2 migrate 5
 
