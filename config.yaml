@@ -13,14 +13,10 @@ sequence:
     columns: name
 genertor:
   create table:
-  - inga: path_to_inja_file
+  - inga: ../templates/tf/tf_model_cpp.inja
     data: patch
-    out: /path/to/output/{{ file_name }}.ext
+    out: ../tf_model_cpp.txt
     overwrite: true
-  - inga: path_to_inja_file
-    data: target
-    out: /path/to/output/{{ file_name }}.ext
-    overwrite: false
 map:
   db_type:
     string: character varying
