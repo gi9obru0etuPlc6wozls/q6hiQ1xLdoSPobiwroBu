@@ -35,7 +35,7 @@ public:
 
     void scanMigrations();
 
-    void process(const nlohmann::json &source);
+    void process(const std::string &direction, const nlohmann::json &source);
 
     void migrate(const std::string &argument);
     void rollback(const std::string &argument);

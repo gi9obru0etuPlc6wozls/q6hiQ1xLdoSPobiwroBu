@@ -10,6 +10,9 @@
 nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
     int i = 0;
     nlohmann::json data;
+    std::vector<YAML::Node> rmap;
+    std::vector<YAML::Node>::reverse_iterator rmap_it;
+
 
     switch (node.Type()) {
         case YAML::NodeType::Null: // ...
@@ -44,7 +47,11 @@ nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
             }
             break;
         case YAML::NodeType::Map: // ...
+            std::cout << "map: "  << std::endl;
+
             for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
+                std::cout << "key: " << n_it->first.as<std::string>() << std::endl;
+
                 data[n_it->first.as<std::string>()] = YAMLtoJSON(n_it->second);
             }
             break;
@@ -360,6 +367,7 @@ void Processor::migrate(const std::string &argument) {
                 do {
                     ++i;
                     std::cout << "1 Migration:" << (*it) << std::endl;
+                    process("up", *it);
                 } while (i < count && next());
         } else {
             int serial = std::stoi(argument);
@@ -378,6 +386,7 @@ void Processor::migrate(const std::string &argument) {
 
                     std::cout << "s: " << s << " serial: " << serial << std::endl;
                     std::cout << "2 Migration:" << (*it) << std::endl;
+                    process("up", *it);
                 } while (next());
         }
     }
@@ -385,13 +394,13 @@ void Processor::migrate(const std::string &argument) {
         if (start())
             do {
                 std::cout << "3 Migration:" << (*it) << std::endl;
+                process("up", *it);
             } while (next());
     }
 
     // fs2 migrate
     // fs2 migrate +1
     // fs2 migrate 5
-
 }
 
 
@@ -402,14 +411,21 @@ void Processor::rollback(const std::string &argument) {
     // fs2 rollback 5
 }
 
-void Processor::process(const nlohmann::json &source) {
-
+void Processor::process(const std::string &direction, const nlohmann::json &migration) {
     std::cout << "Processor::process()" << std::endl;
+
+    const nlohmann::json source = migration[direction];
+    std::cout << "migration: " << migration.dump(4) << std::endl;
+    std::cout << "source: " << source.dump(4) << std::endl;
+
+
+    //std::snprintf()
 
     if (source.type() != json::value_t::object)
         throw new MergeException("Not json::value_t::object");
 
-    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it) {
+    int i = 0;
+    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it, ++i) {
         std::string key = n_it.key();
 
         std::cout << "key: " << key << std::endl;
