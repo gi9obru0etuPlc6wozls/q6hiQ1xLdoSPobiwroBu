@@ -1,0 +1,14 @@
+//
+// Created by jwc on 12/9/18.
+//
+
+#ifndef FS2_MIGRATION01_YAMLTOJSON_H
+#define FS2_MIGRATION01_YAMLTOJSON_H
+
+
+class YAMLtoJSON {
+
+};
+
+
+#endif //FS2_MIGRATION01_YAMLTOJSON_H
