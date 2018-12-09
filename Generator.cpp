@@ -2,16 +2,13 @@
 // Created by jwc on 12/9/18.
 //
 
-#include <yaml-cpp/yaml.h>
-#include <assert.h>
-#include <nlohmann/json.hpp>
-#include <iostream>
+
 #include "Generator.h"
-#include "YAMLtoJSON.h"
 
 using json = nlohmann::json ;
 
 Generator::Generator() {
+    env = Environment("../");
 
 }
 
@@ -28,7 +25,6 @@ void Generator::generate() {
 
     std::cout << "schema:" << schema.dump(4) << std::endl;
 
-    Environment env = Environment("../");
 
     env.add_callback("map", 2, [&env](Parsed::Arguments args, json x) {
         std::string map = env.get_argument<std::string>(args, 0, x);
