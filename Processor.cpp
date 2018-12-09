@@ -48,11 +48,7 @@ nlohmann::json Processor::YAMLtoJSON(const YAML::Node &node) {
             }
             break;
         case YAML::NodeType::Map: // ...
-            std::cout << "map: "  << std::endl;
-
             for (YAML::const_iterator n_it = node.begin(); n_it != node.end(); ++n_it) {
-                std::cout << "key: " << n_it->first.as<std::string>() << std::endl;
-
                 data[n_it->first.as<std::string>()] = YAMLtoJSON(n_it->second);
             }
             break;
@@ -431,14 +427,14 @@ void Processor::process(const nlohmann::json &migrations) {
     int i = 0;
     for (json::const_iterator n_it = migrations.begin(); n_it != migrations.end(); ++n_it, ++i) {
         //std::string key = n_it.key();
-        std::cout << "n_it: " << (*n_it).dump(4) << std::endl;
+        //std::cout << "n_it: " << (*n_it).dump(4) << std::endl;
 
         for (nlohmann::json::const_iterator it = injas.begin(); it != injas.end(); ++it) {
             nlohmann::json target;
             nlohmann::json inja = (*it);
             std::string key = it.key();
 
-            std::cout << "Inja key:" << key << std::endl;
+            std::cout << "Inja key:" << key <<  " i: " << i << std::endl;
 
             try {
                 target = (*n_it).at(key);
@@ -446,9 +442,8 @@ void Processor::process(const nlohmann::json &migrations) {
             catch (nlohmann::json::out_of_range &e) {
                 continue;
             }
-            
-            std::cout << "Found key:" << key << std::endl;
 
+            std::cout << "Found key:" << key << std::endl;
         }
 //
 //        if (processorFunctions.find(key) == processorFunctions.end()) {
