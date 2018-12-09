@@ -416,8 +416,8 @@ void Processor::process(const nlohmann::json &migrations) {
 
     std::cout << "migrations: " << migrations.dump(4) << std::endl;
 
-    nlohmann::json  injas = config.at("inja");
-    std::cout << "injas: " << injas.dump(4) << std::endl;
+    nlohmann::json  injas = config.at("templates");
+    std::cout << "templates: " << injas.dump(4) << std::endl;
 
     //std::snprintf()
 
@@ -425,32 +425,35 @@ void Processor::process(const nlohmann::json &migrations) {
         throw new MergeException("Not json::value_t::object");
 
     int i = 0;
-    for (json::const_iterator n_it = migrations.begin(); n_it != migrations.end(); ++n_it, ++i) {
-        //std::string key = n_it.key();
-        //std::cout << "n_it: " << (*n_it).dump(4) << std::endl;
+    for (json::const_iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
+        //std::string key = migration_it.key();
+        //std::cout << "migration_it: " << (*migration_it).dump(4) << std::endl;
 
-        for (nlohmann::json::const_iterator it = injas.begin(); it != injas.end(); ++it) {
+        for (nlohmann::json::const_iterator tempate_it = injas.begin(); tempate_it != injas.end(); ++tempate_it) {
             nlohmann::json target;
-            nlohmann::json inja = (*it);
-            std::string key = it.key();
+            nlohmann::json inja = (*tempate_it);
+            std::string key = tempate_it.key();
 
             std::cout << "Inja key:" << key <<  " i: " << i << std::endl;
 
             try {
-                target = (*n_it).at(key);
+                target = (*migration_it).at(key);
             }
             catch (nlohmann::json::out_of_range &e) {
                 continue;
             }
 
             std::cout << "Found key:" << key << std::endl;
+
+
+
         }
 //
 //        if (processorFunctions.find(key) == processorFunctions.end()) {
 //            throw new MergeException("No matching processorFunction");
 //        }
 //
-//        if (!(this->*processorFunctions[key])(key, n_it.value())) {
+//        if (!(this->*processorFunctions[key])(key, migration_it.value())) {
 //            throw new MergeException("processorFunction returned error");
 //        }
     }

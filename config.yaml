@@ -11,7 +11,7 @@ template:
 sequence:
   merge:
     columns: name
-inja:
+templates:
   create table:
   - inga: ../templates/tf/tf_model_cpp.inja
     data: patch
