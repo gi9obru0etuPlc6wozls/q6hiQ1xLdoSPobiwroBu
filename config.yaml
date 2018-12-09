@@ -11,12 +11,17 @@ template:
 sequence:
   merge:
     columns: name
-genertor:
+inja:
   create table:
   - inga: ../templates/tf/tf_model_cpp.inja
     data: patch
     out: ../tf_model_cpp.txt
     overwrite: true
+  alter table:
+    - inga: ../templates/tf/alter.inja
+      data: patch
+      out: ../alter.txt
+      overwrite: true
 map:
   db_type:
     string: character varying

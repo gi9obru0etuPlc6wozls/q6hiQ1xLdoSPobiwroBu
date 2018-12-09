@@ -10,8 +10,15 @@
 #include <nlohmann/json.hpp>
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/exceptions.h>
+#include <fifo_map.hpp>
 
 using json = nlohmann::json;
+
+using namespace nlohmann;
+
+//template<class K, class V, class dummy_compare, class A>
+//using my_workaround_fifo_map = fifo_map<K, V, fifo_map_compare<K>, A>;
+//using json = nlohmann::basic_json<my_workaround_fifo_map>;
 
 class MergeException : std::exception {
 private:
@@ -35,7 +42,7 @@ public:
 
     void scanMigrations();
 
-    void process(const std::string &direction, const nlohmann::json &source);
+    void process(const nlohmann::json &migrations);
 
     void migrate(const std::string &argument);
     void rollback(const std::string &argument);

@@ -1,5 +1,6 @@
 //
 // Created by jwc on 10/19/18.
+
 #include <fstream>
 #include <iomanip>
 #include <dirent.h>
@@ -367,7 +368,8 @@ void Processor::migrate(const std::string &argument) {
                 do {
                     ++i;
                     std::cout << "1 Migration:" << (*it) << std::endl;
-                    process("up", *it);
+                    process((*it)["up"]);
+                    //process("up", *it);
                 } while (i < count && next());
         } else {
             int serial = std::stoi(argument);
@@ -386,7 +388,8 @@ void Processor::migrate(const std::string &argument) {
 
                     std::cout << "s: " << s << " serial: " << serial << std::endl;
                     std::cout << "2 Migration:" << (*it) << std::endl;
-                    process("up", *it);
+                    process((*it)["up"]);
+                    //process("up", *it);
                 } while (next());
         }
     }
@@ -394,7 +397,8 @@ void Processor::migrate(const std::string &argument) {
         if (start())
             do {
                 std::cout << "3 Migration:" << (*it) << std::endl;
-                process("up", *it);
+                process((*it)["up"]);
+                //process("up", *it);
             } while (next());
     }
 
@@ -411,32 +415,49 @@ void Processor::rollback(const std::string &argument) {
     // fs2 rollback 5
 }
 
-void Processor::process(const std::string &direction, const nlohmann::json &migration) {
+void Processor::process(const nlohmann::json &migrations) {
     std::cout << "Processor::process()" << std::endl;
 
-    const nlohmann::json source = migration[direction];
-    std::cout << "migration: " << migration.dump(4) << std::endl;
-    std::cout << "source: " << source.dump(4) << std::endl;
+    std::cout << "migrations: " << migrations.dump(4) << std::endl;
 
+    nlohmann::json  injas = config.at("inja");
+    std::cout << "injas: " << injas.dump(4) << std::endl;
 
     //std::snprintf()
 
-    if (source.type() != json::value_t::object)
+    if (migrations.type() != json::value_t::array)
         throw new MergeException("Not json::value_t::object");
 
     int i = 0;
-    for (json::const_iterator n_it = source.begin(); n_it != source.end(); ++n_it, ++i) {
-        std::string key = n_it.key();
+    for (json::const_iterator n_it = migrations.begin(); n_it != migrations.end(); ++n_it, ++i) {
+        //std::string key = n_it.key();
+        std::cout << "n_it: " << (*n_it).dump(4) << std::endl;
 
-        std::cout << "key: " << key << std::endl;
+        for (nlohmann::json::const_iterator it = injas.begin(); it != injas.end(); ++it) {
+            nlohmann::json target;
+            nlohmann::json inja = (*it);
+            std::string key = it.key();
 
-        if (processorFunctions.find(key) == processorFunctions.end()) {
-            throw new MergeException("No matching processorFunction");
+            std::cout << "Inja key:" << key << std::endl;
+
+            try {
+                target = (*n_it).at(key);
+            }
+            catch (nlohmann::json::out_of_range &e) {
+                continue;
+            }
+            
+            std::cout << "Found key:" << key << std::endl;
+
         }
-
-        if (!(this->*processorFunctions[key])(key, n_it.value())) {
-            throw new MergeException("processorFunction returned error");
-        }
+//
+//        if (processorFunctions.find(key) == processorFunctions.end()) {
+//            throw new MergeException("No matching processorFunction");
+//        }
+//
+//        if (!(this->*processorFunctions[key])(key, n_it.value())) {
+//            throw new MergeException("processorFunction returned error");
+//        }
     }
 }
 
