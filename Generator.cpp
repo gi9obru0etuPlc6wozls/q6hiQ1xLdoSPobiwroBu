@@ -8,8 +8,42 @@
 using json = nlohmann::json ;
 
 Generator::Generator() {
-    env = Environment("../");
+    env = new Environment("../");
+    env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
+        std::string map = env->get_argument<std::string>(args, 0, x);
+        std::string key = env->get_argument<std::string>(args, 1, x);
 
+        std::string r = key;
+        try {
+            r = x.at("map").at(map).at(key).get<std::string>();
+        }
+        catch (...) { ; // do nothing
+        }
+        return r;
+    });
+
+    env->add_callback("lCamel", 1, [this](Parsed::Arguments args, json x) {
+        return snakeToCamel(env->get_argument<std::string>(args, 0, x));
+    });
+
+    env->add_callback("uCamel", 1, [this](Parsed::Arguments args, json x) {
+        return snakeToCamel(env->get_argument<std::string>(args, 0, x), true);
+    });
+
+    env->add_callback("regex_search", 2, [this](Parsed::Arguments args, json x) {
+        std::string value = env->get_argument<std::string>(args, 0, x);
+        std::regex re(env->get_argument<std::string>(args, 1, x));
+
+        return std::regex_search(value, re);
+    });
+
+    env->add_callback("regex_replace", 3, [this](Parsed::Arguments args, json x) {
+        std::string subject = env->get_argument<std::string>(args, 0, x);
+        std::regex regex(env->get_argument<std::string>(args, 1, x));
+        std::string replacement = env->get_argument<std::string>(args, 2, x);
+
+        return std::regex_replace(subject, regex, replacement);
+    });
 }
 
 void Generator::generate() {
@@ -26,41 +60,7 @@ void Generator::generate() {
     std::cout << "schema:" << schema.dump(4) << std::endl;
 
 
-    env.add_callback("map", 2, [&env](Parsed::Arguments args, json x) {
-        std::string map = env.get_argument<std::string>(args, 0, x);
-        std::string key = env.get_argument<std::string>(args, 1, x);
 
-        std::string r = key;
-        try {
-            r = x.at("map").at(map).at(key).get<std::string>();
-        }
-        catch (...) { ; // do nothing
-        }
-        return r;
-    });
-
-    env.add_callback("lCamel", 1, [&env](Parsed::Arguments args, json x) {
-        return snakeToCamel(env.get_argument<std::string>(args, 0, x));
-    });
-
-    env.add_callback("uCamel", 1, [&env](Parsed::Arguments args, json x) {
-        return snakeToCamel(env.get_argument<std::string>(args, 0, x), true);
-    });
-
-    env.add_callback("regex_search", 2, [&env](Parsed::Arguments args, json x) {
-        std::string value = env.get_argument<std::string>(args, 0, x);
-        std::regex re(env.get_argument<std::string>(args, 1, x));
-
-        return std::regex_search(value, re);
-    });
-
-    env.add_callback("regex_replace", 3, [&env](Parsed::Arguments args, json x) {
-        std::string subject = env.get_argument<std::string>(args, 0, x);
-        std::regex regex(env.get_argument<std::string>(args, 1, x));
-        std::string replacement = env.get_argument<std::string>(args, 2, x);
-
-        return std::regex_replace(subject, regex, replacement);
-    });
 
     std::string result1 = env.render_file("table_create.inja", schema);
     std::string result2 = env.render_file("extjs_model_create.inja", schema);

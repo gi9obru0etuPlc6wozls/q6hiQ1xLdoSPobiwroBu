@@ -2,9 +2,16 @@
 // Created by jwc on 12/9/18.
 //
 
-#include <yaml-cpp/yaml.h>
-#include "YAMLtoJSON.h"
 
+#include <iostream>
+#include <yaml-cpp/yaml.h>
+#include <yaml-cpp/exceptions.h>
+#include <yaml-cpp/node/impl.h>
+#include <nlohmann/json.hpp>
+#include <inja.hpp>
+#include <regex>
+
+using json = nlohmann::json;
 
 nlohmann::json YAMLtoJSON(const YAML::Node &node) {
     int i = 0;

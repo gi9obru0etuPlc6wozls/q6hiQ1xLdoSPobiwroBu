@@ -25,7 +25,7 @@ using namespace inja;
 class Generator {
 private:
 
-    Environment env;
+    Environment *env;
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
 public:
