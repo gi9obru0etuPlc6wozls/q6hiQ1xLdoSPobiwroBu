@@ -2,7 +2,7 @@
 paths:
   migrations dir: ../migrations
   migrations file: ../migrations/migrationData.json
-  meta: ../metadata
+  meta dir: ../metadata
 template:
   create table:
     logged: true

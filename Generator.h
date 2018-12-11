@@ -31,7 +31,7 @@ private:
 public:
     Generator();
 
-    void generate();
+    void generate(nlohmann::json migration_it, nlohmann::json template_it);
 
 };
 

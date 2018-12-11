@@ -7,6 +7,7 @@
 #include <string>
 #include <sys/stat.h>
 #include "Processor.h"
+#include "Generator.h"
 
 
 Processor::Processor(std::string filename) {
@@ -18,6 +19,7 @@ Processor::Processor(std::string filename) {
     config = YAMLtoJSON(YAML::LoadFile(filename));
     //std::cout << "config: " << config.dump(4) << std::endl;
 
+    metaDir = config.at("paths").at("meta dir");
     migrationsDir = config.at("paths").at("migrations dir");
     migrationFile = config.at("paths").at("migrations file");
 
@@ -160,64 +162,6 @@ void Processor::scanMigrations(std::string &md) {
     closedir(dir);
 }
 
-void
-Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
-
-    int i = 0;
-    std::map<std::string, int> columnMap;
-    std::string matchKey;
-    std::string matchValue;
-    std::string newPath = path + "/" + key;
-
-    switch (patch.type()) {
-        case json::value_t::object:
-            std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
-            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-                if (target.count(it.key())) {
-                    merge(target[it.key()], *it, it.key(), newPath);
-                } else {
-                    std::cout << "Assigning: " << std::endl;
-                    target[it.key()] = *it;
-                }
-            }
-            break;
-
-        case json::value_t::array:
-            std::cout << "key: " << key << " merge array:" << patch.type_name() << std::endl;
-
-            matchKey = config.at("sequence").at("merge").at(key);
-
-            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-                columnMap[it.value().at(matchKey)] = i;
-                ++i;
-            }
-
-            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
-                matchValue = it.value().at(matchKey);
-
-                if (columnMap.find(matchValue) != columnMap.end()) {
-                    merge(target[columnMap[matchValue]], *it);
-                } else {
-                    target.push_back(*it);
-                }
-            }
-
-            break;
-
-        case json::value_t::string:
-        case json::value_t::boolean:
-        case json::value_t::number_float:
-        case json::value_t::number_integer:
-        case json::value_t::number_unsigned:
-            std::cout << "key: " << key << " merge scalar:" << patch.type_name() << std::endl;
-            target = patch;
-            break;
-
-        default:
-            std::cout << "unknown:" << patch.type_name() << std::endl;
-            break;
-    }
-}
 
 void Processor::write(const std::string &filename, const nlohmann::json &value) {
     std::ofstream writeStream(filename);
@@ -361,10 +305,72 @@ void Processor::rollback(const std::string &argument) {
     // fs2 rollback 5
 }
 
+void
+Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
+
+    int i = 0;
+    std::map<std::string, int> columnMap;
+    std::string matchKey;
+    std::string matchValue;
+    std::string newPath = path + "/" + key;
+
+    switch (patch.type()) {
+        case json::value_t::object:
+            std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
+            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+                if (target.count(it.key())) {
+                    merge(target[it.key()], *it, it.key(), newPath);
+                } else {
+                    std::cout << "Assigning: " << std::endl;
+                    target[it.key()] = *it;
+                }
+            }
+            break;
+
+        case json::value_t::array:
+            std::cout << "key: " << key << " merge array:" << patch.type_name() << std::endl;
+
+            matchKey = config.at("sequence").at("merge").at(key);
+
+            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+                columnMap[it.value().at(matchKey)] = i;
+                ++i;
+            }
+
+            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+                matchValue = it.value().at(matchKey);
+
+                if (columnMap.find(matchValue) != columnMap.end()) {
+                    merge(target[columnMap[matchValue]], *it);
+                } else {
+                    target.push_back(*it);
+                }
+            }
+
+            break;
+
+        case json::value_t::string:
+        case json::value_t::boolean:
+        case json::value_t::number_float:
+        case json::value_t::number_integer:
+        case json::value_t::number_unsigned:
+            std::cout << "key: " << key << " merge scalar:" << patch.type_name() << std::endl;
+            target = patch;
+            break;
+
+        default:
+            std::cout << "unknown:" << patch.type_name() << std::endl;
+            break;
+    }
+}
+
+
 void Processor::process(const nlohmann::json &migrations) {
     std::cout << "Processor::process()" << std::endl;
 
     std::cout << "migrations: " << migrations.dump(4) << std::endl;
+
+    Generator generator;
 
     nlohmann::json  injas = config.at("templates");
     std::cout << "templates: " << injas.dump(4) << std::endl;
@@ -379,10 +385,10 @@ void Processor::process(const nlohmann::json &migrations) {
         //std::string key = migration_it.key();
         //std::cout << "migration_it: " << (*migration_it).dump(4) << std::endl;
 
-        for (nlohmann::json::const_iterator tempate_it = injas.begin(); tempate_it != injas.end(); ++tempate_it) {
+        for (nlohmann::json::const_iterator inja_it = injas.begin(); inja_it != injas.end(); ++inja_it) {
             nlohmann::json target;
-            nlohmann::json inja = (*tempate_it);
-            std::string key = tempate_it.key();
+            nlohmann::json inja = (*inja_it);
+            std::string key = inja_it.key();
 
             std::cout << "Inja key:" << key <<  " i: " << i << std::endl;
 
@@ -394,8 +400,9 @@ void Processor::process(const nlohmann::json &migrations) {
             }
 
             std::cout << "Found key:" << key << std::endl;
+            std::cout << "Target:" << target << std::endl;
 
-
+            generator.generate(*migration_it, *inja_it);
 
         }
 //

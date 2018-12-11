@@ -48,14 +48,13 @@ private:
 
     std::map<std::string, memberFunction> processorFunctions;
 
+    std::string metaDir;
     std::string migrationsDir;
     std::string migrationFile;
 
     nlohmann::json config;
     nlohmann::json migrationData;
     nlohmann::json::iterator it;
-
-    nlohmann::json YAMLtoJSON(const YAML::Node &node);
 
     void write(const std::string &filename, const nlohmann::json &value);
     nlohmann::json read(const std::string &filename);

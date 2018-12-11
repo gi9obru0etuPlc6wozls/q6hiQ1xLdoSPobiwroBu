@@ -8,6 +8,8 @@
 using json = nlohmann::json ;
 
 Generator::Generator() {
+    std::cout << "Generator::Generator()" << std::endl;
+
     env = new Environment("../");
     env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
         std::string map = env->get_argument<std::string>(args, 0, x);
@@ -46,33 +48,41 @@ Generator::Generator() {
     });
 }
 
-void Generator::generate() {
-    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");
-    assert(yamlSchema.IsDefined()); // TODO: add proper error handling
-    assert(yamlSchema.IsMap()); // TODO: add proper error handling
-    nlohmann::json schema = YAMLtoJSON(yamlSchema);
+void Generator::generate(nlohmann::json migration_it, nlohmann::json template_it) {
+    std::cout << "Generator::generate()" << std::endl;
 
-    YAML::Node yamlMap = YAML::LoadFile("../map.yaml");
-    assert(yamlMap.IsDefined()); // TODO: add proper error handling
-    assert(yamlMap.IsMap()); // TODO: add proper error handling
-    schema["map"] = YAMLtoJSON(yamlMap);
-
-    std::cout << "schema:" << schema.dump(4) << std::endl;
+    std::cout << "migration_it" << migration_it.dump(4) << std::endl;
+    std::cout << "template_it" << template_it.dump(4) << std::endl;
 
 
 
 
-    std::string result1 = env.render_file("table_create.inja", schema);
-    std::string result2 = env.render_file("extjs_model_create.inja", schema);
-    std::string result3 = env.render_file("tf_sqlobject.inja", schema);
-    std::string result4 = env.render_file("tf_model_h.inja", schema);
-    std::string result5 = env.render_file("tf_model_cpp.inja", schema);
-
-    std::cout << "SQL:" << result1 << std::endl;
-    std::cout << "ExtJS:" << result2 << std::endl;
-    std::cout << "tf_sqlobject:" << result3 << std::endl;
-    std::cout << "tf_model_h:" << result4 << std::endl;
-    std::cout << "tf_model_cpp:" << result5 << std::endl;
+//    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");
+//    assert(yamlSchema.IsDefined()); // TODO: add proper error handling
+//    assert(yamlSchema.IsMap()); // TODO: add proper error handling
+//    nlohmann::json schema = YAMLtoJSON(yamlSchema);
+//
+//    YAML::Node yamlMap = YAML::LoadFile("../map.yaml");
+//    assert(yamlMap.IsDefined()); // TODO: add proper error handling
+//    assert(yamlMap.IsMap()); // TODO: add proper error handling
+//    schema["map"] = YAMLtoJSON(yamlMap);
+//
+//    std::cout << "schema:" << schema.dump(4) << std::endl;
+//
+//
+//
+//
+//    std::string result1 = env.render_file("table_create.inja", schema);
+//    std::string result2 = env.render_file("extjs_model_create.inja", schema);
+//    std::string result3 = env.render_file("tf_sqlobject.inja", schema);
+//    std::string result4 = env.render_file("tf_model_h.inja", schema);
+//    std::string result5 = env.render_file("tf_model_cpp.inja", schema);
+//
+//    std::cout << "SQL:" << result1 << std::endl;
+//    std::cout << "ExtJS:" << result2 << std::endl;
+//    std::cout << "tf_sqlobject:" << result3 << std::endl;
+//    std::cout << "tf_model_h:" << result4 << std::endl;
+//    std::cout << "tf_model_cpp:" << result5 << std::endl;
 
 }
 
