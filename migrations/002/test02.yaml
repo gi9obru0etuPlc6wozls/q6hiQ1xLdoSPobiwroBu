@@ -11,11 +11,11 @@ up:
     type: newtype
     precision: 255
 
-  - name: col04
+  - name: col10
     type: string
     precision: 255
     not null: true
 
-  - name: col05
+  - name: col11
     type: string
     precision: 128

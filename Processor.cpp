@@ -8,7 +8,8 @@
 #include <sys/stat.h>
 #include "Processor.h"
 #include "Generator.h"
-
+#include "file_exists.h"
+#include <linux/limits.h>
 
 Processor::Processor(std::string filename) {
     std::cout << "Processor::Processor()" << std::endl;
@@ -259,7 +260,6 @@ void Processor::migrate(const std::string &argument) {
                     ++i;
                     std::cout << "1 Migration:" << (*it) << std::endl;
                     process((*it)["up"]);
-                    //process("up", *it);
                 } while (i < count && next());
         } else {
             int serial = std::stoi(argument);
@@ -279,7 +279,6 @@ void Processor::migrate(const std::string &argument) {
                     std::cout << "s: " << s << " serial: " << serial << std::endl;
                     std::cout << "2 Migration:" << (*it) << std::endl;
                     process((*it)["up"]);
-                    //process("up", *it);
                 } while (next());
         }
     }
@@ -288,7 +287,6 @@ void Processor::migrate(const std::string &argument) {
             do {
                 std::cout << "3 Migration:" << (*it) << std::endl;
                 process((*it)["up"]);
-                //process("up", *it);
             } while (next());
     }
 
@@ -382,8 +380,6 @@ void Processor::process(const nlohmann::json &migrations) {
 
     int i = 0;
     for (json::const_iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
-        //std::string key = migration_it.key();
-        //std::cout << "migration_it: " << (*migration_it).dump(4) << std::endl;
 
         for (nlohmann::json::const_iterator inja_it = injas.begin(); inja_it != injas.end(); ++inja_it) {
             nlohmann::json target;
@@ -399,10 +395,37 @@ void Processor::process(const nlohmann::json &migrations) {
                 continue;
             }
 
-            std::cout << "Found key:" << key << std::endl;
-            std::cout << "Target:" << target << std::endl;
+            std::string targetStr = target;
 
-            generator.generate(*migration_it, *inja_it);
+            std::cout << "Found key: " << key << std::endl;
+            std::cout << "Target: " << target << std::endl;
+
+            char targetFile[PATH_MAX];
+            snprintf(targetFile, PATH_MAX, "%s/%s.json", metaDir.c_str(), targetStr.c_str());
+            std::cout << "targetFile: " << targetFile << std::endl;
+
+            if (file_exists(targetFile)) {
+                target = read(targetFile);
+            }
+            else {
+                char templateFile[PATH_MAX];
+                snprintf(templateFile, PATH_MAX, "%s/%s.json", metaDir.c_str(), key.c_str());
+                std::cout << "templateFile: " << templateFile << std::endl;
+                if (file_exists(templateFile)) {
+                    target = read(templateFile);
+                } else {
+                    target = json({});
+                }
+            }
+            std::cout << "Premerge Target: " << target.dump(4) << std::endl;
+
+            merge(target, (*migration_it));
+
+            std::cout << "Postmerge Target: " << target.dump(4) << std::endl;
+
+            write(targetFile, target);
+
+            //generator.generate(*migration_it, *inja_it);
 
         }
 //

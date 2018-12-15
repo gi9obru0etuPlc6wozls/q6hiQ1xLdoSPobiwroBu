@@ -51,10 +51,8 @@ Generator::Generator() {
 void Generator::generate(nlohmann::json migration_it, nlohmann::json template_it) {
     std::cout << "Generator::generate()" << std::endl;
 
-    std::cout << "migration_it" << migration_it.dump(4) << std::endl;
-    std::cout << "template_it" << template_it.dump(4) << std::endl;
-
-
+    std::cout << "migration_it: " << migration_it.dump(4) << std::endl;
+    std::cout << "template_it: " << template_it.dump(4) << std::endl;
 
 
 //    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");

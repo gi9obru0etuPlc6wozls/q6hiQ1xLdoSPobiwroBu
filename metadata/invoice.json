@@ -1,0 +1,30 @@
+{
+    "columns": [
+        {
+            "auto": true,
+            "name": "col01",
+            "type": "uuid"
+        },
+        {
+            "name": "col02",
+            "not null": true,
+            "precision": 512,
+            "type": "newstring"
+        },
+        {
+            "name": "col03",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
+            "name": "col04",
+            "precision": 1235,
+            "type": "type04"
+        }
+    ],
+    "create table": "invoice",
+    "logged": true,
+    "not exists": true,
+    "temporary": true,
+    "unlogged": false
+}

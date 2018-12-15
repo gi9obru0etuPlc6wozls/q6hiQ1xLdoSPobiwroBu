@@ -3,17 +3,16 @@ paths:
   migrations dir: ../migrations
   migrations file: ../migrations/migrationData.json
   meta dir: ../metadata
-template:
-  create table:
-    logged: true
-    temporary: false
-    columns: []
 sequence:
   merge:
     columns: name
 templates:
   create table:
   - inga: ../templates/tf/tf_model_cpp.inja
+    data: patch
+    out: ../tf_model_cpp.txt
+    overwrite: true
+  - inga: ../templates/tf/tf_model_h.inja
     data: patch
     out: ../tf_model_cpp.txt
     overwrite: true

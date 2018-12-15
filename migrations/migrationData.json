@@ -52,26 +52,21 @@
                 {
                     "columns": [
                         {
-                            "auto": true,
-                            "name": "col01",
-                            "type": "uuid"
-                        },
-                        {
                             "name": "col02",
                             "not null": true,
-                            "precision": 255,
-                            "type": "string"
+                            "precision": 512,
+                            "type": "newstring"
                         },
                         {
-                            "name": "col03",
-                            "precision": 512,
-                            "type": "oldtype"
+                            "name": "col04",
+                            "precision": 1235,
+                            "type": "type04"
                         }
                     ],
                     "create table": "invoice",
                     "not exists": true,
                     "temporary": true,
-                    "unlogged": true
+                    "unlogged": false
                 },
                 {
                     "columns": [
@@ -99,13 +94,13 @@
                             "type": "newtype"
                         },
                         {
-                            "name": "col04",
+                            "name": "col10",
                             "not null": true,
                             "precision": 255,
                             "type": "string"
                         },
                         {
-                            "name": "col05",
+                            "name": "col11",
                             "precision": 128,
                             "type": "string"
                         }

@@ -1,0 +1,12 @@
+{
+    "columns": [
+        {
+            "name": "item_no",
+            "precision": 255,
+            "type": "string"
+        }
+    ],
+    "create table": "invoice_items",
+    "logged": true,
+    "temporary": false
+}
