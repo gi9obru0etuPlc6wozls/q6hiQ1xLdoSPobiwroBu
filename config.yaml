@@ -14,13 +14,13 @@ templates:
     overwrite: true
   - inga: ../templates/tf/tf_model_h.inja
     data: patch
-    out: ../tf_model_cpp.txt
+    out: ../tf_model_h.txt
     overwrite: true
   alter table:
-    - inga: ../templates/tf/alter.inja
-      data: patch
-      out: ../alter.txt
-      overwrite: true
+  - inga: ../templates/tf/alter.inja
+    data: patch
+    out: ../alter.txt
+    overwrite: true
 map:
   db_type:
     string: character varying

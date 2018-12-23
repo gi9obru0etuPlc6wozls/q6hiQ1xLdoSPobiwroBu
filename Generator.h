@@ -19,7 +19,7 @@
 #include <inja.hpp>
 #include <regex>
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 using namespace inja;
 
 class Generator {
@@ -31,7 +31,7 @@ private:
 public:
     Generator();
 
-    void generate(nlohmann::json migration_it, nlohmann::json template_it);
+    void generate(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
 
 };
 

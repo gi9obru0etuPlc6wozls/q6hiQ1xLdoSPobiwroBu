@@ -5,12 +5,15 @@
 
 #include "Generator.h"
 
-using json = nlohmann::json ;
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 Generator::Generator() {
     std::cout << "Generator::Generator()" << std::endl;
 
     env = new Environment("../");
+
     env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
         std::string map = env->get_argument<std::string>(args, 0, x);
         std::string key = env->get_argument<std::string>(args, 1, x);
@@ -48,11 +51,22 @@ Generator::Generator() {
     });
 }
 
-void Generator::generate(nlohmann::json migration_it, nlohmann::json template_it) {
+void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
     std::cout << "Generator::generate()" << std::endl;
 
-    std::cout << "migration_it: " << migration_it.dump(4) << std::endl;
+    std::cout << "target: " << target.dump(4) << std::endl;
+    std::cout << "patch: " << patch.dump(4) << std::endl;
     std::cout << "template_it: " << template_it.dump(4) << std::endl;
+
+    nlohmann::json x;
+
+//    try {
+//        x = template_it.at("delete");
+//        x.
+//    }
+//    catch (nlohmann::json::out_of_range &e) {
+//        // not found
+//    }
 
 
 //    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");

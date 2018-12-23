@@ -7,9 +7,9 @@
 
 #include <iostream>
 #include <exception>
-#include <nlohmann/json.hpp>
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/exceptions.h>
+#include <nlohmann/json.hpp>
 
 
 using json = nlohmann::json;

@@ -395,6 +395,8 @@ void Processor::process(const nlohmann::json &migrations) {
                 continue;
             }
 
+            std::cout << "--- Running Migration: " << std::endl;
+
             std::string targetStr = target;
 
             std::cout << "Found key: " << key << std::endl;
@@ -417,15 +419,15 @@ void Processor::process(const nlohmann::json &migrations) {
                     target = json({});
                 }
             }
-            std::cout << "Premerge Target: " << target.dump(4) << std::endl;
+            std::cout << "Pre-merge Target: " << target.dump(4) << std::endl;
 
             merge(target, (*migration_it));
 
-            std::cout << "Postmerge Target: " << target.dump(4) << std::endl;
+            std::cout << "Post-merge Target: " << target.dump(4) << std::endl;
 
             write(targetFile, target);
 
-            //generator.generate(*migration_it, *inja_it);
+            generator.generate(target, *migration_it, *inja_it);
 
         }
 //
