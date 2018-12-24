@@ -5,12 +5,13 @@
 
 #include "Generator.h"
 
-#include <nlohmann/json.hpp>
-
 using json = nlohmann::json;
 
 Generator::Generator() {
     std::cout << "Generator::Generator()" << std::endl;
+
+    actionFunctions["generate"] = &Generator::generateTable;
+    actionFunctions["delete"] = &Generator::deleteTable;
 
     env = new Environment("../");
 
@@ -51,23 +52,27 @@ Generator::Generator() {
     });
 }
 
-void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
+void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::json actions ) {
     std::cout << "Generator::generate()" << std::endl;
 
     std::cout << "target: " << target.dump(4) << std::endl;
     std::cout << "patch: " << patch.dump(4) << std::endl;
-    std::cout << "template_it: " << template_it.dump(4) << std::endl;
+    std::cout << "actions: " << actions.dump(4) << std::endl;
 
     nlohmann::json x;
 
+    for (auto action = actions.begin(); action != actions.end(); ++action) {
+        std::cout << "action: " << action->dump(4) << std::endl;
+    }
+
 //    try {
 //        x = template_it.at("delete");
-//        x.
 //    }
 //    catch (nlohmann::json::out_of_range &e) {
-//        // not found
+//        x = nullptr; // not found
 //    }
 
+    std::cout << "X: " << x.dump(4) << std::endl;
 
 //    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");
 //    assert(yamlSchema.IsDefined()); // TODO: add proper error handling
@@ -120,4 +125,17 @@ std::string Generator::snakeToCamel(const std::string &snake, const bool initCap
             r += c;
     }
     return r;
+}
+
+
+bool Generator::generateTable(const std::string &key, const nlohmann::json &value) {
+    std::cout << "Generator::createlTable()" << std::endl;
+
+    return true;
+}
+
+bool Generator::deleteTable(const std::string &key, const nlohmann::json &value) {
+    std::cout << "Processor::deleteTable()" << std::endl;
+
+    return true;
 }

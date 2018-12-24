@@ -28,6 +28,13 @@ private:
     Environment *env;
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
+
+    typedef bool (Generator::*memberFunction)(const std::string &key, const nlohmann::json &value);
+    std::map<std::string, memberFunction> actionFunctions;
+
+    bool generateTable(const std::string &key, const nlohmann::json &value);
+    bool deleteTable(const std::string &key, const nlohmann::json &value);
+
 public:
     Generator();
 

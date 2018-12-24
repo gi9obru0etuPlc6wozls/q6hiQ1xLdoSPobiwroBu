@@ -14,15 +14,14 @@
 Processor::Processor(std::string filename) {
     std::cout << "Processor::Processor()" << std::endl;
 
-    processorFunctions["create table"] = &Processor::createTable;
-    processorFunctions["alter table"] = &Processor::alterTable;
-
     config = YAMLtoJSON(YAML::LoadFile(filename));
     //std::cout << "config: " << config.dump(4) << std::endl;
 
     metaDir = config.at("paths").at("meta dir");
     migrationsDir = config.at("paths").at("migrations dir");
     migrationFile = config.at("paths").at("migrations file");
+
+    actions = config.at("actions");
 
     try {
         migrationData = read(migrationFile);
@@ -369,9 +368,7 @@ void Processor::process(const nlohmann::json &migrations) {
     std::cout << "migrations: " << migrations.dump(4) << std::endl;
 
     Generator generator;
-
-    nlohmann::json  injas = config.at("templates");
-    std::cout << "templates: " << injas.dump(4) << std::endl;
+    std::cout << "templates: " << actions.dump(4) << std::endl;
 
     //std::snprintf()
 
@@ -381,7 +378,7 @@ void Processor::process(const nlohmann::json &migrations) {
     int i = 0;
     for (json::const_iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
 
-        for (nlohmann::json::const_iterator inja_it = injas.begin(); inja_it != injas.end(); ++inja_it) {
+        for (nlohmann::json::const_iterator inja_it = actions.begin(); inja_it != actions.end(); ++inja_it) {
             nlohmann::json target;
             nlohmann::json inja = (*inja_it);
             std::string key = inja_it.key();
@@ -431,46 +428,12 @@ void Processor::process(const nlohmann::json &migrations) {
 
         }
 //
-//        if (processorFunctions.find(key) == processorFunctions.end()) {
+//        if (actionFunctions.find(key) == actionFunctions.end()) {
 //            throw new MergeException("No matching processorFunction");
 //        }
 //
-//        if (!(this->*processorFunctions[key])(key, migration_it.value())) {
+//        if (!(this->*actionFunctions[key])(key, migration_it.value())) {
 //            throw new MergeException("processorFunction returned error");
 //        }
     }
-}
-
-bool Processor::createTable(const std::string &key, const nlohmann::json &value) {
-    std::cout << "Processor::createlTable()" << std::endl;
-    std::cout << "value: " << value.dump(4) << std::endl;
-    nlohmann::json target;
-
-    try {
-        target = config.at("template").at(key);
-    }
-    catch (nlohmann::json::out_of_range &e) {
-        // Do nothing
-    }
-
-    std::cout << "target: " << target.dump(4) << std::endl;
-    merge(target, value);
-    std::cout << "target: " << target.dump(4) << std::endl;
-
-    write("target.json", target);
-
-    return true;
-}
-
-bool Processor::alterTable(const std::string &key, const nlohmann::json &value) {
-    std::cout << "Processor::alterTable()" << std::endl;
-
-    nlohmann::json target = read("target.json");
-    std::cout << "target: " << target.dump(4) << std::endl;
-    merge(target, value);
-    std::cout << "target: " << target.dump(4) << std::endl;
-
-    write("target.json", target);
-
-    return true;
 }

@@ -44,9 +44,6 @@ public:
     void rollback(const std::string &argument);
 
 private:
-    typedef bool (Processor::*memberFunction)(const std::string &key, const nlohmann::json &value);
-
-    std::map<std::string, memberFunction> processorFunctions;
 
     std::string metaDir;
     std::string migrationsDir;
@@ -54,15 +51,13 @@ private:
 
     nlohmann::json config;
     nlohmann::json migrationData;
+    nlohmann::json actions;
     nlohmann::json::iterator it;
 
     void write(const std::string &filename, const nlohmann::json &value);
     nlohmann::json read(const std::string &filename);
 
     void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
-
-    bool createTable(const std::string &key, const nlohmann::json &value);
-    bool alterTable(const std::string &key, const nlohmann::json &value);
 
     void scanMigrations(std::string &md);
     void setMigration(const int serial, const std::string &filename, const std::string &direction,
