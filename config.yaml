@@ -9,15 +9,17 @@ sequence:
 actions:
   create table:
   - action: generate
-    inga: ../templates/tf/tf_model_cpp.inja
+    inga: templates/tf/tf_model_cpp.inja
     data: patch
     out: ../tf_model_cpp.txt
     overwrite: true
   - action: generate
-    inga: ../templates/tf/tf_model_h.inja
+    inga: templates/tf/tf_model_h.inja
     data: patch
     out: ../tf_model_h.txt
     overwrite: true
+  - action: delete
+    out: ./pathname/filename_to_delete
   alter table:
   - inga: ../templates/tf/alter.inja
     data: patch

@@ -29,11 +29,12 @@ private:
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
 
-    typedef bool (Generator::*memberFunction)(const std::string &key, const nlohmann::json &value);
+    typedef bool (Generator::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
     std::map<std::string, memberFunction> actionFunctions;
 
-    bool generateTable(const std::string &key, const nlohmann::json &value);
-    bool deleteTable(const std::string &key, const nlohmann::json &value);
+    bool createTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
+    bool deleteTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
+    bool execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
 
 public:
     Generator();

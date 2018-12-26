@@ -3,6 +3,7 @@
 //
 
 
+#include <zconf.h>
 #include "Generator.h"
 
 using json = nlohmann::json;
@@ -10,8 +11,9 @@ using json = nlohmann::json;
 Generator::Generator() {
     std::cout << "Generator::Generator()" << std::endl;
 
-    actionFunctions["generate"] = &Generator::generateTable;
+    actionFunctions["generate"] = &Generator::createTable;
     actionFunctions["delete"] = &Generator::deleteTable;
+    actionFunctions["execute"] = &Generator::execute;
 
     env = new Environment("../");
 
@@ -55,24 +57,15 @@ Generator::Generator() {
 void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::json actions ) {
     std::cout << "Generator::generate()" << std::endl;
 
-    std::cout << "target: " << target.dump(4) << std::endl;
-    std::cout << "patch: " << patch.dump(4) << std::endl;
-    std::cout << "actions: " << actions.dump(4) << std::endl;
-
-    nlohmann::json x;
-
     for (auto action = actions.begin(); action != actions.end(); ++action) {
         std::cout << "action: " << action->dump(4) << std::endl;
+
+        std::string actionName = action->at("action");
+        std::cout << "actionName: " << actionName << std::endl;
+
+        bool b = (this->*actionFunctions[actionName])(target, patch, *action);
     }
 
-//    try {
-//        x = template_it.at("delete");
-//    }
-//    catch (nlohmann::json::out_of_range &e) {
-//        x = nullptr; // not found
-//    }
-
-    std::cout << "X: " << x.dump(4) << std::endl;
 
 //    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");
 //    assert(yamlSchema.IsDefined()); // TODO: add proper error handling
@@ -85,8 +78,6 @@ void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::
 //    schema["map"] = YAMLtoJSON(yamlMap);
 //
 //    std::cout << "schema:" << schema.dump(4) << std::endl;
-//
-//
 //
 //
 //    std::string result1 = env.render_file("table_create.inja", schema);
@@ -128,14 +119,34 @@ std::string Generator::snakeToCamel(const std::string &snake, const bool initCap
 }
 
 
-bool Generator::generateTable(const std::string &key, const nlohmann::json &value) {
-    std::cout << "Generator::createlTable()" << std::endl;
+bool Generator::createTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Generator::createTable()" << std::endl;
+    std::cout << "action: " << action.dump(4) << std::endl;
+
+    std::string templateFileName = action.at("inga");
+    std::string outputFileName = action.at("out");
+    std::string source = action.at("data");
+    bool overwrite = action.at("overwrite");
+    nlohmann::json data = (source == "target") ? target : patch;
+    data["map"] = nlohmann::json({});  // TODO: FIX THIS
+
+
+    std::cout << "templateFileName:" << templateFileName << std::endl;
+    std::cout << "data:" << data << std::endl;
+    std::string result = env->render_file(templateFileName, data);
+    std::cout << "Result:" << result << std::endl;
+    exit(1);
+    return true;
+}
+
+bool Generator::deleteTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Generator::deleteTable()" << std::endl;
 
     return true;
 }
 
-bool Generator::deleteTable(const std::string &key, const nlohmann::json &value) {
-    std::cout << "Processor::deleteTable()" << std::endl;
+bool Generator::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Generator::execute()" << std::endl;
 
     return true;
 }

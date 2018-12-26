@@ -8,8 +8,8 @@
         {
             "name": "col02",
             "not null": true,
-            "precision": 512,
-            "type": "newstring"
+            "precision": 255,
+            "type": "string"
         },
         {
             "name": "col03",
@@ -26,5 +26,5 @@
     "logged": true,
     "not exists": true,
     "temporary": true,
-    "unlogged": false
+    "unlogged": true
 }
