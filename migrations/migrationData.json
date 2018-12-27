@@ -58,6 +58,10 @@
                             "type": "newstring"
                         },
                         {
+                            "name": "col03",
+                            "type": "drop"
+                        },
+                        {
                             "name": "col04",
                             "precision": 1235,
                             "type": "type04"

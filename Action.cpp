@@ -123,7 +123,6 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
     Template temp = env->parse_template(templateFileName);
     env->write(temp, data, outputFileName);
 
-    exit(1);
     return true;
 }
 

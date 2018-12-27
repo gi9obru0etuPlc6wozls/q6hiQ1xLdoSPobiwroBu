@@ -18,7 +18,7 @@ actions:
     data: patch
     out: tf_model_h.txt
     overwrite: true
-  - action: delete
+  - action: drop
     out: ./pathname/filename_to_delete
   alter table:
   - inga: ../templates/tf/alter.inja

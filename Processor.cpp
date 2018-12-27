@@ -307,6 +307,7 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
 
     int i = 0;
     std::map<std::string, int> columnMap;
+    std::vector<int> columnDrop;
     std::string matchKey;
     std::string matchValue;
     std::string newPath = path + "/" + key;
@@ -314,6 +315,7 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
     switch (patch.type()) {
         case json::value_t::object:
             std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
+
             for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
                 if (target.count(it.key())) {
                     merge(target[it.key()], *it, it.key(), newPath);
@@ -338,6 +340,18 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
                 matchValue = it.value().at(matchKey);
 
                 if (columnMap.find(matchValue) != columnMap.end()) {
+
+                    try {
+                        if ((*it).at("type") == "drop") {
+                            std::cout << "array it: " << (*it) << std::endl;
+                            target.erase(columnMap[matchValue]);
+                            continue;
+                        }
+                    }
+                    catch (nlohmann::json::out_of_range &e) {
+                        ;
+                    }
+
                     merge(target[columnMap[matchValue]], *it);
                 } else {
                     target.push_back(*it);
