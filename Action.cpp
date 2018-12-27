@@ -95,12 +95,14 @@ std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
 
 bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::generate()" << std::endl;
-    std::cout << "action: " << action.dump(4) << std::endl;
+//    std::cout << "action: " << action.dump(4) << std::endl;
 
     std::string templateFileName = action.at("inga");
-    std::string outputFileName = action.at("out");
     bool overwrite = action.at("overwrite");
     nlohmann::json data = (action.at("data") == "target") ? target : patch;
+
+    std::string outputTemplate = action.at("out");
+    std::string outputFileName = env->render(outputTemplate, data);
 
     data["map"] = nlohmann::json({});  // TODO: FIX THIS
 
@@ -117,8 +119,8 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
         std::cout << "Generating: " << envRoot + outputFileName << std::endl;
     }
 
-    std::cout << "templateFileName:" << templateFileName << std::endl;
-    std::cout << "data:" << data << std::endl;
+//    std::cout << "templateFileName:" << templateFileName << std::endl;
+//    std::cout << "data:" << data << std::endl;
 
     Template temp = env->parse_template(templateFileName);
     env->write(temp, data, outputFileName);

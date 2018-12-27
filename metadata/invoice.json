@@ -25,6 +25,31 @@
             "name": "esra",
             "precision": 512,
             "type": "oldtype"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
         }
     ],
     "create table": "invoice",

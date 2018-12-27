@@ -11,15 +11,18 @@ actions:
   - action: generate
     inga: templates/tf/tf_model_cpp.inja
     data: target
-    out: tf_model_cpp.txt
+    out: models/{{ uCamel(create table) }}.cpp
     overwrite: true
   - action: generate
     inga: templates/tf/tf_model_h.inja
     data: target
-    out: tf_model_h.txt
+    out: models/{{ uCamel(create table) }}.h
     overwrite: true
-  - action: drop
-    out: ./pathname/filename_to_delete
+  - action: generate
+    inga: templates/tf/tf_sqlobject.inja
+    data: target
+    out: models/sqlobjects/{{ uCamel(create table) }}.h
+    overwrite: true
   alter table:
   - inga: ../templates/tf/alter.inja
     data: patch
