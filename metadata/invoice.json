@@ -12,9 +12,19 @@
             "type": "newstring"
         },
         {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
+        },
+        {
             "name": "col04",
             "precision": 1235,
             "type": "type04"
+        },
+        {
+            "name": "esra",
+            "precision": 512,
+            "type": "oldtype"
         }
     ],
     "create table": "invoice",

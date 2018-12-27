@@ -11,7 +11,7 @@ up:
       precision: 512
       not null: true
     - name: col03
-      type: drop
+      rename: esra
     - name: col04
       type: type04
       precision: 1235

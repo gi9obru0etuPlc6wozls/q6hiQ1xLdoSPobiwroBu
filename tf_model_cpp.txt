@@ -1,87 +1,63 @@
 #include <TreeFrogModel>
-#include "invoice.h"
-#include "invoiceobject.h"
+#include "invoiceitems.h"
+#include "invoiceitemsobject.h"
 
-Invoice::Invoice()
-    : TAbstractModel(), d(new InvoiceObject())
+InvoiceItems::InvoiceItems()
+    : TAbstractModel(), d(new InvoiceItemsObject())
 {
     d->lock_revision = 0;
 }
 
-Invoice::Invoice(const Invoice &other)
-    : TAbstractModel(), d(new InvoiceObject(*other.d))
+InvoiceItems::InvoiceItems(const InvoiceItems &other)
+    : TAbstractModel(), d(new InvoiceItemsObject(*other.d))
 { }
 
-Invoice::Invoice(const InvoiceObject &object)
-    : TAbstractModel(), d(new InvoiceObject(object))
+InvoiceItems::InvoiceItems(const InvoiceItemsObject &object)
+    : TAbstractModel(), d(new InvoiceItemsObject(object))
 { }
 
-Invoice::~Invoice()
+InvoiceItems::~InvoiceItems()
 {
     // If the reference count becomes 0,
-    // the shared data object 'InvoiceObject' is deleted.
+    // the shared data object 'InvoiceItemsObject' is deleted.
 }
 
 //
 // Columns Start
 //
-QString Invoice::col01() const
+QString InvoiceItems::itemNo() const
 {
-    return d->col01;
+    return d->item_no;
 }
 
-void Invoice::setCol01(const QString &col01)
+void InvoiceItems::setItemNo(const QString &itemNo)
 {
-    d->col01 = col01;
-}
-
-QString Invoice::col02() const
-{
-    return d->col02;
-}
-
-void Invoice::setCol02(const QString &col02)
-{
-    d->col02 = col02;
-}
-
-QString Invoice::col03() const
-{
-    return d->col03;
-}
-
-void Invoice::setCol03(const QString &col03)
-{
-    d->col03 = col03;
+    d->item_no = itemNo;
 }
 //
 // Columns End
 //
 
-Invoice &Invoice::operator=(const Invoice &other)
+InvoiceItems &InvoiceItems::operator=(const InvoiceItems &other)
 {
     d = other.d;  // increments the reference count of the data
     return *this;
 }
 
-Invoice Invoice::create(
-        const uuid &col01,
-        const string &col02,
-        const oldtype &col03)
+InvoiceItems InvoiceItems::create(
+        const string &itemNo)
 {
-    InvoiceObject obj;
-    obj.col01 = col01;
-    obj.col02 = col02;
-    obj.col03 = col03;
+    InvoiceItemsObject obj;
+    obj.item_no = itemNo;
     if (!obj.create()) {
-        return Invoice();
+        return InvoiceItems();
     }
-    return Invoice(obj);
+    return InvoiceItems(obj);
 }
 
-Invoice Invoice::create(const QVariantMap &values)
+InvoiceItems InvoiceItems::create(const QVariantMap &values)
 {
-    Invoice model;
+    InvoiceItems model;
     model.setProperties(values);
     if (!model.d->create()) {
         model.d->clear();
@@ -89,59 +65,59 @@ Invoice Invoice::create(const QVariantMap &values)
     return model;
 }
 
-Invoice Invoice::get(const QString &id)
+InvoiceItems InvoiceItems::get(const QString &id)
 {
-    TSqlORMapper<InvoiceObject> mapper;
-    return Invoice(mapper.findByPrimaryKey(id));
+    TSqlORMapper<InvoiceItemsObject> mapper;
+    return InvoiceItems(mapper.findByPrimaryKey(id));
 }
 
-int Invoice::count()
+int InvoiceItems::count()
 {
-    TSqlORMapper<InvoiceObject> mapper;
+    TSqlORMapper<InvoiceItemsObject> mapper;
     return mapper.findCount();
 }
 
-QList<Invoice> Invoice::getAll()
+QList<InvoiceItems> InvoiceItems::getAll()
 {
-    return tfGetModelListByCriteria<Invoice, InvoiceObject>(TCriteria());
+    return tfGetModelListByCriteria<InvoiceItems, InvoiceItemsObject>(TCriteria());
 }
 
-QList<Invoice> Invoice::getAll(const int limit,const int offset)
+QList<InvoiceItems> InvoiceItems::getAll(const int limit,const int offset)
 {
-    return tfGetModelListByCriteria<Invoice, InvoiceObject>(TCriteria(), limit, offset);
+    return tfGetModelListByCriteria<InvoiceItems, InvoiceItemsObject>(TCriteria(), limit, offset);
 }
 
-QJsonArray Invoice::getAllJson()
+QJsonArray InvoiceItems::getAllJson()
 {
     QJsonArray array;
-    TSqlORMapper<InvoiceObject> mapper;
+    TSqlORMapper<InvoiceItemsObject> mapper;
 
     if (mapper.find() > 0) {
-        for (TSqlORMapperIterator<InvoiceObject> i(mapper); i.hasNext(); ) {
-            array.append(QJsonValue(QJsonObject::fromVariantMap(Invoice(i.next()).toVariantMap())));
+        for (TSqlORMapperIterator<InvoiceItemsObject> i(mapper); i.hasNext(); ) {
+            array.append(QJsonValue(QJsonObject::fromVariantMap(InvoiceItems(i.next()).toVariantMap())));
         }
     }
     return array;
 }
 
-TModelObject *Invoice::modelData()
+TModelObject *InvoiceItems::modelData()
 {
     return d.data();
 }
 
-const TModelObject *Invoice::modelData() const
+const TModelObject *InvoiceItems::modelData() const
 {
     return d.data();
 }
 
-QDataStream &operator<<(QDataStream &ds, const Invoice &model)
+QDataStream &operator<<(QDataStream &ds, const InvoiceItems &model)
 {
     auto varmap = model.toVariantMap();
     ds << varmap;
     return ds;
 }
 
-QDataStream &operator>>(QDataStream &ds, Invoice &model)
+QDataStream &operator>>(QDataStream &ds, InvoiceItems &model)
 {
     QVariantMap varmap;
     ds >> varmap;
@@ -150,4 +126,4 @@ QDataStream &operator>>(QDataStream &ds, Invoice &model)
 }
 
 // Don't remove below this line
-T_REGISTER_STREAM_OPERATORS(Invoice)
+T_REGISTER_STREAM_OPERATORS(InvoiceItems)

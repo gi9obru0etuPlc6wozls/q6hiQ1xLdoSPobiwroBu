@@ -10,12 +10,12 @@ actions:
   create table:
   - action: generate
     inga: templates/tf/tf_model_cpp.inja
-    data: patch
+    data: target
     out: tf_model_cpp.txt
-    overwrite: false
+    overwrite: true
   - action: generate
     inga: templates/tf/tf_model_h.inja
-    data: patch
+    data: target
     out: tf_model_h.txt
     overwrite: true
   - action: drop

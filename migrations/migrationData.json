@@ -59,7 +59,7 @@
                         },
                         {
                             "name": "col03",
-                            "type": "drop"
+                            "rename": "esra"
                         },
                         {
                             "name": "col04",
