@@ -121,7 +121,7 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
     std::cout << "data:" << data << std::endl;
 
     Template temp = env->parse_template(templateFileName);
-    env->write(temp, data, envRoot + outputFileName);
+    env->write(temp, data, outputFileName);
 
     exit(1);
     return true;
