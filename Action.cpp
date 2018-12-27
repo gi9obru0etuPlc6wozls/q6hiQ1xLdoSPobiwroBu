@@ -126,8 +126,6 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
     std::string templateFileName = action.at("inga");
     std::string outputFileName = action.at("out");
     bool overwrite = action.at("overwrite");
-
-    std::string source = action.at("data");
     nlohmann::json data = (action.at("data") == "target") ? target : patch;
 
     data["map"] = nlohmann::json({});  // TODO: FIX THIS
