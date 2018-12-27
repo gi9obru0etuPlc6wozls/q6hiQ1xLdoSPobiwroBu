@@ -5,6 +5,7 @@
 
 #include <zconf.h>
 #include "Action.h"
+#include "file_exists.h"
 
 using json = nlohmann::json;
 
@@ -15,7 +16,7 @@ Action::Action() {
     actionFunctions["drop"] = &Action::drop;
     actionFunctions["execute"] = &Action::execute;
 
-    env = new Environment("../");
+    env = new Environment(envRoot);
 
     env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
         std::string map = env->get_argument<std::string>(args, 0, x);
@@ -65,33 +66,6 @@ void Action::runAction(nlohmann::json target, nlohmann::json patch, nlohmann::js
 
         bool b = (this->*actionFunctions[actionName])(target, patch, *action);
     }
-
-
-//    YAML::Node yamlSchema = YAML::LoadFile("../migration01.yaml");
-//    assert(yamlSchema.IsDefined()); // TODO: add proper error handling
-//    assert(yamlSchema.IsMap()); // TODO: add proper error handling
-//    nlohmann::json schema = YAMLtoJSON(yamlSchema);
-//
-//    YAML::Node yamlMap = YAML::LoadFile("../map.yaml");
-//    assert(yamlMap.IsDefined()); // TODO: add proper error handling
-//    assert(yamlMap.IsMap()); // TODO: add proper error handling
-//    schema["map"] = YAMLtoJSON(yamlMap);
-//
-//    std::cout << "schema:" << schema.dump(4) << std::endl;
-//
-//
-//    std::string result1 = env.render_file("table_create.inja", schema);
-//    std::string result2 = env.render_file("extjs_model_create.inja", schema);
-//    std::string result3 = env.render_file("tf_sqlobject.inja", schema);
-//    std::string result4 = env.render_file("tf_model_h.inja", schema);
-//    std::string result5 = env.render_file("tf_model_cpp.inja", schema);
-//
-//    std::cout << "SQL:" << result1 << std::endl;
-//    std::cout << "ExtJS:" << result2 << std::endl;
-//    std::cout << "tf_sqlobject:" << result3 << std::endl;
-//    std::cout << "tf_model_h:" << result4 << std::endl;
-//    std::cout << "tf_model_cpp:" << result5 << std::endl;
-
 }
 
 std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
@@ -130,11 +104,25 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
 
     data["map"] = nlohmann::json({});  // TODO: FIX THIS
 
+    if (file_exists(envRoot + outputFileName)) {
+        if (!overwrite) {
+            std::cout << "Not overwriting: " << envRoot + outputFileName << std::endl;
+            return true;
+        }
+        else {
+            std::cout << "Overwriting: " << envRoot + outputFileName << std::endl;
+        }
+    }
+    else {
+        std::cout << "Generating: " << envRoot + outputFileName << std::endl;
+    }
 
     std::cout << "templateFileName:" << templateFileName << std::endl;
     std::cout << "data:" << data << std::endl;
-    std::string result = env->render_file(templateFileName, data);
-    std::cout << "Result:" << result << std::endl;
+
+    Template temp = env->parse_template(templateFileName);
+    env->write(temp, data, envRoot + outputFileName);
+
     exit(1);
     return true;
 }

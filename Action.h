@@ -27,6 +27,8 @@ private:
 
     Environment *env;
 
+    std::string envRoot = "../";
+
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
 
     typedef bool (Action::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
