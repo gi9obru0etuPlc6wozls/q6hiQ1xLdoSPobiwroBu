@@ -4,16 +4,16 @@
 
 
 #include <zconf.h>
-#include "Generator.h"
+#include "Action.h"
 
 using json = nlohmann::json;
 
-Generator::Generator() {
-    std::cout << "Generator::Generator()" << std::endl;
+Action::Action() {
+    std::cout << "Action::Action()" << std::endl;
 
-    actionFunctions["generate"] = &Generator::createTable;
-    actionFunctions["delete"] = &Generator::deleteTable;
-    actionFunctions["execute"] = &Generator::execute;
+    actionFunctions["generate"] = &Action::generate;
+    actionFunctions["drop"] = &Action::drop;
+    actionFunctions["execute"] = &Action::execute;
 
     env = new Environment("../");
 
@@ -54,10 +54,10 @@ Generator::Generator() {
     });
 }
 
-void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::json actions ) {
-    std::cout << "Generator::generate()" << std::endl;
+void Action::runAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
+    std::cout << "Action::runAction()" << std::endl;
 
-    for (auto action = actions.begin(); action != actions.end(); ++action) {
+    for (auto action = template_it.begin(); action != template_it.end(); ++action) {
         std::cout << "action: " << action->dump(4) << std::endl;
 
         std::string actionName = action->at("action");
@@ -94,7 +94,7 @@ void Generator::generate(nlohmann::json target, nlohmann::json patch, nlohmann::
 
 }
 
-std::string Generator::snakeToCamel(const std::string &snake, const bool initCap) {
+std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
     std::string r;
 
     bool underscore = false;
@@ -119,8 +119,8 @@ std::string Generator::snakeToCamel(const std::string &snake, const bool initCap
 }
 
 
-bool Generator::createTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
-    std::cout << "Generator::createTable()" << std::endl;
+bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Action::generate()" << std::endl;
     std::cout << "action: " << action.dump(4) << std::endl;
 
     std::string templateFileName = action.at("inga");
@@ -139,14 +139,14 @@ bool Generator::createTable(const nlohmann::json &target, const nlohmann::json &
     return true;
 }
 
-bool Generator::deleteTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
-    std::cout << "Generator::deleteTable()" << std::endl;
+bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Action::drop()" << std::endl;
 
     return true;
 }
 
-bool Generator::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
-    std::cout << "Generator::execute()" << std::endl;
+bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Action::execute()" << std::endl;
 
     return true;
 }

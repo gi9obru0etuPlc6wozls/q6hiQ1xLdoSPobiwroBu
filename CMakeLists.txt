@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 add_executable(fs2_migration02
         main.cpp
         Processor.cpp Processor.h
-        Generator.cpp Generator.h
+        Action.cpp Action.h
         YAMLtoJSON.cpp YAMLtoJSON.h
         file_exists.h
         )

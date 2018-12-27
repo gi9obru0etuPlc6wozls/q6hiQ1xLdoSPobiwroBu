@@ -22,24 +22,24 @@
 //using json = nlohmann::json;
 using namespace inja;
 
-class Generator {
+class Action {
 private:
 
     Environment *env;
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
 
-    typedef bool (Generator::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
+    typedef bool (Action::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
     std::map<std::string, memberFunction> actionFunctions;
 
-    bool createTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
-    bool deleteTable(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
+    bool generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
+    bool drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
     bool execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
 
 public:
-    Generator();
+    Action();
 
-    void generate(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
+    void runAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
 
 };
 

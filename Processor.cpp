@@ -7,7 +7,7 @@
 #include <string>
 #include <sys/stat.h>
 #include "Processor.h"
-#include "Generator.h"
+#include "Action.h"
 #include "file_exists.h"
 #include <linux/limits.h>
 
@@ -367,7 +367,7 @@ void Processor::process(const nlohmann::json &migrations) {
 
     std::cout << "migrations: " << migrations.dump(4) << std::endl;
 
-    Generator generator;
+    Action action;
     std::cout << "templates: " << actions.dump(4) << std::endl;
 
     //std::snprintf()
@@ -378,10 +378,10 @@ void Processor::process(const nlohmann::json &migrations) {
     int i = 0;
     for (json::const_iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
 
-        for (nlohmann::json::const_iterator inja_it = actions.begin(); inja_it != actions.end(); ++inja_it) {
+        for (nlohmann::json::const_iterator action_it = actions.begin(); action_it != actions.end(); ++action_it) {
             nlohmann::json target;
-            nlohmann::json inja = (*inja_it);
-            std::string key = inja_it.key();
+            nlohmann::json inja = (*action_it);
+            std::string key = action_it.key();
 
             std::cout << "Inja key:" << key <<  " i: " << i << std::endl;
 
@@ -392,7 +392,7 @@ void Processor::process(const nlohmann::json &migrations) {
                 continue;
             }
 
-            std::cout << "--- Running Migration: " << std::endl;
+            std::cout << "--- Running Actions: " << std::endl;
 
             std::string targetStr = target;
 
@@ -424,7 +424,7 @@ void Processor::process(const nlohmann::json &migrations) {
 
             write(targetFile, target);
 
-            generator.generate(target, *migration_it, *inja_it);
+            action.runAction(target, *migration_it, *action_it);
 
         }
 //
