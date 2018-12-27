@@ -125,9 +125,11 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
 
     std::string templateFileName = action.at("inga");
     std::string outputFileName = action.at("out");
-    std::string source = action.at("data");
     bool overwrite = action.at("overwrite");
-    nlohmann::json data = (source == "target") ? target : patch;
+
+    std::string source = action.at("data");
+    nlohmann::json data = (action.at("data") == "target") ? target : patch;
+
     data["map"] = nlohmann::json({});  // TODO: FIX THIS
 
 
@@ -141,12 +143,14 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
 
 bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::drop()" << std::endl;
+    std::cout << "action: " << action.dump(4) << std::endl;
 
     return true;
 }
 
 bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::execute()" << std::endl;
+    std::cout << "action: " << action.dump(4) << std::endl;
 
     return true;
 }
