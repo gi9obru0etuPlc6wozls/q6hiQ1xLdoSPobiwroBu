@@ -8,8 +8,8 @@
         {
             "name": "col02",
             "not null": true,
-            "precision": 512,
-            "type": "newstring"
+            "precision": 255,
+            "type": "string"
         },
         {
             "name": "esra",
@@ -22,32 +22,7 @@
             "type": "type04"
         },
         {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "esra",
+            "name": "col03",
             "precision": 512,
             "type": "oldtype"
         }
@@ -56,5 +31,5 @@
     "logged": true,
     "not exists": true,
     "temporary": true,
-    "unlogged": false
+    "unlogged": true
 }

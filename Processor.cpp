@@ -355,8 +355,11 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
                     try {
                         std::string newName = (*it).at("rename");
                         std::cout << "array it: " << (*it) << std::endl;
-                        target[columnMap[matchValue]]["name"] = newName;
-                        std::cout << "target matchKey: " << target[columnMap[matchValue]]["name"] << std::endl;
+                        if (columnMap.find(newName) != columnMap.end()) {
+                            throw MergeException("Duplicate column name.");
+                        }
+                        target[columnMap[matchValue]][matchKey] = newName;
+                        std::cout << "target matchKey: " << target[columnMap[matchValue]][matchKey] << std::endl;
                         continue;
                     }
                     catch (nlohmann::json::out_of_range &e) {

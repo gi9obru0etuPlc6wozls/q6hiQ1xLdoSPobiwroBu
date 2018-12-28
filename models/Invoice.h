@@ -24,24 +24,14 @@ public:
 
     uuid col01() const;
     void setCol01(const uuid &col01);
-    newstring col02() const;
-    void setCol02(const newstring &col02);
+    string col02() const;
+    void setCol02(const string &col02);
     oldtype esra() const;
     void setEsra(const oldtype &esra);
     type04 col04() const;
     void setCol04(const type04 &col04);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
+    oldtype col03() const;
+    void setCol03(const oldtype &col03);
     Invoice &operator=(const Invoice &other);
 
     bool create() override { return TAbstractModel::create(); }
@@ -51,15 +41,10 @@ public:
 
     static Invoice create(
         const uuid &col01,
-        const newstring &col02,
+        const string &col02,
         const oldtype &esra,
         const type04 &col04,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra
+        const oldtype &col03
     );
     static Invoice create(const QVariantMap &values);
     static Invoice get(const uuid &col01);

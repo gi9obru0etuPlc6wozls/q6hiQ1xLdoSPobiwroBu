@@ -65,64 +65,14 @@ void Invoice::setCol04(const QString &col04)
     d->col04 = col04;
 }
 
-QString Invoice::esra() const
+QString Invoice::col03() const
 {
-    return d->esra;
+    return d->col03;
 }
 
-void Invoice::setEsra(const QString &esra)
+void Invoice::setCol03(const QString &col03)
 {
-    d->esra = esra;
-}
-
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
-}
-
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
-}
-
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
-}
-
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
-}
-
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
+    d->col03 = col03;
 }
 //
 // Columns End
@@ -136,27 +86,17 @@ Invoice &Invoice::operator=(const Invoice &other)
 
 Invoice Invoice::create(
         const uuid &col01,
-        const newstring &col02,
+        const string &col02,
         const oldtype &esra,
         const type04 &col04,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra,
-        const oldtype &esra)
+        const oldtype &col03)
 {
     InvoiceObject obj;
     obj.col01 = col01;
     obj.col02 = col02;
     obj.esra = esra;
     obj.col04 = col04;
-    obj.esra = esra;
-    obj.esra = esra;
-    obj.esra = esra;
-    obj.esra = esra;
-    obj.esra = esra;
-    obj.esra = esra;
+    obj.col03 = col03;
     if (!obj.create()) {
         return Invoice();
     }
