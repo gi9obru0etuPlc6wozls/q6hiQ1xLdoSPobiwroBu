@@ -303,7 +303,7 @@ void Processor::rollback(const std::string &argument) {
 }
 
 void
-Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key, const std::string &path) {
+Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::string &key, const std::string &path) {
 
     int i = 0;
     std::map<std::string, int> columnMap;
@@ -316,7 +316,7 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
         case json::value_t::object:
             std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
 
-            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+            for (json::iterator it = patch.begin(); it != patch.end(); ++it) {
                 if (target.count(it.key())) {
                     merge(target[it.key()], *it, it.key(), newPath);
                 } else {
@@ -336,7 +336,7 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
                 ++i;
             }
 
-            for (json::const_iterator it = patch.begin(); it != patch.end(); ++it) {
+            for (json::iterator it = patch.begin(); it != patch.end(); ++it) {
                 matchValue = it.value().at(matchKey);
 
                 if (columnMap.find(matchValue) != columnMap.end()) {
@@ -356,7 +356,8 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
                         std::string newName = (*it).at("rename");
                         std::cout << "array it: " << (*it) << std::endl;
                         if (columnMap.find(newName) != columnMap.end()) {
-                            throw MergeException("Duplicate column name.");
+                            std::cerr << "Duplicate column name in rename." << std::endl;
+                            continue;
                         }
                         target[columnMap[matchValue]][matchKey] = newName;
                         std::cout << "target matchKey: " << target[columnMap[matchValue]][matchKey] << std::endl;
@@ -368,6 +369,11 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
 
                     merge(target[columnMap[matchValue]], *it);
                 } else {
+                    nlohmann::json o;
+                    o["add"] = true;
+
+
+
                     target.push_back(*it);
                 }
             }
@@ -390,7 +396,7 @@ Processor::merge(nlohmann::json &target, const nlohmann::json &patch, const std:
 }
 
 
-void Processor::process(const nlohmann::json &migrations) {
+void Processor::process(nlohmann::json &migrations) {
     std::cout << "Processor::process()" << std::endl;
 
     std::cout << "migrations: " << migrations.dump(4) << std::endl;
@@ -404,7 +410,7 @@ void Processor::process(const nlohmann::json &migrations) {
         throw new MergeException("Not json::value_t::object");
 
     int i = 0;
-    for (json::const_iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
+    for (json::iterator migration_it = migrations.begin(); migration_it != migrations.end(); ++migration_it, ++i) {
 
         for (nlohmann::json::const_iterator action_it = actions.begin(); action_it != actions.end(); ++action_it) {
             nlohmann::json target;

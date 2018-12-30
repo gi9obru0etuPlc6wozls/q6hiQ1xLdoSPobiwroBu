@@ -38,7 +38,7 @@ public:
 
     void scanMigrations();
 
-    void process(const nlohmann::json &migrations);
+    void process(nlohmann::json &migrations);
 
     void migrate(const std::string &argument);
     void rollback(const std::string &argument);
@@ -57,7 +57,7 @@ private:
     void write(const std::string &filename, const nlohmann::json &value);
     nlohmann::json read(const std::string &filename);
 
-    void merge(nlohmann::json &target, const nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
+    void merge(nlohmann::json &target, nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
 
     void scanMigrations(std::string &md);
     void setMigration(const int serial, const std::string &filename, const std::string &direction,
