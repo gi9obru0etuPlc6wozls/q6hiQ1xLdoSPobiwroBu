@@ -23,7 +23,7 @@ Action::Action() {
         std::string map = env->get_argument<std::string>(args, 0, x);
         std::string key = env->get_argument<std::string>(args, 1, x);
 
-        std::string r = "*** Map key not found ***";
+        std::string r = "*** map: Map key not found ***";
         try {
             r = x.at("map").at(map).at(key).get<std::string>();
         }
@@ -40,7 +40,7 @@ Action::Action() {
     env->add_callback("getMap", 1, [this](Parsed::Arguments args, json x) {
         std::string key = env->get_argument<std::string>(args, 0, x);
 
-        std::string r = "*** Key not found in map ***";
+        std::string r = "*** getMap: Map key not found ***";
         try {
             r = x.at("map").at(this->mapRoot).at(key).get<std::string>();
         }
