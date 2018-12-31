@@ -95,12 +95,12 @@ Invoice &Invoice::operator=(const Invoice &other)
 }
 
 Invoice Invoice::create(
-        const uuid &col01,
-        const string &col02,
-        const oldtype &esra,
-        const type04 &col04,
-        const oldtype &col03,
-        const delete_me &col05)
+        const *** Map key not found *** &col01,
+        const *** Map key not found *** &col02,
+        const *** Map key not found *** &esra,
+        const *** Map key not found *** &col04,
+        const *** Map key not found *** &col03,
+        const *** Map key not found *** &col05)
 {
     InvoiceObject obj;
     obj.col01 = col01;

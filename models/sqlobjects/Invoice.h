@@ -10,12 +10,12 @@
 class T_MODEL_EXPORT Invoice : public TSqlObject, public QSharedData
 {
 public:
-    uuid col01;
-    string col02;
-    oldtype esra;
-    type04 col04;
-    oldtype col03;
-    delete_me col05;
+    *** Map key not found *** col01;
+    *** Map key not found *** col02;
+    *** Map key not found *** esra;
+    *** Map key not found *** col04;
+    *** Map key not found *** col03;
+    *** Map key not found *** col05;
     int lock_revision {0}; 
 
 
@@ -34,18 +34,18 @@ public:
 
 private:    /*** Don't modify below this line ***/
     Q_OBJECT
-    Q_PROPERTY(uuid col01  READ getcol01 WRITE setcol01)
-    T_DEFINE_PROPERTY(uuid, col01 )
-    Q_PROPERTY(string col02  READ getcol02 WRITE setcol02)
-    T_DEFINE_PROPERTY(string, col02 )
-    Q_PROPERTY(oldtype esra  READ getesra WRITE setesra)
-    T_DEFINE_PROPERTY(oldtype, esra )
-    Q_PROPERTY(type04 col04  READ getcol04 WRITE setcol04)
-    T_DEFINE_PROPERTY(type04, col04 )
-    Q_PROPERTY(oldtype col03  READ getcol03 WRITE setcol03)
-    T_DEFINE_PROPERTY(oldtype, col03 )
-    Q_PROPERTY(delete_me col05  READ getcol05 WRITE setcol05)
-    T_DEFINE_PROPERTY(delete_me, col05 )
+    Q_PROPERTY(*** Map key not found *** col01  READ getcol01 WRITE setcol01)
+    T_DEFINE_PROPERTY(*** Map key not found ***, col01 )
+    Q_PROPERTY(*** Map key not found *** col02  READ getcol02 WRITE setcol02)
+    T_DEFINE_PROPERTY(*** Map key not found ***, col02 )
+    Q_PROPERTY(*** Map key not found *** esra  READ getesra WRITE setesra)
+    T_DEFINE_PROPERTY(*** Map key not found ***, esra )
+    Q_PROPERTY(*** Map key not found *** col04  READ getcol04 WRITE setcol04)
+    T_DEFINE_PROPERTY(*** Map key not found ***, col04 )
+    Q_PROPERTY(*** Map key not found *** col03  READ getcol03 WRITE setcol03)
+    T_DEFINE_PROPERTY(*** Map key not found ***, col03 )
+    Q_PROPERTY(*** Map key not found *** col05  READ getcol05 WRITE setcol05)
+    T_DEFINE_PROPERTY(*** Map key not found ***, col05 )
 };
 
 #endif // INVOICE_H

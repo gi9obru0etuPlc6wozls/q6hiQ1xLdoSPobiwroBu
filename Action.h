@@ -26,6 +26,7 @@ class Action {
 private:
 
     Environment *env;
+    std::string mapRoot;
 
     std::string envRoot = "../";
 

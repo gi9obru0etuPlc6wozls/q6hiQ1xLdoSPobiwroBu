@@ -22,18 +22,18 @@ public:
     Invoice(const InvoiceObject &object);
     ~Invoice();
 
-    uuid col01() const;
-    void setCol01(const uuid &col01);
-    string col02() const;
-    void setCol02(const string &col02);
-    oldtype esra() const;
-    void setEsra(const oldtype &esra);
-    type04 col04() const;
-    void setCol04(const type04 &col04);
-    oldtype col03() const;
-    void setCol03(const oldtype &col03);
-    delete_me col05() const;
-    void setCol05(const delete_me &col05);
+    *** Map key not found *** col01() const;
+    void setCol01(const *** Map key not found *** &col01);
+    *** Map key not found *** col02() const;
+    void setCol02(const *** Map key not found *** &col02);
+    *** Map key not found *** esra() const;
+    void setEsra(const *** Map key not found *** &esra);
+    *** Map key not found *** col04() const;
+    void setCol04(const *** Map key not found *** &col04);
+    *** Map key not found *** col03() const;
+    void setCol03(const *** Map key not found *** &col03);
+    *** Map key not found *** col05() const;
+    void setCol05(const *** Map key not found *** &col05);
     Invoice &operator=(const Invoice &other);
 
     bool create() override { return TAbstractModel::create(); }
@@ -42,15 +42,15 @@ public:
     bool remove() override { return TAbstractModel::remove(); }
 
     static Invoice create(
-        const uuid &col01,
-        const string &col02,
-        const oldtype &esra,
-        const type04 &col04,
-        const oldtype &col03,
-        const delete_me &col05
+        const *** Map key not found *** &col01,
+        const *** Map key not found *** &col02,
+        const *** Map key not found *** &esra,
+        const *** Map key not found *** &col04,
+        const *** Map key not found *** &col03,
+        const *** Map key not found *** &col05
     );
     static Invoice create(const QVariantMap &values);
-    static Invoice get(const uuid &col01);
+    static Invoice get(const *** Map key not found *** &col01);
     static int count();
     static QList<Invoice> getAll();
     static QList<Invoice> getAll(const int limit,const int offset);

@@ -23,11 +23,28 @@ Action::Action() {
         std::string map = env->get_argument<std::string>(args, 0, x);
         std::string key = env->get_argument<std::string>(args, 1, x);
 
-        std::string r = key;
+        std::string r = "*** Map key not found ***";
         try {
             r = x.at("map").at(map).at(key).get<std::string>();
         }
-        catch (...) { ; // do nothing
+        catch (nlohmann::json::out_of_range &e) { ; // do nothing
+        }
+        return r;
+    });
+
+    env->add_callback("setMapRoot", 1, [this](Parsed::Arguments args, json x) {
+        this->mapRoot = env->get_argument<std::string>(args, 0, x);
+        return this->mapRoot;
+    });
+
+    env->add_callback("getMap", 1, [this](Parsed::Arguments args, json x) {
+        std::string key = env->get_argument<std::string>(args, 0, x);
+
+        std::string r = "*** Key not found in map ***";
+        try {
+            r = x.at("map").at(this->mapRoot).at(key).get<std::string>();
+        }
+        catch (nlohmann::json::out_of_range &e) { ; // do nothing
         }
         return r;
     });
