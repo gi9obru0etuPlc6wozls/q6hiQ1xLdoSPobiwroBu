@@ -35,9 +35,13 @@ actions:
     out: sql/alter_{{ uCamel(alter table) }}.sql
     overwrite: true
   - action: execute
+    data: patch
     run: /usr/bin/psql
     env:
+      - PGPASSWORD=dbpass
     args:
+      - -f
+      - "../sql/alter_{{ uCamel(alter table) }}.sql"
       - -h
       - 127.0.0.1
       - -U

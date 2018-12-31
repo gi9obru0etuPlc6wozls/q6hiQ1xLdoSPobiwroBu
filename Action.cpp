@@ -143,13 +143,24 @@ bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, 
     std::vector<char *> argVector;
     std::vector<char *> envVector;
 
+
+    nlohmann::json data;
+
+    try {
+        data = (action.at("data") == "target") ? target : patch;
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        ; // do nothing
+    }
+
     std::string run = action.at("run");
     argVector.push_back((char *) run.c_str());
 
     try {
         nlohmann::json args = action.at("args");
-        for (auto arg = args.begin(); arg != args.end(); ++arg) {
-            std::string *s = new std::string(*arg);
+        for (auto arg_it = args.begin(); arg_it != args.end(); ++arg_it) {
+            std::string *s = new std::string(env->render(*arg_it, data));
+            std::cout << "s: " << *s << std::endl;
             argVector.push_back((char *) s->c_str());
         }
     }
@@ -161,8 +172,9 @@ bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, 
     //
     try {
         nlohmann::json envs = action.at("env");
-        for (auto env = envs.begin(); env != envs.end(); ++env) {
-            std::string *s = new std::string(*env);
+        for (auto env_it = envs.begin(); env_it != envs.end(); ++env_it) {
+            std::string *s = new std::string(env->render(*env_it, data));
+            std::cout << "s: " << *s << std::endl;
             envVector.push_back((char *) s->c_str());
         }
     }
