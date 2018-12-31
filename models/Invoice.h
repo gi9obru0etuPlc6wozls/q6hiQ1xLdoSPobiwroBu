@@ -32,6 +32,8 @@ public:
     void setCol04(const type04 &col04);
     oldtype col03() const;
     void setCol03(const oldtype &col03);
+    delete_me col05() const;
+    void setCol05(const delete_me &col05);
     Invoice &operator=(const Invoice &other);
 
     bool create() override { return TAbstractModel::create(); }
@@ -44,7 +46,8 @@ public:
         const string &col02,
         const oldtype &esra,
         const type04 &col04,
-        const oldtype &col03
+        const oldtype &col03,
+        const delete_me &col05
     );
     static Invoice create(const QVariantMap &values);
     static Invoice get(const uuid &col01);

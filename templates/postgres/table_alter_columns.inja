@@ -1,0 +1,25 @@
+## for column in columns
+{{ column/name }} --
+## if existsIn(column, "column_add_flag")
+## if column/column_add_flag
+ Adding...
+## else
+ Updating...
+## endif
+##else
+## if existsIn(column, "rename")
+ALTER TABLE {{ alter table }} RENAME {{ column/name }} TO {{ column/rename }};
+## endif
+## if existsIn(column, "type") and column/type == "drop"
+ALTER TABLE {{ alter table }} DROP COLUMN {{ column/name }};
+## endif
+## endif
+## if not loop/is_last
+,
+
+## endif
+
+## endfor
+
+);
+

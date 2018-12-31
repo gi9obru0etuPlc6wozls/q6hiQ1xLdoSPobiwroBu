@@ -16,8 +16,6 @@ up:
   - name: col03
     type: oldtype
     precision: 512
-- create table: invoice_items
-  columns:
-  - name: item_no
-    type: string
-    precision: 255
+  - name: col05
+    type: delete_me
+    precision: 512

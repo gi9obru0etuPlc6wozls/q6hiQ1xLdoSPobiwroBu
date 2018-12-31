@@ -1,22 +1,19 @@
 --- !<tag:framesquared.com,2015:migration>
 serial: 7
 up:
-- create table: invoice
+- alter table: invoice
   temporary: true
   not exists: true
   unlogged: false
   columns:
-    - name: col02
-      type: newstring
-      precision: 512
-      not null: true
-    - name: col03
-      rename: esra
-    - name: col04
-      type: type04
-      precision: 1235
-- create table: invoice_items
-  columns:
-    - name: item_no
-      type: string
-      precision: 255
+  - name: col02
+    type: newstring
+    precision: 512
+    not null: true
+  - name: col03
+    rename: esra
+  - name: col04
+    type: type04
+    precision: 1235
+  - name: col05
+    type: drop

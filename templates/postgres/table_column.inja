@@ -1,0 +1,21 @@
+## if existsIn(column, "auto") and column/auto
+
+## if column/type == "uuid"
+
+    {{ column/name }} UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY
+## else
+
+    {{ column/name }} SERIAL PRIMARY KEY
+## endif
+## else
+    {{ column/name }} {{ map("db_type", column/type) }}
+## if existsIn(column, "precision") and not column/precision == ""
+({{column/precision}})
+## endif
+## if existsIn(column, "not_null") and column/not_null
+ NOT NULL
+## endif
+## if existsIn(column, "reference") and column/reference
+ REFERENCES {{ regex_replace(column/name, "_id$", "") }} (id)
+## endif
+## endif

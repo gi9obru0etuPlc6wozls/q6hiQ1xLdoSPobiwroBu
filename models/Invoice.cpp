@@ -74,6 +74,16 @@ void Invoice::setCol03(const QString &col03)
 {
     d->col03 = col03;
 }
+
+QString Invoice::col05() const
+{
+    return d->col05;
+}
+
+void Invoice::setCol05(const QString &col05)
+{
+    d->col05 = col05;
+}
 //
 // Columns End
 //
@@ -89,7 +99,8 @@ Invoice Invoice::create(
         const string &col02,
         const oldtype &esra,
         const type04 &col04,
-        const oldtype &col03)
+        const oldtype &col03,
+        const delete_me &col05)
 {
     InvoiceObject obj;
     obj.col01 = col01;
@@ -97,6 +108,7 @@ Invoice Invoice::create(
     obj.esra = esra;
     obj.col04 = col04;
     obj.col03 = col03;
+    obj.col05 = col05;
     if (!obj.create()) {
         return Invoice();
     }

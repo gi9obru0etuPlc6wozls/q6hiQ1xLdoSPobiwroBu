@@ -4,6 +4,7 @@
 
 
 #include <zconf.h>
+#include <sys/wait.h>
 #include "Action.h"
 #include "file_exists.h"
 
@@ -95,7 +96,7 @@ std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
 
 bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::generate()" << std::endl;
-//    std::cout << "action: " << action.dump(4) << std::endl;
+    std::cout << "action: " << action.dump(4) << std::endl;
 
     std::string templateFileName = action.at("inga");
     bool overwrite = action.at("overwrite");
@@ -119,8 +120,8 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
         std::cout << "Generating: " << envRoot + outputFileName << std::endl;
     }
 
-//    std::cout << "templateFileName:" << templateFileName << std::endl;
-//    std::cout << "data:" << data << std::endl;
+    std::cout << "templateFileName:" << templateFileName << std::endl;
+    std::cout << "data:" << data.dump(4) << std::endl;
 
     Template temp = env->parse_template(templateFileName);
     env->write(temp, data, outputFileName);
@@ -138,6 +139,51 @@ bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, con
 bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::execute()" << std::endl;
     std::cout << "action: " << action.dump(4) << std::endl;
+
+    std::vector<char *> argVector;
+    std::vector<char *> envVector;
+
+    std::string run = action.at("run");
+    argVector.push_back((char *) run.c_str());
+
+    try {
+        nlohmann::json args = action.at("args");
+        for (auto arg = args.begin(); arg != args.end(); ++arg) {
+            std::string *s = new std::string(*arg);
+            argVector.push_back((char *) s->c_str());
+        }
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        ; // do nothing
+    }
+    argVector.push_back(nullptr);
+
+    //
+    try {
+        nlohmann::json envs = action.at("env");
+        for (auto env = envs.begin(); env != envs.end(); ++env) {
+            std::string *s = new std::string(*env);
+            envVector.push_back((char *) s->c_str());
+        }
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        ; // do nothing
+    }
+    envVector.push_back(nullptr);
+
+    int status;
+    int pid = fork();
+
+    if (pid == 0) {
+        execve(run.c_str(), argVector.data(), envVector.data());
+    }
+
+    std::cout << "Waiting for execute to complete..." << std::endl;
+
+    if (waitpid(pid, &status, 0) == -1) {
+        std::cerr << "Child returned error." << std::endl;
+        return false;
+    }
 
     return true;
 }

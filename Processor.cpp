@@ -349,7 +349,7 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                         }
                     }
                     catch (nlohmann::json::out_of_range &e) {
-                        ;
+                        ;  // do nothing
                     }
 
                     try {
@@ -364,17 +364,14 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                         continue;
                     }
                     catch (nlohmann::json::out_of_range &e) {
-                        ;
+                        ;  // do nothing
                     }
 
                     merge(target[columnMap[matchValue]], *it);
+                    (*it)["column_add_flag"] = false;
                 } else {
-                    nlohmann::json o;
-                    o["add"] = true;
-
-
-
                     target.push_back(*it);
+                    (*it)["column_add_flag"] = true;
                 }
             }
 
@@ -451,10 +448,12 @@ void Processor::process(nlohmann::json &migrations) {
                 }
             }
             std::cout << "Pre-merge Target: " << target.dump(4) << std::endl;
+            std::cout << "Pre-merge Patch: " << migration_it->dump(4) << std::endl;
 
             merge(target, (*migration_it));
 
             std::cout << "Post-merge Target: " << target.dump(4) << std::endl;
+            std::cout << "Post-merge Patch: " << migration_it->dump(4) << std::endl;
 
             write(targetFile, target);
 

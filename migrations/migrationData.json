@@ -26,22 +26,17 @@
                             "name": "col03",
                             "precision": 512,
                             "type": "oldtype"
+                        },
+                        {
+                            "name": "col05",
+                            "precision": 512,
+                            "type": "delete_me"
                         }
                     ],
                     "create table": "invoice",
                     "not exists": true,
                     "temporary": true,
                     "unlogged": true
-                },
-                {
-                    "columns": [
-                        {
-                            "name": "item_no",
-                            "precision": 255,
-                            "type": "string"
-                        }
-                    ],
-                    "create table": "invoice_items"
                 }
             ]
         },
@@ -50,6 +45,7 @@
             "serial": 7,
             "up": [
                 {
+                    "alter table": "invoice",
                     "columns": [
                         {
                             "name": "col02",
@@ -65,22 +61,15 @@
                             "name": "col04",
                             "precision": 1235,
                             "type": "type04"
+                        },
+                        {
+                            "name": "col05",
+                            "type": "drop"
                         }
                     ],
-                    "create table": "invoice",
                     "not exists": true,
                     "temporary": true,
                     "unlogged": false
-                },
-                {
-                    "columns": [
-                        {
-                            "name": "item_no",
-                            "precision": 255,
-                            "type": "string"
-                        }
-                    ],
-                    "create table": "invoice_items"
                 }
             ]
         },

@@ -23,11 +23,26 @@ actions:
     data: target
     out: models/sqlobjects/{{ uCamel(create table) }}.h
     overwrite: true
-  alter table:
-  - inga: ../templates/tf/alter.inja
-    data: patch
-    out: alter.txt
+  - action: generate
+    inga: templates/postgres/table_create.inja
+    data: target
+    out: sql/{{ uCamel(create table) }}.sql
     overwrite: true
+  alter table:
+  - action: generate
+    inga: templates/postgres/table_alter_columns.inja
+    data: patch
+    out: sql/alter_{{ uCamel(alter table) }}.sql
+    overwrite: true
+  - action: execute
+    run: /usr/bin/psql
+    env:
+    args:
+      - -h
+      - 127.0.0.1
+      - -U
+      - dbadmin
+      - postgres
 map:
   db_type:
     string: character varying

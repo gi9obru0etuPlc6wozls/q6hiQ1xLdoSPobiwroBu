@@ -15,6 +15,7 @@ public:
     oldtype esra;
     type04 col04;
     oldtype col03;
+    delete_me col05;
     int lock_revision {0}; 
 
 
@@ -23,7 +24,8 @@ public:
         Col02,
         Esra,
         Col04,
-        Col03
+        Col03,
+        Col05
     };
 
     int primaryKeyIndex() const override { return Col01; }
@@ -42,6 +44,8 @@ private:    /*** Don't modify below this line ***/
     T_DEFINE_PROPERTY(type04, col04 )
     Q_PROPERTY(oldtype col03  READ getcol03 WRITE setcol03)
     T_DEFINE_PROPERTY(oldtype, col03 )
+    Q_PROPERTY(delete_me col05  READ getcol05 WRITE setcol05)
+    T_DEFINE_PROPERTY(delete_me, col05 )
 };
 
 #endif // INVOICE_H
