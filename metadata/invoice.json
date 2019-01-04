@@ -21,11 +21,6 @@
             "name": "col04",
             "precision": 1235,
             "type": "type04"
-        },
-        {
-            "name": "col03",
-            "precision": 512,
-            "type": "oldtype"
         }
     ],
     "create table": "invoice",

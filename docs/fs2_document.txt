@@ -1,0 +1,19 @@
+---
+abstract: |
+    FrameSquared performs database schema version control and scaffold
+    generation for Postgres databases and the Treefrog C++ MVC framework
+    using YAML to
+author:
+- 'John W. Carbone'
+title: FrameSquared
+---
+
+\maketitle
+Introduction
+============
+
+The rise of Agile software development methodologies has been
+transformative. Continuous integration, deployment and delivery has met
+the challenge of regular changes in requirements. Unpredictable and
+changing requirements have been factored into the development process to
+enable software architectures to evolve gracefully.

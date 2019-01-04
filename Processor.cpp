@@ -220,6 +220,7 @@ bool Processor::start() {
     std::cout << "Processor::start()" << std::endl;
 
     if (it.is_null()) {
+//    if (it != json::iterator()) {
         it = migrationData.at("migrations").begin();
     } else {
         ++it;

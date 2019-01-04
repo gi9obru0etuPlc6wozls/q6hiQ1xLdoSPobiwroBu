@@ -45,26 +45,6 @@ void Invoice::setCol02(const QString &col02)
     d->col02 = col02;
 }
 
-QString Invoice::esra() const
-{
-    return d->esra;
-}
-
-void Invoice::setEsra(const QString &esra)
-{
-    d->esra = esra;
-}
-
-QString Invoice::col04() const
-{
-    return d->col04;
-}
-
-void Invoice::setCol04(const QString &col04)
-{
-    d->col04 = col04;
-}
-
 QString Invoice::col03() const
 {
     return d->col03;
@@ -95,18 +75,14 @@ Invoice &Invoice::operator=(const Invoice &other)
 }
 
 Invoice Invoice::create(
-        const *** Map key not found *** &col01,
-        const *** Map key not found *** &col02,
-        const *** Map key not found *** &esra,
-        const *** Map key not found *** &col04,
-        const *** Map key not found *** &col03,
-        const *** Map key not found *** &col05)
+        const *** map: Map key not found *** &col01,
+        const *** map: Map key not found *** &col02,
+        const *** map: Map key not found *** &col03,
+        const *** map: Map key not found *** &col05)
 {
     InvoiceObject obj;
     obj.col01 = col01;
     obj.col02 = col02;
-    obj.esra = esra;
-    obj.col04 = col04;
     obj.col03 = col03;
     obj.col05 = col05;
     if (!obj.create()) {
