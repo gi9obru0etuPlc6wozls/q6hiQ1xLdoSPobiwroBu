@@ -1,17 +1,83 @@
 #include <iostream>
+#include <getopt.h>
 #include "Processor.h"
 
+static struct option options[] = {
+        {"migrate",  optional_argument, 0, 'm'},
+        {"rollback", optional_argument, 0, 'r'},
+        {"config",   required_argument, 0, 'c'},
+        {"scan",     no_argument,       0, 's'},
+        {"help",     no_argument,       0, 'h'},
+        {0,          no_argument,       0, 0  },
+};
 
-int main() {
+enum Operation {
+    none,
+    migrate,
+    rollback
+};
 
-    Processor p("../config.yaml"); // <---
-    p.scanMigrations(); // // fs2 scan
+int main(int argc, char **argv) {
 
-    p.migrate("+2");
+    Operation op = none;
+    int scan = false;
+    char default_config[] = "../config.yaml";
+    char *config = default_config;
+    char *argument = nullptr;
 
-    // fs2 migrate
-    // fs2 migrate +1
-    // fs2 migrate 5
+    while (true) {
+        int option_index = 0;
+        int c = getopt_long(argc, argv, "", options, &option_index);
+        if (c == -1) break;
+        printf("c: %c\n",c);
+        switch (c) {
+            case 's':
+                scan = true;
+                break;
+            case 'c':
+                config = optarg;
+                break;
+            case 'm':
+                if (op != none) {
+                    std::cout << "Cannot migrate and rollback at the same time." << std::endl;
+                    exit(1);
+                }
+                argument = optarg;
+                op = migrate;
+                break;
+            case 'r':
+                if (op != none) {
+                    std::cout << "Cannot migrate and rollback at the same time." << std::endl;
+                    exit(1);
+                }
+                argument = optarg;
+                op = rollback;
+                break;
+            default:
+                std::cout << "Invalid command line argument." << std::endl;
+                exit(1);
+                break;
+        }
+    }
+    std::cout << "Config: " << config << std::endl;
+    Processor p(config); // <---
+
+    if (scan) {
+        p.scanMigrations(); // // fs2 scan
+    }
+
+    switch(op) {
+        case migrate:
+            std::cout << "Migrating: " << argument << std::endl;
+            p.migrate(argument);
+            break;
+        case rollback:
+            std::cout << "Rolling back: " << argument << std::endl;
+            p.rollback(argument);
+            break;
+        default:
+            break;
+    }
 
     return 0;
 }
