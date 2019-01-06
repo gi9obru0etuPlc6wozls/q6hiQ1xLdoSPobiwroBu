@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.17)  5 JAN 2019 23:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.17)  6 JAN 2019 00:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -354,6 +354,9 @@ Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 \hpos=\count110
 \vpos=\count111
 )
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/courier.sty
+Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
+)
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count112
 \lst@gtempboxa=\box32
@@ -382,22 +385,22 @@ Package: listings 2015/06/04 1.6 (Carsten Heinz)
 (./fs2_document.aux)
 \openout1 = `fs2_document.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -429,7 +432,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 21.
+Package hyperref Info: Link coloring OFF on input line 23.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -439,9 +442,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count126
 )
-LaTeX Info: Redefining \ref on input line 21.
-LaTeX Info: Redefining \pageref on input line 21.
-LaTeX Info: Redefining \nameref on input line 21.
+LaTeX Info: Redefining \ref on input line 23.
+LaTeX Info: Redefining \pageref on input line 23.
+LaTeX Info: Redefining \nameref on input line 23.
 
 (./fs2_document.out) (./fs2_document.out)
 \@outlinefile=\write4
@@ -449,103 +452,153 @@ LaTeX Info: Redefining \nameref on input line 21.
 
 \c@lstlisting=\count127
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 25.
+(Font)              <12> on input line 27.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 25.
+(Font)              <8> on input line 27.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 25.
+(Font)              <6> on input line 27.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 27.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 25.
+(Font)              <7> on input line 27.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 25.
-<cc-by-sa.png, id=17, 88.33pt x 31.11626pt>
+(Font)              <5> on input line 27.
+<cc-by-sa.png, id=21, 88.33pt x 31.11626pt>
 File: cc-by-sa.png Graphic file (type png)
 <use cc-by-sa.png>
-Package pdftex.def Info: cc-by-sa.png  used on input line 34.
+Package pdftex.def Info: cc-by-sa.png  used on input line 36.
 (pdftex.def)             Requested size: 35.33136pt x 12.44627pt.
 
-Overfull \hbox (0.43585pt too wide) in paragraph at lines 47--48
+Overfull \hbox (0.43585pt too wide) in paragraph at lines 49--50
 \OT1/cmr/m/n/10 database schema re-vi-sion con-trol and migration[[]]. Refac-to
 r-ing database schema
  []
 
-LaTeX Font Info:    Try loading font information for OT1+bch on input line 52.
+LaTeX Font Info:    Try loading font information for OT1+bch on input line 54.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1bch.fd
 File: ot1bch.fd 2004/10/18 font definitions for OT1/bch.
 ) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  </usr/share/texlive/texmf-dist/tex/latex/stex/mikoslides/cc-by-sa.png>]
-<fs2_merge_1a.png, id=52, 388.45125pt x 515.9275pt>
+<fs2_merge_1a.png, id=55, 388.45125pt x 515.9275pt>
 File: fs2_merge_1a.png Graphic file (type png)
 <use fs2_merge_1a.png>
-Package pdftex.def Info: fs2_merge_1a.png  used on input line 70.
+Package pdftex.def Info: fs2_merge_1a.png  used on input line 87.
 (pdftex.def)             Requested size: 174.80144pt x 232.16522pt.
  [2pdfTeX warning (ext4): destination with the same identifier (name{figure.1})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.84 
-      <./fs2_merge_1a.png (PNG copy)>]
-Underfull \hbox (badness 3568) in paragraph at lines 86--90
+l.90 
+     ]
+Underfull \hbox (badness 10000) in paragraph at lines 103--107
 []\OT1/cmr/m/n/10 Sten Pitet \OT1/cmr/m/it/10 Con-tin-u-ous in-te-gra-tion vs. 
-con-tin-u-ous de-liv-ery vs. con-
+con-tin-u-ous de-
  []
 
 
-Underfull \hbox (badness 3884) in paragraph at lines 102--105
-[]\OT1/cmr/m/it/10 Scaffoling (pro-gram-ming) []$\OT1/cmtt/m/n/10 https : / / e
-n . wikipedia . org / wiki / Scaffold _
+Underfull \hbox (badness 10000) in paragraph at lines 103--107
+\OT1/cmr/m/it/10 liv-ery vs. con-tin-u-ous de-ploy-ment []$\OT1/pcr/m/n/10 http
+s : / / www .
  []
 
 
-Overfull \hbox (10.55266pt too wide) in paragraph at lines 107--111
-\OT1/cmtt/m/n/10 using-[]scaffolding-[]to-[]create-[]mvc-[]applications-[]with-
-[]visual-[]studio/$[]
+Underfull \hbox (badness 10000) in paragraph at lines 103--107
+\OT1/pcr/m/n/10 atlassian . com / continuous-[]delivery / principles /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 113--117
+Underfull \hbox (badness 10000) in paragraph at lines 103--107
+\OT1/pcr/m/n/10 continuous-[]integration-[]vs-[]delivery-[]vs-[]deployment$[] \
+OT1/cmr/m/n/10 At-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 119--122
+[]\OT1/cmr/m/it/10 Scaffoling (pro-gram-ming) []$\OT1/pcr/m/n/10 https : / / en
+ . wikipedia . org / wiki /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--128
+[]\OT1/cmr/m/n/10 Nick Har-ri-son \OT1/cmr/m/it/10 Us-ing Scaf-fold-ing to Cre-
+ate MVC
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--128
+\OT1/cmr/m/it/10 Ap-pli-ca-tions with Vi-sual Stu-dio []$\OT1/pcr/m/n/10 https 
+: / / www .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--128
+\OT1/pcr/m/n/10 red-[]gate . com / simple-[]talk / dotnet / asp-[]net /
+ []
+
+
+Overfull \hbox (58.55559pt too wide) in paragraph at lines 124--128
+\OT1/pcr/m/n/10 using-[]scaffolding-[]to-[]create-[]mvc-[]applications-[]with-[
+]visual-[]studio/$[]
+ []
+
+[3pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.128 
+       <./fs2_merge_1a.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 130--134
 []\OT1/cmr/m/n/10 Paul Sher-man \OT1/cmr/m/it/10 How Single-Page Ap-pli-ca-tion
 s Work:Getting to
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 113--117
+Underfull \hbox (badness 10000) in paragraph at lines 130--134
 \OT1/cmr/m/it/10 know the browser be-hav-iors and APIs re-spon-si-ble for pow-e
-r-
+r-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 113--117
-\OT1/cmr/m/it/10 ing more and more web pages []$\OT1/cmtt/m/n/10 https : / / me
-dium . com / @pshrmn /
+Underfull \hbox (badness 10000) in paragraph at lines 130--134
+\OT1/cmr/m/it/10 more and more web pages []$\OT1/pcr/m/n/10 https : / / medium 
+. com / @pshrmn /
  []
 
 
-Underfull \hbox (badness 4792) in paragraph at lines 113--117
-\OT1/cmtt/m/n/10 demystifying-[]single-[]page-[]applications-[]3068d0555d46$[] 
-\OT1/cmr/m/n/10 mediun.com,
+Underfull \hbox (badness 10000) in paragraph at lines 130--134
+\OT1/pcr/m/n/10 demystifying-[]single-[]page-[]applications-[]3068d0555d46$[]
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 139.
-[3]
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 139.
+
+Underfull \hbox (badness 1596) in paragraph at lines 136--140
+[]\OT1/cmr/m/n/10 Inja \OT1/cmr/m/it/10 A Tem-plate En-gine for Mod-ern C++ []$
+\OT1/pcr/m/n/10 https : / / github . com /
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
+[4]
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 156.
  (./fs2_document.xwm) (./fs2_document.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 139.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 139.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
 Package rerunfilecheck Info: File `fs2_document.out' has not changed.
-(rerunfilecheck)             Checksum: F0C477ED2834486DD921CF52EAFD63F8;160.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 139.
+(rerunfilecheck)             Checksum: B944A942CFAB430944CFA45F2CE74EDB;209.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
  ) 
 Here is how much of TeX's memory you used:
- 11656 strings out of 494586
- 186703 string characters out of 6177801
- 313812 words of memory out of 5000000
- 15167 multiletter control sequences out of 15000+600000
- 10976 words of font info for 35 fonts, out of 8000000 for 9000
+ 11712 strings out of 494586
+ 187577 string characters out of 6177801
+ 346982 words of memory out of 5000000
+ 15201 multiletter control sequences out of 15000+600000
+ 12016 words of font info for 38 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 67i,13n,68p,500b,1029s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,13n,68p,500b,1160s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/bitstrea/charter/bchb8a.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/f
@@ -554,13 +607,11 @@ pe1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on fs2_document.pdf (3 pages, 144623 bytes).
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on fs2_document.pdf (4 pages, 138599 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
- 107 compressed objects within 2 object streams
- 22 named destinations out of 1000 (max. 500000)
- 35 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 148 PDF objects out of 1000 (max. 8388607)
+ 128 compressed objects within 2 object streams
+ 37 named destinations out of 1000 (max. 500000)
+ 43 words of extra memory for PDF output out of 10000 (max. 10000000)
 
