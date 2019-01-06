@@ -1,21 +1,25 @@
 \documentclass[]{article}
+\usepackage[printwatermark]{xwatermark}
 \usepackage{hyperref}
+\usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{cclicenses}
 \usepackage{listings}
 
+\newwatermark[allpages,color=red!15,angle=45,scale=3.5,xpos=0,ypos=0]{DRAFT}
+
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{framextopmargin=50pt,frame=bottomline}
 %opening
 \title{FrameSquared}
 \author{
 	  Carbone, John\\
 	\texttt{john@qlcorp.net}
-	\and
-	Erimez, Esra\\
-	\texttt{eerimez@e24x7inc.com}
 }
 
 \begin{document}
+	
 
 \maketitle
 \begin{tabular}{|p{.9\textwidth}|}
@@ -46,9 +50,12 @@ The nature of MVC frameworks lends itself to the use of boilerplate code. Some M
 
 FrameSquared is tool that can generate code to be used as final source files and/or migrations based on serial numbers and up/down direction and can execute programs. FrameSquared uses the notion of "serial" numbers and "direction" to determine whether a migration "action" should be executed.
 
+\section{Getting Started}
 
-\section{Required Libraries}
-FrameSquared utilizes the Inja\cite{inja} template engine which in turn uses the nlohmann JSON library\cite{nlohmann}. FrameSquared also makes heavy use to the nlohmann JSON library. FrameSquared also uses the jbeder YAML\cite{jbeder} library.
+\subsection{Required Libraries}
+FrameSquared utilizes the Inja\cite{inja} template engine. Inja and FrameSquared both rely on the nlohmann JSON library\cite{nlohmann}. FrameSquared also uses the jbeder YAML\cite{jbeder} library.
+
+
 
 
 
@@ -56,11 +63,11 @@ FrameSquared utilizes the Inja\cite{inja} template engine which in turn uses the
 Put your code here.
 \end{lstlisting}
 
-
+xxxxx
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.45]{fs2_merge.png}
+	\includegraphics[scale=0.45]{fs2_merge_1a.png}
 	\caption{Merge Overview}
 \end{figure}
 
