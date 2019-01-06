@@ -1,17 +1,21 @@
 \documentclass[]{article}
 \usepackage[printwatermark]{xwatermark}
 \usepackage{hyperref}
-\usepackage{xcolor}
+\usepackage{xcolor,colortbl}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{cclicenses}
 \usepackage{courier}
 \usepackage{listings}
 
-\newwatermark[allpages,color=red!15,angle=45,scale=3.5,xpos=0,ypos=0]{DRAFT}
+\newwatermark[allpages,color=red!15,angle=45,scale=3.5,xpos=-10,ypos=-25]{DRAFT}
 
 \lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
 \lstset{framextopmargin=1pt,frame=single}
+
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{LightYellow}{rgb}{1,1,0.88}
+\definecolor{LightRed}{rgb}{1,0.90,0.90}
 
 %opening
 \title{FrameSquared}
@@ -26,6 +30,7 @@
 \maketitle
 \begin{tabular}{|p{.9\textwidth}|}
 	\hline
+	\rowcolor{LightYellow}
 	\begin{center}
 		This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
 	\end{center}
@@ -42,6 +47,15 @@
 FrameSquared performs database schema version control and scaffold generation for Postgres databases and the Treefrog C++ MVC framework using YAML to 
 \end{abstract}
 
+\begin{tabular}{|p{.9\textwidth}|}
+	\hline
+	\rowcolor{LightRed}
+	\begin{center}
+		FrameSquared is very much a work in progress at this time and is not ready for prime time. Use at your own risk.
+	\end{center}\\
+	\hline
+\end{tabular}
+
 
 \section{Overview}
 The rise of iterative and incremental software development methodologies has been transformative. Continuous integration\cite{ci}, deployment and delivery\cite{cd,cidd} has met the challenge of regular changes in requirements. Unpredictable and changing requirements\cite{bea} have been factored into the development process to enable software architectures to evolve gracefully.
@@ -57,32 +71,20 @@ FrameSquared is tool that can generate code to be used as final source files and
 \subsection{Required Libraries}
 FrameSquared utilizes the Inja\cite{inja} template engine. Inja and FrameSquared both rely on the nlohmann JSON library\cite{nlohmann}. FrameSquared also uses the jbeder YAML\cite{jbeder} library.
 
-\subsection{Overview}
-FrameSquared 
-
-
-
+\subsection{Building FrameSquared}
+The following steps will compile the FrameSquared tool. 
 \begin{figure}[H]
-\begin{lstlisting}
-bool Processor::next() {
-	std::cout << "Processor::next()" << std::endl;
-	
-	if (it != migrationData.at("migrations").end()) {
-		++it;
-	}
-	
-	while (it != migrationData.at("migrations").end() && (*it).is_null()) {
-		++it;
-	}
-	
-	return (it != migrationData.at("migrations").end());
-}
-
-\end{lstlisting}
-\caption{Code Listing}
+	\begin{lstlisting}
+	  mkdir build
+	  cd build
+	  cmake ..
+	  make
+	  ./fs2_migration02
+	\end{lstlisting}
+	\caption{Steps to building}
 \end{figure}
 
-xxxxx
+\subsection{Overview}
 
 \begin{figure}[H]
 	\centering
