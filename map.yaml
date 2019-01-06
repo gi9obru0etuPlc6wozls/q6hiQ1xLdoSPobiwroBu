@@ -1,0 +1,11 @@
+db_type:
+  string: character varying
+  numeric: double
+  timestamp: timestamp without time zone
+  boolean: int
+extjs_type:
+  uuid: string
+qt_type:
+  uuid: QString
+  string: QString
+  timestamp: QDateTime

@@ -22,6 +22,16 @@ Processor::Processor(std::string filename) {
     migrationFile = config.at("paths").at("migrations file");
 
     actions = config.at("actions");
+    map = config.at("map");
+
+    if (map.is_string()) {
+        map = YAMLtoJSON(YAML::LoadFile(map));
+    }
+    if (!map.is_object()) {
+        throw MergeException("Invalid type for map in config.yaml");
+    }
+    std::cout << "map type:" << map.type_name() << std::endl;
+    std::cout << "map :" << map.dump(4) << std::endl;
 
     try {
         migrationData = read(migrationFile);
@@ -281,8 +291,7 @@ void Processor::migrate(const std::string &argument) {
                     process((*it)["up"]);
                 } while (next());
         }
-    }
-    else {
+    } else {
         if (start())
             do {
                 std::cout << "3 Migration:" << (*it) << std::endl;
@@ -349,8 +358,7 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                             continue;
                         }
                     }
-                    catch (nlohmann::json::out_of_range &e) {
-                        ;  // do nothing
+                    catch (nlohmann::json::out_of_range &e) { ;  // do nothing
                     }
 
                     try {
@@ -364,8 +372,7 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                         std::cout << "target matchKey: " << target[columnMap[matchValue]][matchKey] << std::endl;
                         continue;
                     }
-                    catch (nlohmann::json::out_of_range &e) {
-                        ;  // do nothing
+                    catch (nlohmann::json::out_of_range &e) { ;  // do nothing
                     }
 
                     merge(target[columnMap[matchValue]], *it);
@@ -415,7 +422,7 @@ void Processor::process(nlohmann::json &migrations) {
             nlohmann::json inja = (*action_it);
             std::string key = action_it.key();
 
-            std::cout << "Inja key:" << key <<  " i: " << i << std::endl;
+            std::cout << "Inja key:" << key << " i: " << i << std::endl;
 
             try {
                 target = (*migration_it).at(key);
@@ -437,8 +444,7 @@ void Processor::process(nlohmann::json &migrations) {
 
             if (file_exists(targetFile)) {
                 target = read(targetFile);
-            }
-            else {
+            } else {
                 char templateFile[PATH_MAX];
                 snprintf(templateFile, PATH_MAX, "%s/%s.json", metaDir.c_str(), key.c_str());
                 std::cout << "templateFile: " << templateFile << std::endl;

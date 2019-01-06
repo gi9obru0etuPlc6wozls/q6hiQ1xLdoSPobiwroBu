@@ -1,4 +1,5 @@
 --- !<tag:framesquared.com,2015:config>
+map: ../map.yaml
 paths:
   migrations dir: ../migrations
   migrations file: ../migrations/migrationData.json
@@ -47,15 +48,3 @@ actions:
       - -U
       - dbadmin
       - postgres
-map:
-  db_type:
-    string: character varying
-    numeric: double
-    timestamp: timestamp without time zone
-    boolean: int
-  extjs_type:
-    uuid: string
-  qt_type:
-    uuid: QString
-    string: QString
-    timestamp: QDateTime

@@ -52,6 +52,7 @@ private:
     nlohmann::json config;
     nlohmann::json migrationData;
     nlohmann::json actions;
+    nlohmann::json map;
     nlohmann::json::iterator it;
 
     void write(const std::string &filename, const nlohmann::json &value);
