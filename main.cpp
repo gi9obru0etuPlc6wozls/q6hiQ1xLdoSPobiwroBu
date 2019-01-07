@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 
     OperationEnum operation = none;
     int scan = false;
-    char default_config[] = "../config.yaml";
+    char default_config[] = "../config/config.yaml";
     char *config = default_config;
     char *argument = nullptr;
 

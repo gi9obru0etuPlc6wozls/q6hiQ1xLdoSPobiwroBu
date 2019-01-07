@@ -1,5 +1,5 @@
 --- !<tag:framesquared.com,2015:config>
-map: ../map.yaml
+map: ../config/map.yaml
 paths:
   migrations dir: ../migrations
   migrations file: ../migrations/migrationData.json
