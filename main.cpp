@@ -11,7 +11,7 @@ static struct option options[] = {
         {0,          no_argument,       0, 0  },
 };
 
-enum Operation {
+enum OperationEnum {
     none,
     migrate,
     rollback
@@ -19,7 +19,7 @@ enum Operation {
 
 int main(int argc, char **argv) {
 
-    Operation op = none;
+    OperationEnum operation = none;
     int scan = false;
     char default_config[] = "../config.yaml";
     char *config = default_config;
@@ -38,20 +38,20 @@ int main(int argc, char **argv) {
                 config = optarg;
                 break;
             case 'm':
-                if (op != none) {
+                if (operation != none) {
                     std::cout << "Cannot migrate and rollback at the same time." << std::endl;
                     exit(1);
                 }
                 argument = optarg;
-                op = migrate;
+                operation = migrate;
                 break;
             case 'r':
-                if (op != none) {
+                if (operation != none) {
                     std::cout << "Cannot migrate and rollback at the same time." << std::endl;
                     exit(1);
                 }
                 argument = optarg;
-                op = rollback;
+                operation = rollback;
                 break;
             default:
                 std::cout << "Invalid command line argument." << std::endl;
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         p.scanMigrations();
     }
 
-    switch(op) {
+    switch(operation) {
         case migrate:
             std::cout << "Migrating: " << argument << std::endl;
             p.migrate(argument);
