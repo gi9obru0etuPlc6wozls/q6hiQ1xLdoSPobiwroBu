@@ -42,7 +42,7 @@ private:
 public:
     Action();
 
-    void runAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
+    void doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
 
 };
 

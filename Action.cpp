@@ -73,14 +73,12 @@ Action::Action() {
     });
 }
 
-void Action::runAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
-    std::cout << "Action::runAction()" << std::endl;
+void Action::doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
+    std::cout << "Action::doAction()" << std::endl;
 
     for (auto action = template_it.begin(); action != template_it.end(); ++action) {
-        std::cout << "action: " << action->dump(4) << std::endl;
 
         std::string actionName = action->at("action");
-        std::cout << "actionName: " << actionName << std::endl;
 
         bool b = (this->*actionFunctions[actionName])(target, patch, *action);
     }
@@ -113,7 +111,6 @@ std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
 
 bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::generate()" << std::endl;
-    std::cout << "action: " << action.dump(4) << std::endl;
 
     std::string templateFileName = action.at("inga");
     bool overwrite = action.at("overwrite");
@@ -126,19 +123,16 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
 
     if (file_exists(envRoot + outputFileName)) {
         if (!overwrite) {
-            std::cout << "Not overwriting: " << envRoot + outputFileName << std::endl;
+            std::cerr << "Not overwriting: " << envRoot + outputFileName << std::endl;
             return true;
         }
         else {
-            std::cout << "Overwriting: " << envRoot + outputFileName << std::endl;
+            std::cerr << "Overwriting: " << envRoot + outputFileName << std::endl;
         }
     }
     else {
-        std::cout << "Generating: " << envRoot + outputFileName << std::endl;
+        std::cerr << "Generating: " << envRoot + outputFileName << std::endl;
     }
-
-    std::cout << "templateFileName:" << templateFileName << std::endl;
-    std::cout << "data:" << data.dump(4) << std::endl;
 
     Template temp = env->parse_template(templateFileName);
     env->write(temp, data, outputFileName);
@@ -148,14 +142,12 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
 
 bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::drop()" << std::endl;
-    std::cout << "action: " << action.dump(4) << std::endl;
 
     return true;
 }
 
 bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::execute()" << std::endl;
-    std::cout << "action: " << action.dump(4) << std::endl;
 
     std::vector<char *> argVector;
     std::vector<char *> envVector;
@@ -177,7 +169,6 @@ bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, 
         nlohmann::json args = action.at("args");
         for (auto arg_it = args.begin(); arg_it != args.end(); ++arg_it) {
             std::string *s = new std::string(env->render(*arg_it, data));
-            std::cout << "s: " << *s << std::endl;
             argVector.push_back((char *) s->c_str());
         }
     }
@@ -191,7 +182,6 @@ bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, 
         nlohmann::json envs = action.at("env");
         for (auto env_it = envs.begin(); env_it != envs.end(); ++env_it) {
             std::string *s = new std::string(env->render(*env_it, data));
-            std::cout << "s: " << *s << std::endl;
             envVector.push_back((char *) s->c_str());
         }
     }

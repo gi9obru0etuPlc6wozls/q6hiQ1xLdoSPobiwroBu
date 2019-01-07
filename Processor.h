@@ -38,7 +38,7 @@ public:
 
     void scanMigrations();
 
-    void process(nlohmann::json &migrations);
+    void process(nlohmann::json &migrations, int serial);
 
     void migrate(const std::string &argument);
     void rollback(const std::string &argument);
@@ -68,6 +68,7 @@ private:
     bool start();
     bool next();
     int getCurrentSerial();
+    void setCurrentSerial(int);
 
 };
 

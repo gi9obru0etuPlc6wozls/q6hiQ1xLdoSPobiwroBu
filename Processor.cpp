@@ -15,7 +15,6 @@ Processor::Processor(std::string filename) {
     std::cout << "Processor::Processor()" << std::endl;
 
     config = YAMLtoJSON(YAML::LoadFile(filename));
-    //std::cout << "config: " << config.dump(4) << std::endl;
 
     metaDir = config.at("paths").at("meta dir");
     migrationsDir = config.at("paths").at("migrations dir");
@@ -30,8 +29,6 @@ Processor::Processor(std::string filename) {
     if (!map.is_object()) {
         throw MergeException("Invalid type for map in config.yaml");
     }
-    std::cout << "map type:" << map.type_name() << std::endl;
-    std::cout << "map :" << map.dump(4) << std::endl;
 
     try {
         migrationData = read(migrationFile);
@@ -43,11 +40,8 @@ Processor::Processor(std::string filename) {
 
     int currentSerial = getCurrentSerial();
     if (currentSerial != -1) {
-        std::cout << "setting it to current serial: " << currentSerial << std::endl;
         it = findMigration(currentSerial);
     }
-
-    //std::cout << "Processor::Processor migrationData: " << migrationData.dump(4) << std::endl;
 }
 
 void Processor::scanMigrations() {
@@ -67,7 +61,6 @@ int Processor::getCurrentSerial() {
     nlohmann::json migrationCurrent = migrationData.at("current");
 
     if (migrationCurrent.is_null()) {
-        std::cout << "Current migration is null" << std::endl;
         return -1;
     }
 
@@ -77,24 +70,17 @@ int Processor::getCurrentSerial() {
     return (*it)["serial"];
 }
 
+void Processor::setCurrentSerial(int s) {
+    std::cout << "Processor::setCurrentSerial()" << std::endl;
+    migrationData["current"] = s;
+    write(migrationFile, migrationData);
+}
+
 nlohmann::json::iterator Processor::findMigration(int targetSerial) {
     std::cout << "Processor::findMigration()" << std::endl;
 
     nlohmann::json::iterator migrationIt;
     nlohmann::json *migrations = &migrationData.at("migrations");
-
-//    nlohmann::json migrationCurrent = migrationData.at("current");
-//
-//    if (migrationCurrent.is_null()) {
-//        std::cout << "Current migration is null" << std::endl;
-//        return migrationIt;
-//    }
-//
-//    int currentIndex = migrationCurrent;
-//
-//    if ((*migrations).at(currentIndex).is_null()) {
-//        throw new MergeException("Migration that current points to is null.");
-//    }
 
     for (migrationIt = (*migrations).begin(); migrationIt != (*migrations).end(); ++migrationIt) {
         if ((*migrationIt).is_null()) {
@@ -102,7 +88,6 @@ nlohmann::json::iterator Processor::findMigration(int targetSerial) {
         }
         int serial = (*migrationIt).at("serial");
         if (targetSerial == serial) {
-            std::cout << "found serial: " << serial << std::endl;
             return migrationIt;
         }
     }
@@ -148,7 +133,6 @@ void Processor::scanMigrations(std::string &md) {
                 continue;
             }
             int serial = serialNode.as<int>();
-            std::cout << "serial: " << serial << std::endl;
 
             YAML::Node upNode = migration["up"];
 
@@ -208,7 +192,6 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
 
     try {
         migration = &migrationData.at("migrations").at(serial);
-        std::cout << "found migration: " << (*migration).dump(4) << std::endl;
     }
     catch (nlohmann::json::out_of_range &e) {
         out_of_range = true;
@@ -218,7 +201,6 @@ void Processor::setMigration(const int serial, const std::string &filename, cons
         migrationData["migrations"][serial]["serial"] = serial;
         migrationData["migrations"][serial][direction] = nlohmann::json::array();
         migration = &migrationData.at("migrations").at(serial);
-        std::cout << "create migration: " << (*migration).dump(4) << std::endl;
     }
 
     for (json::iterator it = node.begin(); it != node.end(); ++it) {
@@ -268,16 +250,14 @@ void Processor::migrate(const std::string &argument) {
             if (start())
                 do {
                     ++i;
-                    std::cout << "1 Migration:" << (*it) << std::endl;
-                    process((*it)["up"]);
+                    process((*it)["up"],(*it)["serial"]);
                 } while (i < count && next());
         } else {
             int serial = std::stoi(argument);
             int currentSerial = getCurrentSerial();
-            std::cout << "Current: " << currentSerial << " Destination: " << serial << std::endl;
 
             if (serial <= currentSerial) {
-                std::cout << "Destination less than current migration." << std::endl;
+                std::cerr << "Destination less than current migration." << std::endl;
                 return;
             }
 
@@ -286,22 +266,15 @@ void Processor::migrate(const std::string &argument) {
                     int s = (*it)["serial"];
                     if ((*it)["serial"] > serial) break;
 
-                    std::cout << "s: " << s << " serial: " << serial << std::endl;
-                    std::cout << "2 Migration:" << (*it) << std::endl;
-                    process((*it)["up"]);
+                    process((*it)["up"],(*it)["serial"]);
                 } while (next());
         }
     } else {
         if (start())
             do {
-                std::cout << "3 Migration:" << (*it) << std::endl;
-                process((*it)["up"]);
+                process((*it)["up"],(*it)["serial"]);
             } while (next());
     }
-
-    // fs2 migrate
-    // fs2 migrate +1
-    // fs2 migrate 5
 }
 
 
@@ -330,14 +303,12 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                 if (target.count(it.key())) {
                     merge(target[it.key()], *it, it.key(), newPath);
                 } else {
-                    std::cout << "Assigning: " << std::endl;
                     target[it.key()] = *it;
                 }
             }
             break;
 
         case json::value_t::array:
-            std::cout << "key: " << key << " merge array:" << patch.type_name() << std::endl;
 
             matchKey = config.at("sequence").at("merge").at(key);
 
@@ -353,7 +324,6 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
 
                     try {
                         if ((*it).at("type") == "drop") {
-                            std::cout << "array it: " << (*it) << std::endl;
                             target.erase(columnMap[matchValue]);
                             continue;
                         }
@@ -363,13 +333,11 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
 
                     try {
                         std::string newName = (*it).at("rename");
-                        std::cout << "array it: " << (*it) << std::endl;
                         if (columnMap.find(newName) != columnMap.end()) {
                             std::cerr << "Duplicate column name in rename." << std::endl;
                             continue;
                         }
                         target[columnMap[matchValue]][matchKey] = newName;
-                        std::cout << "target matchKey: " << target[columnMap[matchValue]][matchKey] << std::endl;
                         continue;
                     }
                     catch (nlohmann::json::out_of_range &e) { ;  // do nothing
@@ -390,7 +358,6 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
         case json::value_t::number_float:
         case json::value_t::number_integer:
         case json::value_t::number_unsigned:
-            std::cout << "key: " << key << " merge scalar:" << patch.type_name() << std::endl;
             target = patch;
             break;
 
@@ -401,15 +368,10 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
 }
 
 
-void Processor::process(nlohmann::json &migrations) {
+void Processor::process(nlohmann::json &migrations, int serial) {
     std::cout << "Processor::process()" << std::endl;
 
-    std::cout << "migrations: " << migrations.dump(4) << std::endl;
-
     Action action;
-    std::cout << "templates: " << actions.dump(4) << std::endl;
-
-    //std::snprintf()
 
     if (migrations.type() != json::value_t::array)
         throw new MergeException("Not json::value_t::object");
@@ -422,8 +384,6 @@ void Processor::process(nlohmann::json &migrations) {
             nlohmann::json inja = (*action_it);
             std::string key = action_it.key();
 
-            std::cout << "Inja key:" << key << " i: " << i << std::endl;
-
             try {
                 target = (*migration_it).at(key);
             }
@@ -431,49 +391,30 @@ void Processor::process(nlohmann::json &migrations) {
                 continue;
             }
 
-            std::cout << "--- Running Actions: " << std::endl;
-
             std::string targetStr = target;
 
-            std::cout << "Found key: " << key << std::endl;
-            std::cout << "Target: " << target << std::endl;
 
             char targetFile[PATH_MAX];
             snprintf(targetFile, PATH_MAX, "%s/%s.json", metaDir.c_str(), targetStr.c_str());
-            std::cout << "targetFile: " << targetFile << std::endl;
 
             if (file_exists(targetFile)) {
                 target = read(targetFile);
             } else {
                 char templateFile[PATH_MAX];
                 snprintf(templateFile, PATH_MAX, "%s/%s.json", metaDir.c_str(), key.c_str());
-                std::cout << "templateFile: " << templateFile << std::endl;
                 if (file_exists(templateFile)) {
                     target = read(templateFile);
                 } else {
                     target = json({});
                 }
             }
-            std::cout << "Pre-merge Target: " << target.dump(4) << std::endl;
-            std::cout << "Pre-merge Patch: " << migration_it->dump(4) << std::endl;
 
             merge(target, (*migration_it));
 
-            std::cout << "Post-merge Target: " << target.dump(4) << std::endl;
-            std::cout << "Post-merge Patch: " << migration_it->dump(4) << std::endl;
-
             write(targetFile, target);
 
-            action.runAction(target, *migration_it, *action_it);
-
+            action.doAction(target, *migration_it, *action_it);
+            setCurrentSerial(serial);
         }
-//
-//        if (actionFunctions.find(key) == actionFunctions.end()) {
-//            throw new MergeException("No matching processorFunction");
-//        }
-//
-//        if (!(this->*actionFunctions[key])(key, migration_it.value())) {
-//            throw new MergeException("processorFunction returned error");
-//        }
     }
 }
