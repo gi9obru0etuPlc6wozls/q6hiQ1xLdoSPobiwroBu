@@ -61,8 +61,8 @@ private:
     void merge(nlohmann::json &target, nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
 
     void scanMigrations(std::string &md);
-    void setMigration(const int serial, const std::string &filename, const std::string &direction,
-                      const YAML::Node &yamlNode);
+    void updateMigrationData(const int serial, const std::string &filename, const std::string &direction,
+                             const YAML::Node &yamlNode);
 
     nlohmann::json::iterator findMigration(int serial);
     bool start();

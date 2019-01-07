@@ -44,18 +44,6 @@ Processor::Processor(std::string filename) {
     }
 }
 
-void Processor::scanMigrations() {
-    std::cout << "Processor::scanMigrations()" << std::endl;
-
-    migrationData["migrations"] = json::array();
-    scanMigrations(migrationsDir);
-    write(migrationFile, migrationData);
-
-    int currentSerial = getCurrentSerial();
-    if (currentSerial != -1)
-        it = findMigration(currentSerial);
-}
-
 int Processor::getCurrentSerial() {
     std::cout << "Processor::getCurrentSerial()" << std::endl;
     nlohmann::json migrationCurrent = migrationData.at("current");
@@ -92,6 +80,18 @@ nlohmann::json::iterator Processor::findMigration(int targetSerial) {
         }
     }
     throw new MergeException("Migration not found.");
+}
+
+void Processor::scanMigrations() {
+    std::cout << "Processor::scanMigrations()" << std::endl;
+
+    migrationData["migrations"] = json::array();
+    scanMigrations(migrationsDir);
+    write(migrationFile, migrationData);
+
+    int currentSerial = getCurrentSerial();
+    if (currentSerial != -1)
+        it = findMigration(currentSerial);
 }
 
 void Processor::scanMigrations(std::string &md) {
@@ -140,7 +140,7 @@ void Processor::scanMigrations(std::string &md) {
                 if (!upNode.IsSequence()) {
                     throw new MergeException("Invalid UP YAML::Node type");
                 }
-                setMigration(serial, s, "up", upNode);
+                updateMigrationData(serial, s, "up", upNode);
             }
 
             YAML::Node downNode = migration["down"];
@@ -149,12 +149,39 @@ void Processor::scanMigrations(std::string &md) {
                 if (!downNode.IsSequence()) {
                     throw new MergeException("Invalid DOWN YAML::Node type");
                 }
-                setMigration(serial, s, "down", downNode);
+                updateMigrationData(serial, s, "down", downNode);
             }
         }
     }
     closedir(dir);
 }
+
+void Processor::updateMigrationData(const int serial, const std::string &filename, const std::string &direction,
+                                    const YAML::Node &yamlNode) {
+
+    std::cout << "Processor::updateMigrationData()" << std::endl;
+    nlohmann::json node = YAMLtoJSON(yamlNode);
+    nlohmann::json *migration;
+    bool out_of_range = false;
+
+    try {
+        migration = &migrationData.at("migrations").at(serial);
+    }
+    catch (nlohmann::json::out_of_range &e) {
+        out_of_range = true;
+    }
+
+    if (out_of_range || migration->is_null()) {
+        migrationData["migrations"][serial]["serial"] = serial;
+        migrationData["migrations"][serial][direction] = nlohmann::json::array();
+        migration = &migrationData.at("migrations").at(serial);
+    }
+
+    for (json::iterator it = node.begin(); it != node.end(); ++it) {
+        (*migration)[direction].push_back(*it);
+    }
+}
+
 
 
 void Processor::write(const std::string &filename, const nlohmann::json &value) {
@@ -180,32 +207,6 @@ nlohmann::json Processor::read(const std::string &filename) {
 
     readStream.close();
     return j;
-}
-
-void Processor::setMigration(const int serial, const std::string &filename, const std::string &direction,
-                             const YAML::Node &yamlNode) {
-
-    std::cout << "Processor::setMigration()" << std::endl;
-    nlohmann::json node = YAMLtoJSON(yamlNode);
-    nlohmann::json *migration;
-    bool out_of_range = false;
-
-    try {
-        migration = &migrationData.at("migrations").at(serial);
-    }
-    catch (nlohmann::json::out_of_range &e) {
-        out_of_range = true;
-    }
-
-    if (out_of_range || migration->is_null()) {
-        migrationData["migrations"][serial]["serial"] = serial;
-        migrationData["migrations"][serial][direction] = nlohmann::json::array();
-        migration = &migrationData.at("migrations").at(serial);
-    }
-
-    for (json::iterator it = node.begin(); it != node.end(); ++it) {
-        (*migration)[direction].push_back(*it);
-    }
 }
 
 bool Processor::start() {
@@ -299,11 +300,11 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
         case json::value_t::object:
             std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
 
-            for (json::iterator it = patch.begin(); it != patch.end(); ++it) {
-                if (target.count(it.key())) {
-                    merge(target[it.key()], *it, it.key(), newPath);
+            for (json::iterator patch_it = patch.begin(); patch_it != patch.end(); ++patch_it) {
+                if (target.count(patch_it.key())) {
+                    merge(target[patch_it.key()], *patch_it, patch_it.key(), newPath);
                 } else {
-                    target[it.key()] = *it;
+                    target[patch_it.key()] = *patch_it;
                 }
             }
             break;
