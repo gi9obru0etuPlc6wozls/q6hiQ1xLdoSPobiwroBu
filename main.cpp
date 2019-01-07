@@ -60,10 +60,10 @@ int main(int argc, char **argv) {
         }
     }
     std::cout << "Config: " << config << std::endl;
-    Processor p(config); // <---
+    Processor p(config);
 
     if (scan) {
-        p.scanMigrations(); // // fs2 scan
+        p.scanMigrations();
     }
 
     switch(op) {
