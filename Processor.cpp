@@ -317,13 +317,13 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                 ++i;
             }
 
-            for (json::iterator it = patch.begin(); it != patch.end(); ++it) {
-                matchValue = it.value().at(matchKey);
+            for (json::iterator patch_it = patch.begin(); patch_it != patch.end(); ++patch_it) {
+                matchValue = patch_it.value().at(matchKey);
 
                 if (columnMap.find(matchValue) != columnMap.end()) {
 
                     try {
-                        if ((*it).at("type") == "drop") {
+                        if ((*patch_it).at("type") == "drop") {
                             target.erase(columnMap[matchValue]);
                             continue;
                         }
@@ -332,7 +332,7 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                     }
 
                     try {
-                        std::string newName = (*it).at("rename");
+                        std::string newName = (*patch_it).at("rename");
                         if (columnMap.find(newName) != columnMap.end()) {
                             std::cerr << "Duplicate column name in rename." << std::endl;
                             continue;
@@ -343,11 +343,11 @@ Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::strin
                     catch (nlohmann::json::out_of_range &e) { ;  // do nothing
                     }
 
-                    merge(target[columnMap[matchValue]], *it);
-                    (*it)["column_add_flag"] = false;
+                    merge(target[columnMap[matchValue]], *patch_it);
+                    (*patch_it)["column_add_flag"] = false;
                 } else {
-                    target.push_back(*it);
-                    (*it)["column_add_flag"] = true;
+                    target.push_back(*patch_it);
+                    (*patch_it)["column_add_flag"] = true;
                 }
             }
 
