@@ -27,10 +27,13 @@ private:
 
     Environment *env;
     std::string mapRoot;
+    nlohmann::json map;
+    std::map<std::string, std::string> values;
 
     std::string envRoot = "../";
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
+    std::vector<std::string> split(const std::string& str, const std::string& delimiter);
 
     typedef bool (Action::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
     std::map<std::string, memberFunction> actionFunctions;
@@ -42,7 +45,10 @@ private:
 public:
     Action();
 
+    void debugexpression(const Parsed::ElementExpression &e);
+
     void doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
+    void setMap(const nlohmann::json &map);
 
 };
 

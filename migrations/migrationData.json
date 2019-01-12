@@ -1,8 +1,88 @@
 {
-    "current": 7,
+    "current": null,
     "migrations": [
         null,
-        null,
+        {
+            "serial": 1,
+            "up": [
+                {
+                    "columns": [
+                        {
+                            "auto": true,
+                            "name": "id",
+                            "setter": false,
+                            "type": "int"
+                        },
+                        {
+                            "name": "title",
+                            "precision": 20,
+                            "type": "string"
+                        },
+                        {
+                            "name": "body",
+                            "precision": 200,
+                            "type": "string"
+                        },
+                        {
+                            "name": "col_string",
+                            "precision": 12,
+                            "type": "string"
+                        },
+                        {
+                            "name": "col_integer",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "col_float",
+                            "precision": "12,2",
+                            "type": "float"
+                        },
+                        {
+                            "name": "col_double",
+                            "precision": "14,2",
+                            "type": "double"
+                        },
+                        {
+                            "name": "col_numeric",
+                            "precision": "16,2",
+                            "type": "numeric"
+                        },
+                        {
+                            "name": "col_boolean",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "col_uuid",
+                            "precision": 36,
+                            "type": "string"
+                        },
+                        {
+                            "name": "col_datetime",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "created_at",
+                            "setter": false,
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "updated_at",
+                            "setter": false,
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "lock_revision",
+                            "setter": false,
+                            "type": "int"
+                        }
+                    ],
+                    "create table": "blog",
+                    "not exists": true,
+                    "temporary": true,
+                    "unlogged": true
+                }
+            ]
+        },
         null,
         null,
         null,

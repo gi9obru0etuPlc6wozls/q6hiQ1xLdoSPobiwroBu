@@ -10,7 +10,7 @@ sequence:
 actions:
   create table:
   - action: generate
-    inga: templates/tf/tf_model_cpp.inja
+    inga: templates/tf/tf_model_cpp2.inja
     data: target
     out: models/{{ uCamel(create table) }}.cpp
     overwrite: true
@@ -20,7 +20,7 @@ actions:
     out: models/{{ uCamel(create table) }}.h
     overwrite: true
   - action: generate
-    inga: templates/tf/tf_sqlobject.inja
+    inga: templates/tf/tf_model_sqlobject_h.inja
     data: target
     out: models/sqlobjects/{{ uCamel(create table) }}.h
     overwrite: true

@@ -25,7 +25,12 @@ public:
 ## for column in columns
 
     {{ map("qt_type", column/type) }} {{ lCamel(column/name) }}() const;
-    void set{{ uCamel(column/name) }}(const {{ map("qt_type", column/type) }} &{{ lCamel(column/name) }});
+## if existsIn(column, "setter") and not column/setter
+
+## else
+
+    void set{{ uCamel(column/name) }}({{createParam( map("qt_type", column/type), lCamel(column/name))}});
+## endif
 ## endfor
 
     {{ uCamel(create table) }} &operator=(const {{ uCamel(create table) }} &other);
@@ -36,21 +41,19 @@ public:
     bool remove() override { return TAbstractModel::remove(); }
 
     static {{ uCamel(create table) }} create(
-
 ## for column in columns
-        const {{ map("qt_type", column/type) }} &{{ lCamel(column/name) }}
-## if not loop/is_last
-,
+## if existsIn(column, "setter") and not column/setter
 
+## else
+{{ getValue("need_comma") }}{{ createParam( map("qt_type", column/type), lCamel(column/name)) }}{{ setValue("need_comma|, ") }}
 ## endif
 ## endfor
-
-    );
+);
     static {{ uCamel(create table) }} create(const QVariantMap &values);
 
 ## for column in columns
 ## if existsIn(column, "auto") and column/auto
-    static {{ uCamel(create table) }} get(const {{ map("qt_type", column/type) }} &{{ lCamel(column/name) }});
+    static {{ uCamel(create table) }} get({{ createParam( map("qt_type", column/type), lCamel(column/name)) }});
 
 ## endif
 ## endfor
@@ -58,7 +61,7 @@ public:
 ## if existsIn(column1, "auto") and column1/auto
 ## for column2 in columns
 ## if column2/name == "lock_revision"
-    static {{ uCamel(create table) }} get(const QString &{{ lCamel(column1/name) }}, {{ map("qt_type", column2/type) }} {{ lCamel(column2/name) }});
+    static {{ uCamel(create table) }} get({{ createParam( map("qt_type", column1/type), lCamel(column1/name)) }}, {{ map("qt_type", column2/type) }} {{ lCamel(column2/name) }});
 
 ## endif
 ## endfor

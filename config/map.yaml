@@ -1,11 +1,37 @@
-db_type:
-  string: character varying
-  numeric: double
-  timestamp: timestamp without time zone
-  boolean: int
+mysql_db_type:
+  string:	varchar
+  integer:	int
+  float:	float
+  double:	double
+  numeric:	decimal
+  boolean:	boolean
+  uuid:	varchar
+  serial:	serial
+  datetime:	datetime
 extjs_type:
   uuid: string
 qt_type:
-  uuid: QString
   string: QString
-  timestamp: QDateTime
+  integer: int
+  int: int
+  float: double
+  double: double
+  numeric: double
+  boolean: char
+  uuid: varchar
+  serial: serial
+  datetime: QDateTime
+createParam:
+  default: "const {{colType}} &{{colName}}"
+  int: "{{colType}} {{colName}}"
+  integer: "{{colType}} {{colName}}"
+  float: "{{colType}} {{colName}}"
+  double: "{{colType}} {{colName}}"
+  numeric: "{{colType}} {{colName}}"
+initParam:
+  default: ""
+  int: "\n    d->{{colName}} = 0;"
+  integer: "\n    d->{{colName}} = 0;"
+  float: "\n    d->{{colName}} = 0;"
+  double: "\n    d->{{colName}} = 0;"
+  numeric: "\n    d->{{colName}} = 0;"

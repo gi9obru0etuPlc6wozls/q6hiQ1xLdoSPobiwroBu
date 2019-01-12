@@ -18,7 +18,7 @@
 \definecolor{LightRed}{rgb}{1,0.90,0.90}
 
 %opening
-\title{FrameSquared}
+\title{\input{project_name}}
 \author{
 	  Carbone, John\\
 	\texttt{john@qlcorp.net}
@@ -44,18 +44,38 @@
 \end{tabular}
 
 \begin{abstract}
-FrameSquared performs database schema version control and scaffold generation for Postgres databases and the Treefrog C++ MVC framework using YAML to 
+\input{project_name} performs database schema version control and scaffold generation for Postgres databases and the Treefrog C++ MVC framework using YAML to 
 \end{abstract}
 
 \begin{tabular}{|p{.9\textwidth}|}
 	\hline
 	\rowcolor{LightRed}
 	\begin{center}
-		FrameSquared is very much a work in progress at this time and is not ready for prime time. Use at your own risk.
+		\input{project_name} is very much a work in progress at this time and is not ready for prime time. Use at your own risk.
 	\end{center}\\
 	\hline
 \end{tabular}
+\\
+xxx
 
+\begin{tabular}{|l|l|l|l|l|}
+	\hline
+	FS2 & Postgres         & C++/Qt & SOAP        & ExtJS/JavaScript         \\
+	\hline
+	\hline
+	string       & varchar          & QString         & xsd:string  & Ext.data.field.String    \\
+	integer      & integer          & qint32          & xsd:int     & Ext.data.field.Integer   \\
+	float        & real             & float           & xsd:float   & Ext.data.field.Number    \\
+	double       & double precision & double          & xsd:double  & Ext.data.field.Number    \\
+	numeric      & numeric          & double          & xsd:double  & Ext.data.field.Number    \\
+	boolean      & boolean          & bool            & xsd:boolean & Ext.data.field.Boolean   \\
+	uuid         & uuid             & QString         & xsd:string  & Ext.data.field.String    \\
+	serial       & serial           & qint            & xsd:int     & Ext.data.field.Integer   \\
+	datetime     & timestamp        & QDateTime       & xsd:string  & Ext.data.field.Date      \\
+	& date             &                 &             & Ext.data.field.Date      \\
+	& time             &                 &             & Ext.data.field.Date      \\
+	\hline
+\end{tabular}
 
 \section{Overview}
 The rise of iterative and incremental software development methodologies has been transformative. Continuous integration\cite{ci}, deployment and delivery\cite{cd,cidd} has met the challenge of regular changes in requirements. Unpredictable and changing requirements\cite{bea} have been factored into the development process to enable software architectures to evolve gracefully.
@@ -64,15 +84,15 @@ Iterative and incremental methodologies have been successfully applied to databa
 
 The nature of MVC frameworks lends itself to the use of boilerplate code. Some MVC frameworks create scaffolding using templates to generate boilerplate code. Scaffolding was made populate by Ruby-on-Rails. Most scaffold generators focus primarily on create, retrieve, update and delete (CRUD) operations using HTML\cite{scaffold,vsscaffold} and do not generally support single page applications\cite{spa} and associated messaging protocols such as SOAP or REST.
 
-FrameSquared is tool that can generate code to be used as final source files and/or migrations based on serial numbers and up/down direction and can execute programs. FrameSquared uses the notion of "serial" numbers and "direction" to determine whether a migration "action" should be executed.
+\input{project_name} is tool that can generate code to be used as final source files and/or migrations based on serial numbers and up/down direction and can execute programs. \input{project_name} uses the notion of "serial" numbers and "direction" to determine whether a migration "action" should be executed.
 
 \section{Getting Started}
 
 \subsection{Required Libraries}
-FrameSquared utilizes the Inja\cite{inja} template engine. Inja and FrameSquared both rely on the nlohmann JSON library\cite{nlohmann}. FrameSquared also uses the jbeder YAML\cite{jbeder} library.
+\input{project_name} utilizes the Inja\cite{inja} template engine. Inja and \input{project_name} both rely on the nlohmann JSON library\cite{nlohmann}. \input{project_name} also uses the jbeder YAML\cite{jbeder} library.
 
-\subsection{Building FrameSquared}
-The following steps will compile the FrameSquared tool. 
+\subsection{Building \input{project_name}}
+The following steps will compile the \input{project_name} tool. 
 \begin{figure}[H]
 	\begin{lstlisting}
 	  mkdir build

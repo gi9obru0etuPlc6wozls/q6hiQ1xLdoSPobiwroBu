@@ -1,31 +1,9 @@
 {
     "alter table": "invoice",
-    "columns": [
-        {
-            "auto": true,
-            "name": "col01",
-            "type": "uuid"
-        },
-        {
-            "name": "col02",
-            "not null": true,
-            "precision": 512,
-            "type": "newstring"
-        },
-        {
-            "name": "esra",
-            "precision": 512,
-            "type": "oldtype"
-        },
-        {
-            "name": "col04",
-            "precision": 1235,
-            "type": "type04"
-        }
-    ],
+    "columns": [],
     "create table": "invoice",
     "logged": true,
     "not exists": true,
     "temporary": true,
-    "unlogged": false
+    "unlogged": true
 }

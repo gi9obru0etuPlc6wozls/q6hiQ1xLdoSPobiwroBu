@@ -1,0 +1,48 @@
+--- !<tag:framesquared.com,2015:migration>
+serial: 0001
+up:
+  - create table: blog
+    temporary: true
+    not exists: true
+    unlogged: true
+    columns:
+      - name: id
+        type: int
+        auto: true
+        setter: false
+      - name: title
+        type: string
+        precision: 20
+      - name: body
+        type: string
+        precision: 200
+      - name: col_string
+        type: string
+        precision: 12
+      - name: col_integer
+        type: integer
+      - name: col_float
+        type: float
+        precision: 12,2
+      - name: col_double
+        type: double
+        precision: 14,2
+      - name: col_numeric
+        type: numeric
+        precision: 16,2
+      - name: col_boolean
+        type: boolean
+      - name: col_uuid
+        type: string
+        precision: 36
+      - name: col_datetime
+        type: datetime
+      - name: created_at
+        type: datetime
+        setter: false
+      - name: updated_at
+        type: datetime
+        setter: false
+      - name: lock_revision
+        type: int
+        setter: false

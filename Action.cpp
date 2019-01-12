@@ -10,7 +10,23 @@
 
 using json = nlohmann::json;
 
-Action::Action() {
+std::vector<std::string> Action::split(const std::string& str, const std::string& delimiter)
+{
+    std::vector<std::string> tokens;
+    size_t prev = 0, pos = 0;
+    do
+    {
+        pos = str.find(delimiter, prev);
+        if (pos == std::string::npos) pos = str.length();
+        std::string token = str.substr(prev, pos-prev);
+        if (!token.empty()) tokens.push_back(token);
+        prev = pos + delimiter.length();
+    }
+    while (pos < str.length() && prev < str.length());
+    return tokens;
+}
+
+Action::Action() { // TODO: add "map" to constructor
     std::cout << "Action::Action()" << std::endl;
 
     actionFunctions["generate"] = &Action::generate;
@@ -19,30 +35,87 @@ Action::Action() {
 
     env = new Environment(envRoot);
 
+//    env->add_callback("setValue", 2, [this](Parsed::Arguments args, json x) {
+//        std::string key = env->get_argument<std::string>(args, 0, x);
+//        std::string value = env->get_argument<std::string>(args, 1, x);
+//
+//        std::cout << "setValue key: " << key << std::endl;
+//        std::cout << "setValue value: " << value << std::endl;
+//
+//        this->values[key] = value;
+//        return "";
+//    });
+
+    env->add_callback("setValue", 1, [this](Parsed::Arguments args, json x) {
+        std::string text = env->get_argument<std::string>(args, 0, x);
+
+        std::vector<std::string> v = this->split(text, "|");
+
+        this->values[v[0]] = v[1];
+        return "";
+    });
+
+    env->add_callback("getValue", 1, [this](Parsed::Arguments args, json x) {
+        std::string key = env->get_argument<std::string>(args, 0, x);
+
+        auto value = this->values.find(key);
+        return (value != this->values.end()) ? value->second : "";
+    });
+
+    env->add_callback("createParam", 2, [this](Parsed::Arguments args, json x) {
+        std::string colType = env->get_argument<std::string>(args, 0, x);
+        std::string colName = env->get_argument<std::string>(args, 1, x);
+
+        std::string tpl = x.at("map").at("createParam").at("default").get<std::string>();
+        try {
+            tpl = x.at("map").at("createParam").at(colType).get<std::string>();
+        }
+        catch (nlohmann::json::out_of_range &e) {
+            ; // do nothing
+        }
+
+        nlohmann::json j;
+        j["colType"] = colType;
+        j["colName"] = colName;
+
+        return render(tpl, j);
+    });
+
+    env->add_callback("initParam", 2, [this](Parsed::Arguments args, json x) {
+        std::string colType = env->get_argument<std::string>(args, 0, x);
+        std::string colName = env->get_argument<std::string>(args, 1, x);
+
+        std::cout << "colType: " << colType << std::endl;
+        std::cout << "colName: " << colName << std::endl;
+
+        std::string tpl = x.at("map").at("initParam").at("default").get<std::string>();
+        try {
+            tpl = x.at("map").at("initParam").at(colType).get<std::string>();
+        }
+        catch (nlohmann::json::out_of_range &e) {
+            ; // do nothing
+        }
+
+        std::cout << "tpl: " << tpl << std::endl;
+
+        nlohmann::json j;
+        j["colType"] = colType;
+        j["colName"] = colName;
+
+        std::string r = render(tpl, j);
+
+        std::cout << "r: " << r << std::endl;
+
+        return r;
+    });
+
     env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
         std::string map = env->get_argument<std::string>(args, 0, x);
         std::string key = env->get_argument<std::string>(args, 1, x);
 
-        std::string r = "*** map: Map key not found ***";
+        std::string r = "*** map: " + map + " key not found:" + key + " ***";
         try {
             r = x.at("map").at(map).at(key).get<std::string>();
-        }
-        catch (nlohmann::json::out_of_range &e) { ; // do nothing
-        }
-        return r;
-    });
-
-    env->add_callback("setMapRoot", 1, [this](Parsed::Arguments args, json x) {
-        this->mapRoot = env->get_argument<std::string>(args, 0, x);
-        return this->mapRoot;
-    });
-
-    env->add_callback("getMap", 1, [this](Parsed::Arguments args, json x) {
-        std::string key = env->get_argument<std::string>(args, 0, x);
-
-        std::string r = "*** getMap: Map key not found ***";
-        try {
-            r = x.at("map").at(this->mapRoot).at(key).get<std::string>();
         }
         catch (nlohmann::json::out_of_range &e) { ; // do nothing
         }
@@ -108,6 +181,9 @@ std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
     return r;
 }
 
+void Action::setMap(const nlohmann::json &map) {
+    this->map = map;
+}
 
 bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::generate()" << std::endl;
@@ -119,7 +195,7 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
     std::string outputTemplate = action.at("out");
     std::string outputFileName = env->render(outputTemplate, data);
 
-    data["map"] = nlohmann::json({});  // TODO: FIX THIS
+    data["map"] = this->map;
 
     if (file_exists(envRoot + outputFileName)) {
         if (!overwrite) {

@@ -61,7 +61,7 @@ int Processor::getCurrentSerial() {
 void Processor::setCurrentSerial(int s) {
     std::cout << "Processor::setCurrentSerial()" << std::endl;
     migrationData["current"] = s;
-    write(migrationFile, migrationData);
+    //write(migrationFile, migrationData);  // TODO: Undo this
 }
 
 nlohmann::json::iterator Processor::findMigration(int targetSerial) {
@@ -373,6 +373,7 @@ void Processor::process(nlohmann::json &migrations, int serial) {
     std::cout << "Processor::process()" << std::endl;
 
     Action action;
+    action.setMap(this->map);
 
     if (migrations.type() != json::value_t::array)
         throw new MergeException("Not json::value_t::object");
