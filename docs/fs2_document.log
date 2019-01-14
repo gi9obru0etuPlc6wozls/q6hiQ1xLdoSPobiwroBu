@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.17)  10 JAN 2019 11:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.12.17)  14 JAN 2019 11:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -520,29 +520,6 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `subscript' on input line 94.
 
-! Argument of \@sect has an extra }.
-<inserted text> 
-                \par 
-l.94 \subsection{Building \input{project_name}}
-                                               
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-{\normalfont \large \bfseries }{\@iinput }\def \reserved@b {\@@input \ETC.
-! Paragraph ended before \@sect was complete.
-<to be read again> 
-                   \par 
-l.94 \subsection{Building \input{project_name}}
-                                               
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
 (./project_name.tex)
 <fs2_merge_1a.png, id=50, 388.45125pt x 515.9275pt>
 File: fs2_merge_1a.png Graphic file (type png)
@@ -648,15 +625,8 @@ Package atveryend Info: Executing hook `AfterLastShipout' on input line 180.
  (./fs2_document.xwm) (./fs2_document.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 180.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 180.
-
-
-Package rerunfilecheck Warning: File `fs2_document.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `fs2_document.out':
-(rerunfilecheck)             Before: 7B0B0C0D62EC911D305F067477FEB6A3;287
-(rerunfilecheck)             After:  86D412162532F21988466AF7B73C7C4C;286.
+Package rerunfilecheck Info: File `fs2_document.out' has not changed.
+(rerunfilecheck)             Checksum: 6A9948E82E6977AD1B92D1CC091A2B38;287.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 180.
  ) 
 Here is how much of TeX's memory you used:
@@ -676,7 +646,7 @@ lic/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on fs2_document.pdf (4 pages, 139788 bytes).
+Output written on fs2_document.pdf (4 pages, 139949 bytes).
 PDF statistics:
  140 PDF objects out of 1000 (max. 8388607)
  120 compressed objects within 2 object streams
