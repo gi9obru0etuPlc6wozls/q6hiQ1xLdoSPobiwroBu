@@ -9,7 +9,7 @@ add_executable(fs2_migration02
         Action.cpp Action.h
         YAMLtoJSON.cpp YAMLtoJSON.h
         file_exists.h
-        )
+        split_string.h)
 
 target_link_libraries(fs2_migration02 yaml-cpp)
 

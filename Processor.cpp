@@ -21,6 +21,7 @@ Processor::Processor(std::string filename) {
     migrationFile = config.at("paths").at("migrations file");
 
     actions = config.at("actions");
+    sequences = config.at("sequences");
     map = config.at("map");
 
     if (map.is_string()) {
@@ -287,69 +288,85 @@ void Processor::rollback(const std::string &argument) {
 }
 
 void
-Processor::merge(nlohmann::json &target, nlohmann::json &patch, const std::string &key, const std::string &path) {
+Processor::merge(nlohmann::json &target, nlohmann::json &patch, std::vector<std::string> path) {
+    //std::cout << "Processor::merge() " << std::endl;
 
-    int i = 0;
     std::map<std::string, int> columnMap;
     std::vector<int> columnDrop;
     std::string matchKey;
     std::string matchValue;
-    std::string newPath = path + "/" + key;
+
+    nlohmann::json seq;
+
+    //std::cout << "patch.type: " << patch.type_name() << " object path: " << path.data() << std::endl;
+
+    int i = 0;
 
     switch (patch.type()) {
         case json::value_t::object:
-            std::cout << "newPath: " << path << "key: " << key << " merge object:" << patch.type_name() << std::endl;
 
             for (json::iterator patch_it = patch.begin(); patch_it != patch.end(); ++patch_it) {
-                if (target.count(patch_it.key())) {
-                    merge(target[patch_it.key()], *patch_it, patch_it.key(), newPath);
-                } else {
-                    target[patch_it.key()] = *patch_it;
+
+                if (!target.count(patch_it.key())) {
+                    target[patch_it.key()] = nullptr;
                 }
+
+                path.push_back(patch_it.key());
+                merge(target[patch_it.key()], *patch_it, path);
             }
             break;
 
         case json::value_t::array:
+            ////
+            seq = sequences;
 
-            matchKey = config.at("sequence").at("merge").at(key);
-
-            for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
-                columnMap[it.value().at(matchKey)] = i;
-                ++i;
+            for (std::vector<std::string>::const_iterator path_it = path.begin(); path_it != path.end(); ++path_it) {
+                seq = seq.at(*path_it);
             }
 
-            for (json::iterator patch_it = patch.begin(); patch_it != patch.end(); ++patch_it) {
-                matchValue = patch_it.value().at(matchKey);
-
-                if (columnMap.find(matchValue) != columnMap.end()) {
-
-                    try {
-                        if ((*patch_it).at("type") == "drop") {
-                            target.erase(columnMap[matchValue]);
-                            continue;
-                        }
-                    }
-                    catch (nlohmann::json::out_of_range &e) { ;  // do nothing
-                    }
-
-                    try {
-                        std::string newName = (*patch_it).at("rename");
-                        if (columnMap.find(newName) != columnMap.end()) {
-                            std::cerr << "Duplicate column name in rename." << std::endl;
-                            continue;
-                        }
-                        target[columnMap[matchValue]][matchKey] = newName;
-                        continue;
-                    }
-                    catch (nlohmann::json::out_of_range &e) { ;  // do nothing
-                    }
-
-                    merge(target[columnMap[matchValue]], *patch_it);
-                    (*patch_it)["column_add_flag"] = false;
-                } else {
-                    target.push_back(*patch_it);
-                    (*patch_it)["column_add_flag"] = true;
+            try {
+                matchKey = seq.at("merge");
+                for (json::const_iterator it = target.begin(); it != target.end(); ++it) {
+                    columnMap[it.value().at(matchKey)] = i;
+                    ++i;
                 }
+
+                for (json::iterator patch_it = patch.begin(); patch_it != patch.end(); ++patch_it) {
+                    matchValue = patch_it.value().at(matchKey);
+
+                    if (columnMap.find(matchValue) != columnMap.end()) {
+                        try {
+                            if ((*patch_it).at("type") == "drop") {
+                                target.erase(columnMap[matchValue]);
+                                continue;
+                            }
+                        }
+                        catch (nlohmann::json::out_of_range &e) { ;  // do nothing
+                        }
+
+                        try {
+                            std::string newName = (*patch_it).at("rename");
+                            if (columnMap.find(newName) != columnMap.end()) {
+                                std::cerr << "Duplicate column name in rename." << std::endl;
+                                continue;
+                            }
+                            target[columnMap[matchValue]][matchKey] = newName;
+                            continue;
+                        }
+                        catch (nlohmann::json::out_of_range &e) { ;
+                            // do nothing
+                        }
+                        merge(target[columnMap[matchValue]], *patch_it, path);
+                        (*patch_it)["column_add_flag"] = false;
+                    } else {
+                        target.push_back(nullptr);
+                        merge(target[target.size()-1], *patch_it, path);
+                        (*patch_it)["column_add_flag"] = true;
+                    }
+                }
+            }
+            catch (nlohmann::json::out_of_range &e) {
+                // do nothing
             }
 
             break;
@@ -411,7 +428,8 @@ void Processor::process(nlohmann::json &migrations, int serial) {
                 }
             }
 
-            merge(target, (*migration_it));
+            std::vector<std::string> jsonPath;
+            merge(target, (*migration_it), jsonPath);
 
             write(targetFile, target);
 

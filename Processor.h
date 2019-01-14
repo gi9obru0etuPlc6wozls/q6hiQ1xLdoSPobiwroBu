@@ -53,12 +53,13 @@ private:
     nlohmann::json migrationData;
     nlohmann::json actions;
     nlohmann::json map;
+    nlohmann::json sequences;
     nlohmann::json::iterator it;
 
     void write(const std::string &filename, const nlohmann::json &value);
     nlohmann::json read(const std::string &filename);
 
-    void merge(nlohmann::json &target, nlohmann::json &patch, const std::string &key = "", const std::string &path = "");
+    void merge(nlohmann::json &target, nlohmann::json &patch, std::vector<std::string> path);
 
     void scanMigrations(std::string &md);
     void updateMigrationData(const int serial, const std::string &filename, const std::string &direction,
