@@ -4,9 +4,9 @@ paths:
   migrations dir: ../migrations
   migrations file: ../migrations/migrationData.json
   meta dir: ../metadata
-sequence:
-  merge:
-    columns: name
+sequences:
+  columns:
+    merge: name
 actions:
   create table:
   - action: generate
