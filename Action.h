@@ -33,7 +33,6 @@ private:
     std::string envRoot = "../";
 
     std::string snakeToCamel(const std::string &snake, const bool initCap = false);
-    std::vector<std::string> split(const std::string& str, const std::string& delimiter);
 
     typedef bool (Action::*memberFunction)(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action);
     std::map<std::string, memberFunction> actionFunctions;

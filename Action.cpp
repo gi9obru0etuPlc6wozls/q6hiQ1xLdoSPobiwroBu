@@ -7,24 +7,7 @@
 #include <sys/wait.h>
 #include "Action.h"
 #include "file_exists.h"
-
-using json = nlohmann::json;
-
-std::vector<std::string> Action::split(const std::string& str, const std::string& delimiter)
-{
-    std::vector<std::string> tokens;
-    size_t prev = 0, pos = 0;
-    do
-    {
-        pos = str.find(delimiter, prev);
-        if (pos == std::string::npos) pos = str.length();
-        std::string token = str.substr(prev, pos-prev);
-        if (!token.empty()) tokens.push_back(token);
-        prev = pos + delimiter.length();
-    }
-    while (pos < str.length() && prev < str.length());
-    return tokens;
-}
+#include "split_string.h"
 
 Action::Action() { // TODO: add "map" to constructor
     std::cout << "Action::Action()" << std::endl;
@@ -49,7 +32,7 @@ Action::Action() { // TODO: add "map" to constructor
     env->add_callback("setValue", 1, [this](Parsed::Arguments args, json x) {
         std::string text = env->get_argument<std::string>(args, 0, x);
 
-        std::vector<std::string> v = this->split(text, "|");
+        std::vector<std::string> v = split(text, "|");
 
         this->values[v[0]] = v[1];
         return "";
