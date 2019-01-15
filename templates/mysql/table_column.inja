@@ -1,11 +1,10 @@
-## if existsIn(column, "auto") and column/auto
-    {{ column/name }} INTEGER AUTO_INCREMENT PRIMARY KEY
-## else
     {{ column/name }} {{ map("mysql_db_type", column/type) }}
 ## if existsIn(column, "precision") and not column/precision == ""
 ({{column/precision}})
 ## endif
-## if existsIn(column, "not_null") and column/not_null
+## if existsIn(column, "not null") and column/not null
  NOT NULL
 ## endif
+## if existsIn(column, "primary key") and column/primary key
+ PRIMARY KEY
 ## endif

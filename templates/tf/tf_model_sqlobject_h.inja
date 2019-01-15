@@ -8,20 +8,10 @@
 class T_MODEL_EXPORT {{ uCamel(create table) }}Object : public TSqlObject, public QSharedData
 {
 public:
-    int id {0};
-    QString title;
-    QString body;
-    QString col_string;
-    int col_integer {0};
-    double col_float {0};
-    double col_double {0};
-    double col_numeric {0};
-    char col_boolean {0};
-    QString col_uuid;
-    QDateTime col_datetime;
-    QDateTime created_at;
-    QDateTime updated_at;
-    int lock_revision {0};
+
+## for column in columns
+{% include "tf_model_init_param_2.inja" %}
+## endfor
 
     enum PropertyIndex {
 ## for column in columns

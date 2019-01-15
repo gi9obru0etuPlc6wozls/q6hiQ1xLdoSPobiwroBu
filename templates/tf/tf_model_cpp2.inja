@@ -6,7 +6,7 @@
     : TAbstractModel(), d(new {{ uCamel(create table) }}Object())
 {
 ## for column in columns
-{{ initParam( map("qt_type", column/type), column/name) }}
+{% include "tf_model_init_param_1.inja" %}
 ## endfor
 
 }
@@ -36,7 +36,7 @@
 
 ## else
 
-void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({{createParam( map("qt_type", column/type), lCamel(column/name))}})
+void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({% include "tf_model_create_param.inja" %})
 {
     d->{{column/name}} = {{ lCamel(column/name) }};
 }
@@ -55,7 +55,7 @@ void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({{createParam( map
 ## if existsIn(column, "setter") and not column/setter
 
 ## else
-{{ getValue("need_comma") }}{{ createParam( map("qt_type", column/type), lCamel(column/name)) }}{{ setValue("need_comma|, ") }}
+{{ getValue("need_comma") }}{% include "tf_model_create_param.inja" %}{{ setValue("need_comma|, ") }}
 ## endif
 ## endfor
 )

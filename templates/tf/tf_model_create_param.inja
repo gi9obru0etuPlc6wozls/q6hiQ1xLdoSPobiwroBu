@@ -1,0 +1,13 @@
+## if map("qt_type", column/type) == "int"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if map("qt_type", column/type) == "integer"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if map("qt_type", column/type) == "float"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if map("qt_type", column/type) == "double"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if map("qt_type", column/type) == "numeric"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else
+const {{map("qt_type", column/type)}} &{{lCamel(column/name)}}
+## endif

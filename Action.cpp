@@ -18,17 +18,6 @@ Action::Action() { // TODO: add "map" to constructor
 
     env = new Environment(envRoot);
 
-//    env->add_callback("setValue", 2, [this](Parsed::Arguments args, json x) {
-//        std::string key = env->get_argument<std::string>(args, 0, x);
-//        std::string value = env->get_argument<std::string>(args, 1, x);
-//
-//        std::cout << "setValue key: " << key << std::endl;
-//        std::cout << "setValue value: " << value << std::endl;
-//
-//        this->values[key] = value;
-//        return "";
-//    });
-
     env->add_callback("setValue", 1, [this](Parsed::Arguments args, json x) {
         std::string text = env->get_argument<std::string>(args, 0, x);
 
@@ -45,53 +34,6 @@ Action::Action() { // TODO: add "map" to constructor
         return (value != this->values.end()) ? value->second : "";
     });
 
-    env->add_callback("createParam", 2, [this](Parsed::Arguments args, json x) {
-        std::string colType = env->get_argument<std::string>(args, 0, x);
-        std::string colName = env->get_argument<std::string>(args, 1, x);
-
-        std::string tpl = x.at("map").at("createParam").at("default").get<std::string>();
-        try {
-            tpl = x.at("map").at("createParam").at(colType).get<std::string>();
-        }
-        catch (nlohmann::json::out_of_range &e) {
-            ; // do nothing
-        }
-
-        nlohmann::json j;
-        j["colType"] = colType;
-        j["colName"] = colName;
-
-        return render(tpl, j);
-    });
-
-    env->add_callback("initParam", 2, [this](Parsed::Arguments args, json x) {
-        std::string colType = env->get_argument<std::string>(args, 0, x);
-        std::string colName = env->get_argument<std::string>(args, 1, x);
-
-        std::cout << "colType: " << colType << std::endl;
-        std::cout << "colName: " << colName << std::endl;
-
-        std::string tpl = x.at("map").at("initParam").at("default").get<std::string>();
-        try {
-            tpl = x.at("map").at("initParam").at(colType).get<std::string>();
-        }
-        catch (nlohmann::json::out_of_range &e) {
-            ; // do nothing
-        }
-
-        std::cout << "tpl: " << tpl << std::endl;
-
-        nlohmann::json j;
-        j["colType"] = colType;
-        j["colName"] = colName;
-
-        std::string r = render(tpl, j);
-
-        std::cout << "r: " << r << std::endl;
-
-        return r;
-    });
-
     env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
         std::string map = env->get_argument<std::string>(args, 0, x);
         std::string key = env->get_argument<std::string>(args, 1, x);
@@ -100,9 +42,48 @@ Action::Action() { // TODO: add "map" to constructor
         try {
             r = x.at("map").at(map).at(key).get<std::string>();
         }
-        catch (nlohmann::json::out_of_range &e) { ; // do nothing
+        catch (nlohmann::json::out_of_range &e) { ;
+            // do nothing
         }
         return r;
+    });
+
+    env->add_callback("cmpBool", 2, [this](Parsed::Arguments args, json x) {
+        std::string path = env->get_argument<std::string>(args, 0, x);
+        bool arg = env->get_argument<bool>(args, 1, x);
+
+        std::vector<std::string> parts = split(path, "/");
+
+        nlohmann::json j = x;
+        for (auto part = parts.begin(); part != parts.end(); ++part) {
+            try {
+                j = j.at(*part);
+            }
+            catch (nlohmann::json::out_of_range &e) {
+                return false;
+            }
+        }
+
+        return j == arg;
+    });
+
+    env->add_callback("cmpStr", 2, [this](Parsed::Arguments args, json x) {
+        std::string path = env->get_argument<std::string>(args, 0, x);
+        std::string arg = env->get_argument<std::string>(args, 1, x);
+
+        std::vector<std::string> parts = split(path, "/");
+
+        nlohmann::json j = x;
+        for (auto part = parts.begin(); part != parts.end(); ++part) {
+            try {
+                j = j.at(*part);
+            }
+            catch (nlohmann::json::out_of_range &e) {
+                return false;
+            }
+        }
+
+        return j == arg;
     });
 
     env->add_callback("lCamel", 1, [this](Parsed::Arguments args, json x) {

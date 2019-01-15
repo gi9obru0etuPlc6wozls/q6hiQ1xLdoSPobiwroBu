@@ -13,25 +13,10 @@ extjs_type:
 qt_type:
   string: QString
   integer: int
-  int: int
   float: double
   double: double
   numeric: double
   boolean: char
   uuid: varchar
-  serial: serial
+  serial: int
   datetime: QDateTime
-createParam:
-  default: "const {{colType}} &{{colName}}"
-  int: "{{colType}} {{colName}}"
-  integer: "{{colType}} {{colName}}"
-  float: "{{colType}} {{colName}}"
-  double: "{{colType}} {{colName}}"
-  numeric: "{{colType}} {{colName}}"
-initParam:
-  default: ""
-  int: "\n    d->{{colName}} = 0;"
-  integer: "\n    d->{{colName}} = 0;"
-  float: "\n    d->{{colName}} = 0;"
-  double: "\n    d->{{colName}} = 0;"
-  numeric: "\n    d->{{colName}} = 0;"

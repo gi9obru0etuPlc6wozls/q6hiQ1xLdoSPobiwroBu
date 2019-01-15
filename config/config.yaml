@@ -25,13 +25,13 @@ actions:
     out: models/sqlobjects/{{ uCamel(create table) }}.h
     overwrite: true
   - action: generate
-    inga: templates/postgres/table_create.inja
+    inga: templates/mysql/table_create.inja
     data: target
     out: sql/{{ uCamel(create table) }}.sql
     overwrite: true
   alter table:
   - action: generate
-    inga: templates/postgres/table_alter_columns.inja
+    inga: templates/mysql/table_alter_columns.inja
     data: patch
     out: sql/alter_{{ uCamel(alter table) }}.sql
     overwrite: true

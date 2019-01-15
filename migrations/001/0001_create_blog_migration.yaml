@@ -2,13 +2,11 @@
 serial: 0001
 up:
   - create table: blog
-    temporary: true
-    not exists: true
-    unlogged: true
     columns:
       - name: id
-        type: int
-        auto: true
+        type: integer
+        serial: true
+        primary key: true
         setter: false
       - name: title
         type: string
@@ -44,5 +42,5 @@ up:
         type: datetime
         setter: false
       - name: lock_revision
-        type: int
+        type: integer
         setter: false

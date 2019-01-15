@@ -1,15 +1,17 @@
+-- MySQL
 CREATE
-## if exists("unlogged") and unlogged
- UNLOGGED
-## endif
-## if exists("temporary") and temporary
+## if cmpBool("temporary", true)
  TEMPORARY
 ## endif
  TABLE {{ create table }}
+## if cmpBool("not exists", true)
+ IF NOT EXISTS
+## endif
 ## if exists("like")
  LIKE {{ like }};
 ## else
  (
+
 ## for column in columns
 {% include "table_column.inja" %}
 ## if not loop/is_last
