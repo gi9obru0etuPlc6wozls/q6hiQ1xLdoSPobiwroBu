@@ -1,0 +1,17 @@
+## for column in columns
+## if existsIn(column, "serial") and column/serial
+## for column2 in columns
+## if column2/name == "lock_revision"
+
+{{ uCamel(create table) }} {{ uCamel(create table) }}::get({% include "tf_model_create_param.inja" %}, {{ map("qt_type", column2/type) }} lockRevision)
+{
+    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+    TCriteria cri;
+    cri.add({{ uCamel(create table) }}Object::{{ uCamel(column/name) }}, {{ lCamel(column/name) }});
+    cri.add({{ uCamel(create table) }}Object::{{ uCamel(column2/name) }}, {{ lCamel(column2/name) }});
+    return {{ uCamel(create table) }}(mapper.findFirst(cri));
+}
+## endif
+## endfor
+## endif
+## endfor

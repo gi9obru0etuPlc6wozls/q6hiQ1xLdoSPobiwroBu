@@ -86,20 +86,8 @@ void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({% include "tf_mod
     return model;
 }
 
-{{ uCamel(create table) }} {{ uCamel(create table) }}::get(int id)  // TODO: primary key column
-{
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
-    return {{ uCamel(create table) }}(mapper.findByPrimaryKey(id));
-}
-
-{{ uCamel(create table) }} {{ uCamel(create table) }}::get(int id, int lockRevision) // TODO: primary key column & lock revision
-{
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
-    TCriteria cri;
-    cri.add({{ uCamel(create table) }}Object::Id, id);
-    cri.add({{ uCamel(create table) }}Object::LockRevision, lockRevision);
-    return {{ uCamel(create table) }}(mapper.findFirst(cri));
-}
+{% include "tf_model_cpp_get_pk.inja" %}
+{% include "tf_model_cpp_get_pk_lock.inja" %}
 
 int {{ uCamel(create table) }}::count()
 {

@@ -1,0 +1,5 @@
+## for column in columns
+## if existsIn(column, "primary key") and column/primary key
+    static {{ uCamel(create table) }} get({% include "tf_model_create_param.inja" %});
+## endif
+## endfor

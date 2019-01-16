@@ -51,22 +51,8 @@ public:
 );
     static {{ uCamel(create table) }} create(const QVariantMap &values);
 
-## for column in columns
-## if existsIn(column, "serial") and column/serial
-    static {{ uCamel(create table) }} get({% include "tf_model_create_param.inja" %});
-
-## endif
-## endfor
-## for column in columns
-## if existsIn(column, "serial") and column/serial
-## for column2 in columns
-## if column2/name == "lock_revision"
-    static {{ uCamel(create table) }} get({% include "tf_model_create_param.inja" %}, {{ map("qt_type", column2/type) }} {{ lCamel(column2/name) }});
-
-## endif
-## endfor
-## endif
-## endfor
+{% include "tf_model_h_get_pk.inja" %}
+{% include "tf_model_h_get_pk_lock.inja" %}
     static int count();
     static QList<{{ uCamel(create table) }}> getAll();
     static QList<{{ uCamel(create table) }}> getAll(const int limit,const int offset);
