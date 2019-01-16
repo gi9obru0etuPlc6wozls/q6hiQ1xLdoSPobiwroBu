@@ -1,0 +1,5 @@
+## for column in columns
+## if existsIn(column, "primary key") and column/primary key
+    int primaryKeyIndex() const override { return {{ uCamel(column/name) }}; }
+## endif
+## endfor

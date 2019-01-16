@@ -25,8 +25,8 @@ public:
 
     };
 
-    int primaryKeyIndex() const override { return Id; }  // TODO: get primary key
-    int autoValueIndex() const override { return Id; }   // TODO: get auto
+{% include "tf_model_sqlobject_pk.inja" %}
+{% include "tf_model_sqlobject_auto.inja" %}
     QString tableName() const override { return QLatin1String("{{create table}}"); }
 
 private:    /*** Don't modify below this line ***/
