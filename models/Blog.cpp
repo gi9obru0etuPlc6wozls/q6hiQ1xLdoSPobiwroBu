@@ -26,7 +26,7 @@ Blog::~Blog()
     // the shared data object 'BlogObject' is deleted.
 }
 
-qulonglong Blog::id() const
+qtulonglong Blog::id() const
 {
     return d->id;
 }
@@ -66,7 +66,7 @@ int Blog::colInteger() const
     return d->col_integer;
 }
 
-void Blog::setColInteger(int colInteger)
+void Blog::setColInteger(const int &colInteger)
 {
     d->col_integer = colInteger;
 }
@@ -152,7 +152,7 @@ Blog &Blog::operator=(const Blog &other)
     return *this;
 }
 
-Blog Blog::create(const QString &title, const QString &body, const QString &colString, int colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime)
+Blog Blog::create(const QString &title, const QString &body, const QString &colString, const int &colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime)
 {
     BlogObject obj;
     obj.title = title;
@@ -181,13 +181,13 @@ Blog Blog::create(const QVariantMap &values)
     return model;
 }
 
-Blog Blog::get(const qulonglong &id)
+Blog Blog::get(const qtulonglong &id)
 {
     TSqlORMapper<BlogObject> mapper;
     return Blog(mapper.findByPrimaryKey(id));
 }
 
-Blog Blog::get(const qulonglong &id, int lockRevision)
+Blog Blog::get(const qtulonglong &id, int lockRevision)
 {
     TSqlORMapper<BlogObject> mapper;
     TCriteria cri;

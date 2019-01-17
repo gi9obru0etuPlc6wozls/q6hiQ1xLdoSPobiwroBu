@@ -22,7 +22,7 @@ public:
     Blog(const BlogObject &object);
     ~Blog();
 
-    qulonglong id() const;
+    qtulonglong id() const;
     QString title() const;
     void setTitle(const QString &title);
     QString body() const;
@@ -30,7 +30,7 @@ public:
     QString colString() const;
     void setColString(const QString &colString);
     int colInteger() const;
-    void setColInteger(int colInteger);
+    void setColInteger(const int &colInteger);
     double colFloat() const;
     void setColFloat(double colFloat);
     double colDouble() const;
@@ -53,11 +53,11 @@ public:
     bool save()   override { return TAbstractModel::save(); }
     bool remove() override { return TAbstractModel::remove(); }
 
-    static Blog create(, const QString &title, const QString &body, const QString &colString, int colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime);
+    static Blog create(, const QString &title, const QString &body, const QString &colString, const int &colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime);
     static Blog create(const QVariantMap &values);
 
-    static Blog get(const qulonglong &id);
-    static Blog get(const qulonglong &id, int lockRevision);
+    static Blog get(const qtulonglong &id);
+    static Blog get(const qtulonglong &id, int lockRevision);
     static int count();
     static QList<Blog> getAll();
     static QList<Blog> getAll(const int limit,const int offset);

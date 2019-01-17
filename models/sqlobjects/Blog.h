@@ -8,7 +8,7 @@
 class T_MODEL_EXPORT BlogObject : public TSqlObject, public QSharedData
 {
 public:
-    qulonglong id;
+    qtulonglong id;
     QString title;
     QString body;
     QString col_string;
@@ -41,13 +41,13 @@ public:
     };
 
     int primaryKeyIndex() const override { return Id; }
-    XXX autoValueIndex() const override { return Id; }
+
     QString tableName() const override { return QLatin1String("blog"); }
 
 private:    /*** Don't modify below this line ***/
     Q_OBJECT
-    Q_PROPERTY(qulonglong id READ getid WRITE setid)
-    T_DEFINE_PROPERTY(qulonglong, id)
+    Q_PROPERTY(qtulonglong id READ getid WRITE setid)
+    T_DEFINE_PROPERTY(qtulonglong, id)
     Q_PROPERTY(QString title READ gettitle WRITE settitle)
     T_DEFINE_PROPERTY(QString, title)
     Q_PROPERTY(QString body READ getbody WRITE setbody)
