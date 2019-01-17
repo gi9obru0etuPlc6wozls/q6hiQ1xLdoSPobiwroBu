@@ -5,7 +5,6 @@
 Blog::Blog()
     : TAbstractModel(), d(new BlogObject())
 {
-    d->id = 0;
     d->col_integer = 0;
     d->col_float = 0;
     d->col_double = 0;
@@ -27,7 +26,7 @@ Blog::~Blog()
     // the shared data object 'BlogObject' is deleted.
 }
 
-int Blog::id() const
+qulonglong Blog::id() const
 {
     return d->id;
 }
@@ -182,13 +181,13 @@ Blog Blog::create(const QVariantMap &values)
     return model;
 }
 
-Blog Blog::get(int id)  // TODO: primary key column
+Blog Blog::get(const qulonglong &id)
 {
     TSqlORMapper<BlogObject> mapper;
     return Blog(mapper.findByPrimaryKey(id));
 }
 
-Blog Blog::get(int id, int lockRevision) // TODO: primary key column & lock revision
+Blog Blog::get(const qulonglong &id, int lockRevision)
 {
     TSqlORMapper<BlogObject> mapper;
     TCriteria cri;

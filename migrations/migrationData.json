@@ -8,10 +8,10 @@
                 {
                     "columns": [
                         {
-                            "auto": true,
                             "name": "id",
+                            "primary key": true,
                             "setter": false,
-                            "type": "int"
+                            "type": "serial"
                         },
                         {
                             "name": "title",
@@ -73,13 +73,10 @@
                         {
                             "name": "lock_revision",
                             "setter": false,
-                            "type": "int"
+                            "type": "integer"
                         }
                     ],
-                    "create table": "blog",
-                    "not exists": true,
-                    "temporary": true,
-                    "unlogged": true
+                    "create table": "blog"
                 }
             ]
         },

@@ -29,6 +29,16 @@ actions:
     data: target
     out: sql/{{ uCamel(create table) }}.sql
     overwrite: true
+  - action: generate
+    inga: templates/tf/tf_controller_h.inja
+    data: target
+    out: controllers/{{ lCamel(create table) }}controller.h
+    overwrite: true
+  - action: generate
+    inga: templates/tf/tf_controller_cpp.inja
+    data: target
+    out: controllers/{{ lCamel(create table) }}controller.cpp
+    overwrite: true
   alter table:
   - action: generate
     inga: templates/mysql/table_alter_columns.inja

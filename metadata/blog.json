@@ -1,10 +1,11 @@
 {
     "columns": [
         {
-            "auto": true,
             "name": "id",
+            "primary key": true,
+            "serial": true,
             "setter": false,
-            "type": "int"
+            "type": "serial"
         },
         {
             "name": "title",
@@ -66,12 +67,10 @@
         {
             "name": "lock_revision",
             "setter": false,
-            "type": "int"
+            "type": "integer"
         }
     ],
     "create table": "blog",
     "logged": true,
-    "not exists": true,
-    "temporary": true,
-    "unlogged": true
+    "temporary": false
 }

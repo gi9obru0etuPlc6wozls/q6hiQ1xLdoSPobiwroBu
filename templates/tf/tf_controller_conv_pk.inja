@@ -1,0 +1,44 @@
+        insert(QVariant::Int,       "%1.toInt()");
+        insert(QVariant::UInt,      "%1.toUInt()");
+        insert(QVariant::LongLong,  "%1.toLongLong()");
+        insert(QVariant::ULongLong, "%1.toULongLong()");
+        insert(QVariant::Double,    "%1.toDouble()");
+        insert(QVariant::ByteArray, "%1.toByteArray()");
+        insert(QVariant::String,    "%1");
+        insert(QVariant::Date,      "QDate::fromString(%1)");
+        insert(QVariant::Time,      "QTime::fromString(%1)");
+        insert(QVariant::DateTime,  "QDateTime::fromString(%1)");
+
+  string: QString
+  integer: int
+  float: double
+  double: double
+  numeric: double
+  boolean: char
+  uuid: varchar
+  serial: int
+  datetime: QDateTime
+
+
+  {{ lCamel(column/name) }}
+
+## for column in columns
+## if existsIn(column, "primary key") and column/primary key
+## if map("qt_type", column/type) == "int"
+    {{ lCamel(column/name) }}.toInt();
+
+## else if  map("qt_type", column/type) == "integer"
+    {{ lCamel(column/name) }}.toInt();
+
+## else if map("qt_type", column/type) == "double"
+    {{ lCamel(column/name) }}.toDouble();
+
+## else if map("qt_type", column/type) == "numeric"
+    {{map("qt_type", column/type)}} {{column/name}} {0};
+
+## else
+    {{map("qt_type", column/type)}} {{column/name}};
+
+## endif
+## endif
+## endfor

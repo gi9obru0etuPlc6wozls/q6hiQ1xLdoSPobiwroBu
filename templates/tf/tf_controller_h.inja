@@ -1,0 +1,21 @@
+#ifndef {{ upper(uCamel(create table)) }}CONTROLLER_H
+#define {{ upper(uCamel(create table)) }}CONTROLLER_H
+
+#include "applicationcontroller.h"
+
+
+class T_CONTROLLER_EXPORT {{ uCamel(create table) }}Controller : public ApplicationController
+{
+    Q_OBJECT
+public:
+    {{ uCamel(create table) }}Controller() : ApplicationController() {}
+
+public slots:
+    void index();
+    void show(const QString &{% include "tf_controller_param_pk.inja" %});
+    void create();
+    void save(const QString &{% include "tf_controller_param_pk.inja" %});
+    void remove(const QString &{% include "tf_controller_param_pk.inja" %});
+};
+
+#endif // {{ upper(uCamel(create table)) }}CONTROLLER_H

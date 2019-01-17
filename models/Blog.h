@@ -22,7 +22,7 @@ public:
     Blog(const BlogObject &object);
     ~Blog();
 
-    int id() const;
+    qulonglong id() const;
     QString title() const;
     void setTitle(const QString &title);
     QString body() const;
@@ -55,8 +55,9 @@ public:
 
     static Blog create(, const QString &title, const QString &body, const QString &colString, int colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime);
     static Blog create(const QVariantMap &values);
-    static Blog get(int id);
-    static Blog get(int id, int lockRevision);
+
+    static Blog get(const qulonglong &id);
+    static Blog get(const qulonglong &id, int lockRevision);
     static int count();
     static QList<Blog> getAll();
     static QList<Blog> getAll(const int limit,const int offset);
