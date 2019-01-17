@@ -9,9 +9,11 @@
                     "columns": [
                         {
                             "name": "id",
+                            "not null": true,
                             "primary key": true,
+                            "serial": true,
                             "setter": false,
-                            "type": "serial"
+                            "type": "ubigint"
                         },
                         {
                             "name": "title",

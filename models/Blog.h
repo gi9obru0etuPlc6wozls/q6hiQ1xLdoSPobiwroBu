@@ -56,8 +56,8 @@ public:
     static Blog create(, const QString &title, const QString &body, const QString &colString, const int &colInteger, double colFloat, double colDouble, double colNumeric, const char &colBoolean, const QString &colUuid, const QDateTime &colDatetime);
     static Blog create(const QVariantMap &values);
 
-    static Blog get(const qtulonglong &id);
-    static Blog get(const qtulonglong &id, int lockRevision);
+    static Blog get(YAY qtulonglong id);
+    static Blog get(YAY qtulonglong id, int lockRevision);
     static int count();
     static QList<Blog> getAll();
     static QList<Blog> getAll(const int limit,const int offset);

@@ -5,8 +5,8 @@ mysql_db_type:
   double:	double
   numeric:	decimal
   boolean:	boolean
-  uuid:	uuid
-  ubigint:	bigint(20) unsigned
+  uuid:	    uuid
+  ubigint:	bigint unsigned
   datetime:	datetime
 extjs_type:
   uuid: string
@@ -18,5 +18,5 @@ qt_type:
   numeric: double
   boolean: char
   uuid: uuid
-  ubigint: qtulonglong
+  ubigint: qulonglong
   datetime: QDateTime

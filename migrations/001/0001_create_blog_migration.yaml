@@ -4,9 +4,10 @@ up:
   - create table: blog
     columns:
       - name: id
-        type: integer
+        type: ubigint
         serial: true
         primary key: true
+        not null: true
         setter: false
       - name: title
         type: string

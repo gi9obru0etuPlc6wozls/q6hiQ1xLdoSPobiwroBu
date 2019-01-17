@@ -181,13 +181,13 @@ Blog Blog::create(const QVariantMap &values)
     return model;
 }
 
-Blog Blog::get(const qtulonglong &id)
+Blog Blog::get(YAY qtulonglong id)
 {
     TSqlORMapper<BlogObject> mapper;
     return Blog(mapper.findByPrimaryKey(id));
 }
 
-Blog Blog::get(const qtulonglong &id, int lockRevision)
+Blog Blog::get(YAY qtulonglong id, int lockRevision)
 {
     TSqlORMapper<BlogObject> mapper;
     TCriteria cri;
