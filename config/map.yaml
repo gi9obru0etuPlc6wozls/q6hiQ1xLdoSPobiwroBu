@@ -7,16 +7,28 @@ mysql_db_type:
   boolean:	boolean
   uuid:	    uuid
   ubigint:	bigint unsigned
+  serial:	bigint unsigned
   datetime:	datetime
 extjs_type:
   uuid: string
 qt_type:
-  string: QString
-  integer: int
-  float: double
-  double: double
-  numeric: double
-  boolean: char
-  uuid: uuid
-  ubigint: qulonglong
+  string:   QString
+  integer:  int
+  float:    double
+  double:   double
+  numeric:  double
+  boolean:  char
+  uuid:     uuid
+  ubigint:  qulonglong
+  serial:   qulonglong
   datetime: QDateTime
+qt_qvariant:
+  string:   "{{ lCamel(column/name) }}"
+  integer:  "{{ lCamel(column/name) }}.toInt()"
+  float:    "{{ lCamel(column/name) }}.toDouble()"
+  double:   "{{ lCamel(column/name) }}.toDouble()"
+  numeric:  "{{ lCamel(column/name) }}.toDouble()"
+  uuid:     "uuid_xyzzy"
+  ubigint:  "{{ lCamel(column/name) }}.toULongLong()"
+  serial:   "{{ lCamel(column/name) }}.toULongLong()"
+  datetime: "QDateTime::fromString({{ lCamel(column/name) }})"

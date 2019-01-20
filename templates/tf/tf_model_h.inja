@@ -8,7 +8,6 @@
 #include <TGlobal>
 #include <TAbstractModel>
 
-
 class TModelObject;
 class {{ uCamel(create table) }}Object;
 class QJsonArray;
@@ -48,9 +47,8 @@ public:
 {{ getValue("need_comma") }}{% include "tf_model_create_param.inja" %}{{ setValue("need_comma|, ") }}
 ## endif
 ## endfor
-);
+);{{ setValue("need_comma|") }}
     static {{ uCamel(create table) }} create(const QVariantMap &values);
-
 {% include "tf_model_h_get_pk.inja" %}
 {% include "tf_model_h_get_pk_lock.inja" %}
     static int count();

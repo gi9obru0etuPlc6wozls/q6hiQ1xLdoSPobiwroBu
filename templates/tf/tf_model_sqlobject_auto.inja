@@ -1,5 +1,7 @@
 ## for column in columns
 ## if existsIn(column, "type") and column/type == "serial"
-    XXX autoValueIndex() const override { return {{ uCamel(column/name) }}; }
+    int autoValueIndex() const override { return {{ uCamel(column/name) }}; }
+## else if existsIn(column, "serial") and column/serial
+    int autoValueIndex() const override { return {{ uCamel(column/name) }}; }
 ## endif
 ## endfor

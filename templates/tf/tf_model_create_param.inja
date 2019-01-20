@@ -1,4 +1,6 @@
-## if column/type == "ubigint"
+## if column/type == "serial"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "ubigint"
 {{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
 ## else if column/type == "integer"
 {{ map("qt_type", column/type) }} {{ lCamel(column/name) }}

@@ -1,5 +1,5 @@
 ## for column in columns
-## if existsIn(column, "serial") and column/serial
+## if existsIn(column, "primary key") and column/primary key
 ## for column2 in columns
 ## if column2/name == "lock_revision"
 

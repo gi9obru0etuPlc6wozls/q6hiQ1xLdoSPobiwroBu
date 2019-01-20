@@ -11,7 +11,7 @@ void {{ uCamel(create table) }}Controller::index()
 
 void {{ uCamel(create table) }}Controller::show(const QString &{% include "tf_controller_param_pk.inja" %})
 {
-    auto {{ lCamel(create table) }} = {{ uCamel(create table) }}::get({% include "tf_controller_param_pk.inja" %}.toInt());
+    auto {{ lCamel(create table) }} = {{ uCamel(create table) }}::get({% include "tf_controller_conv_pk.inja" %});
     texport({{ lCamel(create table) }});
     render();
 }
@@ -49,7 +49,7 @@ void {{ uCamel(create table) }}Controller::save(const QString &{% include "tf_co
 {
     switch (httpRequest().method()) {
     case Tf::Get: {
-        auto model = {{ uCamel(create table) }}::get({% include "tf_controller_param_pk.inja" %}.toInt());
+        auto model = {{ uCamel(create table) }}::get({% include "tf_controller_conv_pk.inja" %});
         if (!model.isNull()) {
             session().insert("blog_lockRevision", model.lockRevision());
             auto {{ lCamel(create table) }} = model.toVariantMap();
@@ -61,7 +61,7 @@ void {{ uCamel(create table) }}Controller::save(const QString &{% include "tf_co
     case Tf::Post: {
         QString error;
         int rev = session().value("blog_lockRevision").toInt();
-        auto model = {{ uCamel(create table) }}::get({% include "tf_controller_param_pk.inja" %}.toInt(), rev);
+        auto model = {{ uCamel(create table) }}::get({% include "tf_controller_conv_pk.inja" %}, rev);
 
         if (model.isNull()) {
             error = "Original data not found. It may have been updated/removed by another transaction.";
@@ -97,7 +97,7 @@ void {{ uCamel(create table) }}Controller::remove(const QString &{% include "tf_
         return;
     }
 
-    auto {{ lCamel(create table) }} = {{ uCamel(create table) }}::get({% include "tf_controller_param_pk.inja" %}.toInt());
+    auto {{ lCamel(create table) }} = {{ uCamel(create table) }}::get({% include "tf_controller_conv_pk.inja" %});
     {{ lCamel(create table) }}.remove();
     redirect(urla("index"));
 }

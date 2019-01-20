@@ -58,7 +58,7 @@ void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({% include "tf_mod
 {{ getValue("need_comma") }}{% include "tf_model_create_param.inja" %}{{ setValue("need_comma|, ") }}
 ## endif
 ## endfor
-)
+{{ setValue("need_comma|") }})
 {
     {{ uCamel(create table) }}Object obj;
 ## for column in columns

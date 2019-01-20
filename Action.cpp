@@ -23,7 +23,7 @@ Action::Action() { // TODO: add "map" to constructor
 
         std::vector<std::string> v = split(text, "|");
 
-        this->values[v[0]] = v[1];
+        this->values[v[0]] = (v.size() == 2) ? v[1] : "";
         return "";
     });
 
@@ -84,6 +84,11 @@ Action::Action() { // TODO: add "map" to constructor
         }
 
         return j == arg;
+    });
+
+    env->add_callback("render", 1, [this](Parsed::Arguments args, json x) {
+        std::string arg = env->get_argument<std::string>(args, 0, x);
+        return this->env->render(arg, x);
     });
 
     env->add_callback("lCamel", 1, [this](Parsed::Arguments args, json x) {

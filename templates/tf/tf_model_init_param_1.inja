@@ -1,19 +1,16 @@
-## if map("qt_type", column/type) == "int"
+## if column/type == "serial"
 
     d->{{column/name}} = 0;
-## endif
-## if map("qt_type", column/type) == "integer"
+## else if column/type == "integer"
 
     d->{{column/name}} = 0;
-## endif
-## if map("qt_type", column/type) == "float"
+## else if map("qt_type", column/type) == "float"
 
    d->{{column/name}} = 0;
-## endif
-## if map("qt_type", column/type) == "double"
+## else if map("qt_type", column/type) == "double"
 
     d->{{column/name}} = 0;
-## endif
-## if map("qt_type", column/type) == "numeric"
+## else if map("qt_type", column/type) == "numeric"
+
     d->{{column/name}} = 0;
 ## endif
