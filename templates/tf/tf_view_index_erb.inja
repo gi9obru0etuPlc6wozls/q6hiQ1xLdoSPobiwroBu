@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<%#include "{{ lower(lCamel(create table)) }}.h" %>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= controller()->name() + ": " + controller()->activeAction() %></title>
+</head>
+<body>
+
+<h1>Listing {{ uSpace(create table) }}</h1>
+
+<%== linkTo("Create a new {{ uSpace(create table) }}", urla("create")) %><br />
+<br />
+<table border="1" cellpadding="5" style="border: 1px #d0d0d0 solid; border-collapse: collapse;">
+  <tr>
+## for column in columns
+## if not mapBool("exclude", column/name)
+## if not existsIn(column, "serial") and column/serial
+## if existsIn(column, "type") and not column/type == "serial"
+
+    <th>{{ uSpace(column/name) }}</th>
+## endif
+## endif
+## endif
+## endfor
+
+  </tr>
+<% tfetch(QList<{{ uCamel(create table) }}>, {{ lCamel(create table) }}List); %>
+<% for (const auto &i : {{ lCamel(create table) }}List) { %>
+  <tr>
+## for column in columns
+## if not mapBool("exclude", column/name)
+## if not existsIn(column, "serial") and column/serial
+## if existsIn(column, "type") and not column/type == "serial"
+
+    <td><%= i.{{ lCamel(column/name) }}() %></td>
+## endif
+## endif
+## endif
+## endfor
+
+    <td>
+      <%== linkTo("Show", urla("show", i.id())) %>
+      <%== linkTo("Edit", urla("save", i.id())) %>
+      <%== linkTo("Remove", urla("remove", i.id()), Tf::Post, "confirm('Are you sure?')") %>
+    </td>
+  </tr>
+<% } %>
+</table>
+
+</body>
+</html>

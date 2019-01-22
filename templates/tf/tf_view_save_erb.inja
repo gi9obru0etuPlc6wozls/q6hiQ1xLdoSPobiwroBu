@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<%#include "{{ lower(lCamel(create table)) }}.h" %>
+<% tfetch(QVariantMap, {{ lCamel(create table) }}); %>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= controller()->name() + ": " + controller()->activeAction() %></title>
+</head>
+<body>
+<p style="color: red"><%=$ error %></p>
+<p style="color: green"><%=$ notice %></p>
+
+<h1>Editing {{ uSpace(create table) }}</h1>
+
+<%== formTag(urla("save", {{ lCamel(create table) }}["{% include "tf_view_get_pk.inja" %}"]), Tf::Post) %>
+## for column in columns
+## if not mapBool("exclude", column/name)
+## if not existsIn(column, "serial") and column/serial
+## if existsIn(column, "type") and not column/type == "serial"
+
+  <p>
+    <label>{{ uSpace(column/name) }}<br /><input type="text" name="{{ lCamel(create table) }}[{{ lCamel(column/name) }}]" value="<%= {{ lCamel(create table) }}["{{ lCamel(column/name) }}"] %>" /></label>
+  </p>
+## endif
+## endif
+## endif
+## endfor
+
+  <p>
+    <input type="submit" value="Save" />
+  </p>
+</form>
+
+<%== linkTo("Show", urla("show", {{ lCamel(create table) }}["{% include "tf_view_get_pk.inja" %}"])) %> |
+<%== linkTo("Back", urla("index")) %>
+</body>
+</html>

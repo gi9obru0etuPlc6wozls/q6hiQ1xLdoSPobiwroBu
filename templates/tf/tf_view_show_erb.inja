@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<%#include "{{ lower(lCamel(create table)) }}.h" %>
+<% tfetch({{ uCamel(create table) }}, {{ lCamel(create table) }}); %>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= controller()->name() + ": " + controller()->activeAction() %></title>
+</head>
+<body>
+<p style="color: red"><%=$ error %></p>
+<p style="color: green"><%=$ notice %></p>
+
+<h1>Showing Blog</h1>
+<dt>ID</dt><dd><%= blog.id() %></dd><br />
+## for column in columns
+## if not mapBool("exclude", column/name)
+## if not existsIn(column, "serial") and column/serial
+## if existsIn(column, "type") and not column/type == "serial"
+
+<dt>{{ uSpace(column/name) }}</dt><dd><%= {{ lCamel(create table) }}.{{ lCamel(column/name) }}() %></dd><br />
+## endif
+## endif
+## endif
+## endfor
+
+<dt>Lock Revision</dt><dd><%= blog.lockRevision() %></dd><br />
+
+<%== linkTo("Edit", urla("save", {{ lCamel(create table) }}.{% include "tf_view_get_pk.inja" %}())) %> |
+<%== linkTo("Back", urla("index")) %>
+
+</body>
+</html>

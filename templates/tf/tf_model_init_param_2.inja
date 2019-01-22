@@ -1,19 +1,22 @@
-## if map("qt_type", column/type) == "serial"
+## if column/type == "serial"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
-## else if  map("qt_type", column/type) == "integer"
+## else if  column/type == "integer"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
-## else if  map("qt_type", column/type) == "char"
+## else if  column/type == "char"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
-## else if map("qt_type", column/type) == "float"
+## else if  column/type == "boolean"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
-## else if map("qt_type", column/type) == "double"
+## else if column/type == "float"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
-## else if map("qt_type", column/type) == "numeric"
+## else if column/type == "double"
+    {{map("qt_type", column/type)}} {{column/name}} {0};
+
+## else if column/type == "numeric"
     {{map("qt_type", column/type)}} {{column/name}} {0};
 
 ## else

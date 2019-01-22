@@ -12,17 +12,17 @@ actions:
   - action: generate
     inga: templates/tf/tf_model_cpp2.inja
     data: target
-    out: models/{{ uCamel(create table) }}.cpp
+    out: models/{{ lower(lCamel(create table)) }}.cpp
     overwrite: true
   - action: generate
     inga: templates/tf/tf_model_h.inja
     data: target
-    out: models/{{ uCamel(create table) }}.h
+    out: models/{{ lower(lCamel(create table)) }}.h
     overwrite: true
   - action: generate
     inga: templates/tf/tf_model_sqlobject_h.inja
     data: target
-    out: models/sqlobjects/{{ uCamel(create table) }}.h
+    out: models/sqlobjects/{{ lower(lCamel(create table)) }}object.h
     overwrite: true
   - action: generate
     inga: templates/mysql/table_create.inja
@@ -38,6 +38,26 @@ actions:
     inga: templates/tf/tf_controller_cpp.inja
     data: target
     out: controllers/{{ lCamel(create table) }}controller.cpp
+    overwrite: true
+  - action: generate
+    inga: templates/tf/tf_view_create_erb.inja
+    data: target
+    out: views/{{ lower(lCamel(create table)) }}/create.erb
+    overwrite: true
+  - action: generate
+    inga: templates/tf/tf_view_index_erb.inja
+    data: target
+    out: views/{{ lower(lCamel(create table)) }}/index.erb
+    overwrite: true
+  - action: generate
+    inga: templates/tf/tf_view_save_erb.inja
+    data: target
+    out: views/{{ lower(lCamel(create table)) }}/save.erb
+    overwrite: true
+  - action: generate
+    inga: templates/tf/tf_view_show_erb.inja
+    data: target
+    out: views/{{ lower(lCamel(create table)) }}/show.erb
     overwrite: true
   alter table:
   - action: generate

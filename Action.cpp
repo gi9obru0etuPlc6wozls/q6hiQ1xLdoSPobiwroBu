@@ -48,6 +48,20 @@ Action::Action() { // TODO: add "map" to constructor
         return r;
     });
 
+    env->add_callback("mapBool", 2, [this](Parsed::Arguments args, json x) {
+        std::string map = env->get_argument<std::string>(args, 0, x);
+        std::string key = env->get_argument<std::string>(args, 1, x);
+
+        bool r = false;
+        try {
+            r = x.at("map").at(map).at(key).get<bool>();
+        }
+        catch (nlohmann::json::out_of_range &e) { ;
+            // do nothing
+        }
+        return r;
+    });
+
     env->add_callback("cmpBool", 2, [this](Parsed::Arguments args, json x) {
         std::string path = env->get_argument<std::string>(args, 0, x);
         bool arg = env->get_argument<bool>(args, 1, x);
@@ -97,6 +111,33 @@ Action::Action() { // TODO: add "map" to constructor
 
     env->add_callback("uCamel", 1, [this](Parsed::Arguments args, json x) {
         return snakeToCamel(env->get_argument<std::string>(args, 0, x), true);
+    });
+
+    env->add_callback("uSpace", 1, [this](Parsed::Arguments args, json x) {
+        std::string s = env->get_argument<std::string>(args, 0, x);
+        std::string r;
+
+        bool underscore = false;
+        for (int i = 0; i < s.length(); ++i) {
+
+            char c = s[i];
+
+            if (i == 0)
+                c = toupper(c);
+
+            if (underscore)
+                c = toupper(c);
+
+            underscore = false;
+
+            if (c == '_') {
+                underscore = true;
+                c = ' ';
+            }
+
+            r += c;
+        }
+        return r;
     });
 
     env->add_callback("regex_search", 2, [this](Parsed::Arguments args, json x) {

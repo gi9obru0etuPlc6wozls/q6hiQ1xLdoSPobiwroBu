@@ -32,3 +32,13 @@ qt_qvariant:
   ubigint:  "{{ lCamel(column/name) }}.toULongLong()"
   serial:   "{{ lCamel(column/name) }}.toULongLong()"
   datetime: "QDateTime::fromString({{ lCamel(column/name) }})"
+exclude:
+  created_at: true
+  updated_at: true
+  modified_at: true
+  lock_revision: true
+  createdAt: true
+  updatedAt: true
+  modifiedAt: true
+  lockRevision: true
+
