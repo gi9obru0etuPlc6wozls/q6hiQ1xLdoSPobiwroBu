@@ -4,8 +4,7 @@ up:
   - create table: blog
     columns:
       - name: id
-        type: integer
-        serial: true
+        type: serial
         primary key: true
         not null: true
         setter: false
@@ -29,19 +28,6 @@ up:
       - name: col_numeric
         type: numeric
         precision: 16,2
-      - name: col_boolean
-        type: boolean
-      - name: col_uuid
-        type: string
-        precision: 36
-      - name: col_datetime
-        type: datetime
-      - name: created_at
-        type: datetime
-        setter: false
-      - name: updated_at
-        type: datetime
-        setter: false
       - name: lock_revision
         type: integer
         setter: false

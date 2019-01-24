@@ -11,9 +11,8 @@
                             "name": "id",
                             "not null": true,
                             "primary key": true,
-                            "serial": true,
                             "setter": false,
-                            "type": "ubigint"
+                            "type": "serial"
                         },
                         {
                             "name": "title",
@@ -48,29 +47,6 @@
                             "name": "col_numeric",
                             "precision": "16,2",
                             "type": "numeric"
-                        },
-                        {
-                            "name": "col_boolean",
-                            "type": "boolean"
-                        },
-                        {
-                            "name": "col_uuid",
-                            "precision": 36,
-                            "type": "string"
-                        },
-                        {
-                            "name": "col_datetime",
-                            "type": "datetime"
-                        },
-                        {
-                            "name": "created_at",
-                            "setter": false,
-                            "type": "datetime"
-                        },
-                        {
-                            "name": "updated_at",
-                            "setter": false,
-                            "type": "datetime"
                         },
                         {
                             "name": "lock_revision",

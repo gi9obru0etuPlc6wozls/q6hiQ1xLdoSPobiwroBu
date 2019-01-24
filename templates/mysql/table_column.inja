@@ -1,4 +1,7 @@
     {{ column/name }} {{ map("mysql_db_type", column/type) }}
+## if existsIn(column, "serial") and column/serial
+ AUTO_INCREMENT
+## endif
 ## if existsIn(column, "precision") and not column/precision == ""
 ({{column/precision}})
 ## endif
