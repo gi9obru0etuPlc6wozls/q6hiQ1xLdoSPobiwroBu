@@ -55,6 +55,9 @@ public:
     static QList<{{ uCamel(create table) }}> getAll();
     static QList<{{ uCamel(create table) }}> getAll(const int limit,const int offset);
     static QJsonArray getAllJson();
+    static void getAllXml(QDomDocument &dom, QDomElement &element, const QString &prefix = "");
+    static QDomElement getAllXml(QDomDocument &dom, const QString &prefix = "");
+    QDomElement toXml(QDomDocument &dom, const QString &prefix) const;
 
 private:
     QSharedDataPointer<{{ uCamel(create table) }}Object> d;

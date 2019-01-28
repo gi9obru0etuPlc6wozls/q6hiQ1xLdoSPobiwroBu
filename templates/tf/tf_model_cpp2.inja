@@ -1,4 +1,5 @@
 #include <TreeFrogModel>
+#include <QtXml/QDomDocument>
 #include "{{create table}}.h"
 #include "{{create table}}object.h"
 
@@ -111,6 +112,66 @@ QJsonArray {{ uCamel(create table) }}::getAllJson()
         }
     }
     return array;
+}
+
+void {{ uCamel(create table) }}::getAllXml(QDomDocument &dom, QDomElement &element, const QString &prefix)
+{
+    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+
+    if (mapper.find() > 0) {
+        for (TSqlORMapperIterator<{{ uCamel(create table) }}Object> i(mapper); i.hasNext(); ) {
+            element.appendChild({{ uCamel(create table) }}(i.next()).toXml(dom,prefix));
+        }
+    }
+}
+
+QDomElement {{ uCamel(create table) }}::getAllXml(QDomDocument &dom, const QString &prefix)
+{
+    QDomElement ret = dom.createElement(prefix + "ArrayOf{{ uCamel(create table) }}");
+    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+
+    if (mapper.find() > 0) {
+        for (TSqlORMapperIterator<{{ uCamel(create table) }}Object> i(mapper); i.hasNext(); ) {
+            ret.appendChild({{ uCamel(create table) }}(i.next()).toXml(dom,prefix));
+        }
+    }
+    return ret;
+}
+
+QDomElement {{ uCamel(create table) }}::toXml(QDomDocument &dom, const QString &prefix) const {
+    static QVector<QString> variableNames;
+
+    static const TModelObject *md = nullptr;
+    static const QMetaObject *metaObj;
+
+    if (!md) {
+        md = modelData();
+        metaObj = md->metaObject();
+
+        variableNames.fill("***", metaObj->propertyCount());
+        for (int i = metaObj->propertyOffset(); i < metaObj->propertyCount(); ++i) {
+            QString n(metaObj->property(i).name());
+
+            if (!n.isEmpty()) {
+                variableNames[i] = prefix + fieldNameToVariableName(n);
+            }
+        }
+    }
+
+    QDomElement ret = dom.createElement("{{ uCamel(create table) }}");
+
+    for (int i = metaObj->propertyOffset(); i < metaObj->propertyCount(); ++i) {
+        const char *propName = metaObj->property(i).name();
+        QString n(propName);
+        if (!n.isEmpty()) {
+            QDomElement tag = dom.createElement(variableNames[i]);
+            ret.appendChild(tag);
+
+            QDomText text = dom.createTextNode(md->property(propName).toString());
+            tag.appendChild(text);
+        }
+    }
+    return ret;
 }
 
 TModelObject *{{ uCamel(create table) }}::modelData()
