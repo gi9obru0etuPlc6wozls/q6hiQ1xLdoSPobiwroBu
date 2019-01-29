@@ -11,8 +11,9 @@
                             "name": "id",
                             "not null": true,
                             "primary key": true,
+                            "serial": true,
                             "setter": false,
-                            "type": "serial"
+                            "type": "integer"
                         },
                         {
                             "name": "title",
@@ -47,6 +48,14 @@
                             "name": "col_numeric",
                             "precision": "16,2",
                             "type": "numeric"
+                        },
+                        {
+                            "name": "created_at",
+                            "type": "date"
+                        },
+                        {
+                            "name": "updated_at",
+                            "type": "date"
                         },
                         {
                             "name": "lock_revision",

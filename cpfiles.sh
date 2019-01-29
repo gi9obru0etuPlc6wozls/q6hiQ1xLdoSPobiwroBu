@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 cp models/blog.h ../tf_test01/models/blog.h
 cp models/blog.cpp ../tf_test01/models/blog.cpp

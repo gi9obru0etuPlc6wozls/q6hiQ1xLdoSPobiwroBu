@@ -158,7 +158,7 @@ QDomElement {{ uCamel(create table) }}::toXml(QDomDocument &dom, const QString &
         }
     }
 
-    QDomElement ret = dom.createElement("{{ uCamel(create table) }}");
+    QDomElement ret = dom.createElement(prefix + "{{ uCamel(create table) }}");
 
     for (int i = metaObj->propertyOffset(); i < metaObj->propertyCount(); ++i) {
         const char *propName = metaObj->property(i).name();

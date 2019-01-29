@@ -6,7 +6,7 @@
             "primary key": true,
             "serial": true,
             "setter": false,
-            "type": "ubigint"
+            "type": "integer"
         },
         {
             "name": "title",
@@ -43,27 +43,12 @@
             "type": "numeric"
         },
         {
-            "name": "col_boolean",
-            "type": "boolean"
-        },
-        {
-            "name": "col_uuid",
-            "precision": 36,
-            "type": "string"
-        },
-        {
-            "name": "col_datetime",
-            "type": "datetime"
-        },
-        {
             "name": "created_at",
-            "setter": false,
-            "type": "datetime"
+            "type": "date"
         },
         {
             "name": "updated_at",
-            "setter": false,
-            "type": "datetime"
+            "type": "date"
         },
         {
             "name": "lock_revision",
