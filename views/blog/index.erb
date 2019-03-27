@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<%#include "blog.h" %>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= controller()->name() + ": " + controller()->activeAction() %></title>
+</head>
+<body>
+
+<h1>Listing Blog</h1>
+
+<%== linkTo("Create a new Blog", urla("create")) %><br />
+<br />
+<table border="1" cellpadding="5" style="border: 1px #d0d0d0 solid; border-collapse: collapse;">
+  <tr>
+    <th>Title</th>
+    <th>Body</th>
+    <th>Col String</th>
+    <th>Col Integer</th>
+    <th>Col Float</th>
+    <th>Col Double</th>
+    <th>Col Numeric</th>
+  </tr>
+<% tfetch(QList<Blog>, blogList); %>
+<% for (const auto &i : blogList) { %>
+  <tr>
+    <td><%= i.title() %></td>
+    <td><%= i.body() %></td>
+    <td><%= i.colString() %></td>
+    <td><%= i.colInteger() %></td>
+    <td><%= i.colFloat() %></td>
+    <td><%= i.colDouble() %></td>
+    <td><%= i.colNumeric() %></td>
+    <td>
+      <%== linkTo("Show", urla("show", i.id())) %>
+      <%== linkTo("Edit", urla("save", i.id())) %>
+      <%== linkTo("Remove", urla("remove", i.id()), Tf::Post, "confirm('Are you sure?')") %>
+    </td>
+  </tr>
+<% } %>
+</table>
+
+</body>
+</html>

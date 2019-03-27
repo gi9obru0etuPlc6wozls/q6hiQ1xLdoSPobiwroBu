@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<%#include "blog.h" %>
+<% tfetch(QVariantMap, blog); %>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= controller()->name() + ": " + controller()->activeAction() %></title>
+</head>
+<body>
+<p style="color: red"><%=$ error %></p>
+<p style="color: green"><%=$ notice %></p>
+
+<h1>New Blog</h1>
+
+<%== formTag(urla("create"), Tf::Post) %>
+  <p>
+    <label>Title<br /><input name="blog[title]" value="<%= blog["title"] %>" /></label>
+  </p>
+  <p>
+    <label>Body<br /><input name="blog[body]" value="<%= blog["body"] %>" /></label>
+  </p>
+  <p>
+    <label>Col String<br /><input name="blog[colString]" value="<%= blog["colString"] %>" /></label>
+  </p>
+  <p>
+    <label>Col Integer<br /><input name="blog[colInteger]" value="<%= blog["colInteger"] %>" /></label>
+  </p>
+  <p>
+    <label>Col Float<br /><input name="blog[colFloat]" value="<%= blog["colFloat"] %>" /></label>
+  </p>
+  <p>
+    <label>Col Double<br /><input name="blog[colDouble]" value="<%= blog["colDouble"] %>" /></label>
+  </p>
+  <p>
+    <label>Col Numeric<br /><input name="blog[colNumeric]" value="<%= blog["colNumeric"] %>" /></label>
+  </p>
+  <p>
+    <input type="submit" value="Create" />
+  </p>
+</form>
+
+<%== linkTo("Back", urla("index")) %>
+
+</body>
+</html>

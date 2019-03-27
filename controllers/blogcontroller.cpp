@@ -16,6 +16,27 @@ void BlogController::show(const QString &id)
     render();
 }
 
+void BlogController::xml(const QString &id)
+{
+    setContentType("text/xml");
+
+    QDomDocument doc;
+
+    QDomElement envelope = doc.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
+    envelope.setPrefix("soap");
+
+    QDomElement body = doc.createElement("soap:Body");
+
+    QDomElement response = doc.createElementNS("http://framesquared.com/Blog", "m:GetBlogResponse");
+    Blog::getAllXml(doc, response, "m:");
+
+    body.appendChild(response);
+    envelope.appendChild(body);
+    doc.appendChild(envelope);
+
+    renderXml(doc);
+}
+
 void BlogController::create()
 {
     switch (httpRequest().method()) {
