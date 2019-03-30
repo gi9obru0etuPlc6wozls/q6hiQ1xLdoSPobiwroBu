@@ -7,7 +7,6 @@
 \usepackage{cclicenses}
 \usepackage{courier}
 \usepackage{listings}
-\usepackage{usecases}
 
 \newwatermark[allpages,color=red!15,angle=45,scale=3.5,xpos=-10,ypos=-25]{DRAFT}
 
@@ -91,7 +90,56 @@ The nature of MVC frameworks lends itself to the use of boilerplate code. Some M
 \subsection{Required Libraries}
 \input{project_name} utilizes the Inja\cite{inja} template engine. Inja and \input{project_name} both rely on the nlohmann JSON library\cite{nlohmann}. \input{project_name} also uses the jbeder YAML\cite{jbeder} library.
 
-\subsection{Building \protect\input{project_name} }
+\subsubsection{yaml-cpp}
+Download and complile yaml-cpp:
+\begin{figure}[H]
+	\begin{lstlisting}
+	git clone https://github.com/jbeder/yaml-cpp.git
+	cd yaml-cpp/
+	mkdir build
+	cd build
+	cmake ..
+	make
+	sudo make install
+	\end{lstlisting}
+	\caption{Steps to building}
+\end{figure}
+
+Optionally, if you want to clean after the build:
+\begin{figure}[H]
+	\begin{lstlisting}
+	cd ..
+	rm -rf build
+	\end{lstlisting}
+	\caption{Steps to clean}
+\end{figure}
+
+\subsubsection{nlohmann/json}
+Download and complile nlohmann/json:
+\begin{figure}[H]
+	\begin{lstlisting}
+	git clone https://github.com/nlohmann/json.git
+	cd json/
+	mkdir build
+	cd build
+	cmake ..
+	make
+	sudo make install
+	\end{lstlisting}
+	\caption{Steps to building}
+\end{figure}
+
+Optionally, if you want to clean after the build:
+\begin{figure}[H]
+	\begin{lstlisting}
+	cd ..
+	rm -rf build
+	\end{lstlisting}
+	\caption{Steps to clean}
+\end{figure}
+
+
+\subsubsection{Building \protect\input{project_name} }
 The following steps will compile the \input{project_name} tool. 
 \begin{figure}[H]
 	\begin{lstlisting}
