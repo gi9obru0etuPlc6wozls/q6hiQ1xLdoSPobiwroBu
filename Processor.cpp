@@ -35,14 +35,14 @@ Processor::Processor(std::string filename) {
         migrationData = read(migrationFile);
     }
     catch (MergeException *e) {
-        migrationData = config.at("migration data");
+        migrationData = json(R"({
+            "current": null,
+            "migrations": []
+        })"_json);
         write(migrationFile, migrationData);
     }
 
     int currentSerial = getCurrentSerial();
-    if (currentSerial != -1) {
-        it = findMigration(currentSerial);
-    }
 }
 
 int Processor::getCurrentSerial() {
@@ -54,9 +54,7 @@ int Processor::getCurrentSerial() {
     }
 
     int currentSerial = migrationCurrent;
-    it = findMigration(currentSerial);
-
-    return (*it)["serial"];
+    return currentSerial;
 }
 
 void Processor::setCurrentSerial(int s) {
@@ -91,8 +89,6 @@ void Processor::scanMigrations() {
     write(migrationFile, migrationData);
 
     int currentSerial = getCurrentSerial();
-    if (currentSerial != -1)
-        it = findMigration(currentSerial);
 }
 
 void Processor::scanMigrations(std::string &md) {
@@ -213,32 +209,34 @@ nlohmann::json Processor::read(const std::string &filename) {
 bool Processor::start() {
     std::cout << "Processor::start()" << std::endl;
 
-    if (it.is_null()) {
-//    if (it != json::iterator()) {
-        it = migrationData.at("migrations").begin();
+    int currentSerial = getCurrentSerial();
+
+    if (currentSerial == -1) {  // TODO: detect uninitialized
+        migrationIter = migrationData.at("migrations").begin();
     } else {
-        ++it;
+        migrationIter = findMigration(currentSerial);
+        ++migrationIter;
     }
 
-    while (it != migrationData.at("migrations").end() && (*it).is_null()) {
-        ++it;
+    while (migrationIter != migrationData.at("migrations").end() && (*migrationIter).is_null()) {
+        ++migrationIter;
     }
 
-    return (it != migrationData.at("migrations").end());
+    return (migrationIter != migrationData.at("migrations").end());
 }
 
 bool Processor::next() {
     std::cout << "Processor::next()" << std::endl;
 
-    if (it != migrationData.at("migrations").end()) {
-        ++it;
+    if (migrationIter != migrationData.at("migrations").end()) {
+        ++migrationIter;
     }
 
-    while (it != migrationData.at("migrations").end() && (*it).is_null()) {
-        ++it;
+    while (migrationIter != migrationData.at("migrations").end() && (*migrationIter).is_null()) {
+        ++migrationIter;
     }
 
-    return (it != migrationData.at("migrations").end());
+    return (migrationIter != migrationData.at("migrations").end());
 }
 
 void Processor::migrate(const std::string &argument) {
@@ -252,7 +250,7 @@ void Processor::migrate(const std::string &argument) {
             if (start())
                 do {
                     ++i;
-                    process((*it)["up"],(*it)["serial"]);
+                    process((*migrationIter)["up"],(*migrationIter)["serial"]);
                 } while (i < count && next());
         } else {
             int serial = std::stoi(argument);
@@ -265,16 +263,16 @@ void Processor::migrate(const std::string &argument) {
 
             if (start())
                 do {
-                    int s = (*it)["serial"];
-                    if ((*it)["serial"] > serial) break;
+                    int s = (*migrationIter)["serial"];
+                    if ((*migrationIter)["serial"] > serial) break;
 
-                    process((*it)["up"],(*it)["serial"]);
+                    process((*migrationIter)["up"],(*migrationIter)["serial"]);
                 } while (next());
         }
     } else {
         if (start())
             do {
-                process((*it)["up"],(*it)["serial"]);
+                process((*migrationIter)["up"],(*migrationIter)["serial"]);
             } while (next());
     }
 }

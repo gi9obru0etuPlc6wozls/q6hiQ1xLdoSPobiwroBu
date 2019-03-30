@@ -8,7 +8,7 @@
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/node/impl.h>
 #include <nlohmann/json.hpp>
-#include <inja.hpp>
+#include <inja/inja.hpp>
 #include <regex>
 
 using json = nlohmann::json;
