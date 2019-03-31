@@ -18,8 +18,9 @@ Action::Action() { // TODO: add "map" to constructor
 
     env = new Environment(envRoot);
 
-    env->add_callback("setValue", 1, [this](Parsed::Arguments args, json x) {
-        std::string text = env->get_argument<std::string>(args, 0, x);
+    env->add_callback("setValue", 1, [this](Arguments &args) {
+        //std::string text = env->get_argument<std::string>(args, 0, x);
+        std::string text = args.at(0)->get<std::string>();
 
         std::vector<std::string> v = split(text, "|");
 
@@ -27,20 +28,20 @@ Action::Action() { // TODO: add "map" to constructor
         return "";
     });
 
-    env->add_callback("getValue", 1, [this](Parsed::Arguments args, json x) {
-        std::string key = env->get_argument<std::string>(args, 0, x);
+    env->add_callback("getValue", 1, [this](Arguments &args) {
+        std::string key = args.at(0)->get<std::string>();
 
         auto value = this->values.find(key);
         return (value != this->values.end()) ? value->second : "";
     });
 
-    env->add_callback("map", 2, [this](Parsed::Arguments args, json x) {
-        std::string map = env->get_argument<std::string>(args, 0, x);
-        std::string key = env->get_argument<std::string>(args, 1, x);
+    env->add_callback("map", 2, [this](Arguments &args) {
+        std::string mapArg = args.at(0)->get<std::string>();
+        std::string keyArg = args.at(1)->get<std::string>();
 
-        std::string r = "*** map: " + map + " key not found:" + key + " ***";
+        std::string r = "*** map: " + mapArg + " key not found:" + keyArg + " ***";
         try {
-            r = x.at("map").at(map).at(key).get<std::string>();
+            r = this->map.at(mapArg).at(keyArg).get<std::string>();
         }
         catch (nlohmann::json::out_of_range &e) { ;
             // do nothing
@@ -48,13 +49,13 @@ Action::Action() { // TODO: add "map" to constructor
         return r;
     });
 
-    env->add_callback("mapBool", 2, [this](Parsed::Arguments args, json x) {
-        std::string map = env->get_argument<std::string>(args, 0, x);
-        std::string key = env->get_argument<std::string>(args, 1, x);
+    env->add_callback("mapBool", 2, [this](Arguments &args) {
+        std::string mapArg = args.at(0)->get<std::string>();
+        std::string keyArg = args.at(1)->get<std::string>();
 
         bool r = false;
         try {
-            r = x.at("map").at(map).at(key).get<bool>();
+            r = this->map.at(mapArg).at(keyArg).get<bool>();
         }
         catch (nlohmann::json::out_of_range &e) { ;
             // do nothing
@@ -62,59 +63,22 @@ Action::Action() { // TODO: add "map" to constructor
         return r;
     });
 
-    env->add_callback("cmpBool", 2, [this](Parsed::Arguments args, json x) {
-        std::string path = env->get_argument<std::string>(args, 0, x);
-        bool arg = env->get_argument<bool>(args, 1, x);
-
-        std::vector<std::string> parts = split(path, "/");
-
-        nlohmann::json j = x;
-        for (auto part = parts.begin(); part != parts.end(); ++part) {
-            try {
-                j = j.at(*part);
-            }
-            catch (nlohmann::json::out_of_range &e) {
-                return false;
-            }
-        }
-
-        return j == arg;
+    env->add_callback("render", 1, [this](Arguments &args) {
+        std::string arg = args.at(0)->get<std::string>();
+        json j;
+        return this->env->render(arg, j);
     });
 
-    env->add_callback("cmpStr", 2, [this](Parsed::Arguments args, json x) {
-        std::string path = env->get_argument<std::string>(args, 0, x);
-        std::string arg = env->get_argument<std::string>(args, 1, x);
-
-        std::vector<std::string> parts = split(path, "/");
-
-        nlohmann::json j = x;
-        for (auto part = parts.begin(); part != parts.end(); ++part) {
-            try {
-                j = j.at(*part);
-            }
-            catch (nlohmann::json::out_of_range &e) {
-                return false;
-            }
-        }
-
-        return j == arg;
+    env->add_callback("lCamel", 1, [this](Arguments &args) {
+        return snakeToCamel(args.at(0)->get<std::string>());
     });
 
-    env->add_callback("render", 1, [this](Parsed::Arguments args, json x) {
-        std::string arg = env->get_argument<std::string>(args, 0, x);
-        return this->env->render(arg, x);
+    env->add_callback("uCamel", 1, [this](Arguments &args) {
+        return snakeToCamel(args.at(0)->get<std::string>(), true);
     });
 
-    env->add_callback("lCamel", 1, [this](Parsed::Arguments args, json x) {
-        return snakeToCamel(env->get_argument<std::string>(args, 0, x));
-    });
-
-    env->add_callback("uCamel", 1, [this](Parsed::Arguments args, json x) {
-        return snakeToCamel(env->get_argument<std::string>(args, 0, x), true);
-    });
-
-    env->add_callback("uSpace", 1, [this](Parsed::Arguments args, json x) {
-        std::string s = env->get_argument<std::string>(args, 0, x);
+    env->add_callback("uSpace", 1, [this](Arguments &args) {
+        std::string s = args.at(0)->get<std::string>();
         std::string r;
 
         bool underscore = false;
@@ -140,17 +104,17 @@ Action::Action() { // TODO: add "map" to constructor
         return r;
     });
 
-    env->add_callback("regex_search", 2, [this](Parsed::Arguments args, json x) {
-        std::string value = env->get_argument<std::string>(args, 0, x);
-        std::regex re(env->get_argument<std::string>(args, 1, x));
+    env->add_callback("regex_search", 2, [this](Arguments &args) {
+        std::string value = args.at(0)->get<std::string>();
+        std::regex re(args.at(1)->get<std::string>());
 
         return std::regex_search(value, re);
     });
 
-    env->add_callback("regex_replace", 3, [this](Parsed::Arguments args, json x) {
-        std::string subject = env->get_argument<std::string>(args, 0, x);
-        std::regex regex(env->get_argument<std::string>(args, 1, x));
-        std::string replacement = env->get_argument<std::string>(args, 2, x);
+    env->add_callback("regex_replace", 3, [this](Arguments &args) {
+        std::string subject = args.at(0)->get<std::string>();
+        std::regex regex(args.at(1)->get<std::string>());
+        std::string replacement = args.at(2)->get<std::string>();
 
         return std::regex_replace(subject, regex, replacement);
     });
@@ -201,11 +165,11 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
     std::string templateFileName = action.at("inga");
     bool overwrite = action.at("overwrite");
     nlohmann::json data = (action.at("data") == "target") ? target : patch;
+    std::cerr << data.dump(4) << std::endl;
 
     std::string outputTemplate = action.at("out");
     std::string outputFileName = env->render(outputTemplate, data);
-
-    data["map"] = this->map;
+    //data["map"] = this->map;
 
     if (file_exists(envRoot + outputFileName)) {
         if (!overwrite) {

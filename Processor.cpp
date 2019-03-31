@@ -41,8 +41,6 @@ Processor::Processor(std::string filename) {
         })"_json);
         write(migrationFile, migrationData);
     }
-
-    int currentSerial = getCurrentSerial();
 }
 
 int Processor::getCurrentSerial() {

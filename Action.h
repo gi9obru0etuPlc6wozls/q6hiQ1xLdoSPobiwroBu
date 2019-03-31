@@ -16,7 +16,7 @@
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/node/impl.h>
 #include <nlohmann/json.hpp>
-#include <inja.hpp>
+#include <inja/inja.hpp>
 #include <regex>
 
 //using json = nlohmann::json;
@@ -44,7 +44,7 @@ private:
 public:
     Action();
 
-    void debugexpression(const Parsed::ElementExpression &e);
+    //void debugexpression(const Parsed::ElementExpression &e);
 
     void doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
     void setMap(const nlohmann::json &map);
