@@ -1,9 +1,11 @@
 ## for column in columns
-## if existsIn(column, "primary key") and column/primary key
-{{ uCamel(create table) }} {{ uCamel(create table) }}::get({% include "tf_model_create_param.inja" %})
+## if existsIn(column, "primary_key")
+## if column/primary_key
+{{ uCamel(create_table) }} {{ uCamel(create_table) }}::get({% include "tf_model_create_param.inja" %})
 {
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
-    return {{ uCamel(create table) }}(mapper.findByPrimaryKey({{ lCamel(column/name) }}));
+    TSqlORMapper<{{ uCamel(create_table) }}Object> mapper;
+    return {{ uCamel(create_table) }}(mapper.findByPrimaryKey({{ lCamel(column/name) }}));
 }
+## endif
 ## endif
 ## endfor

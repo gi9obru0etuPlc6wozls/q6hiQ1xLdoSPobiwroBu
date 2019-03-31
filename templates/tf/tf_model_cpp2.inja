@@ -1,85 +1,88 @@
 #include <TreeFrogModel>
 #include <QtXml/QDomDocument>
-#include "{{create table}}.h"
-#include "{{create table}}object.h"
+#include "{{create_table}}.h"
+#include "{{create_table}}object.h"
 
-{{ uCamel(create table) }}::{{ uCamel(create table) }}()
-    : TAbstractModel(), d(new {{ uCamel(create table) }}Object())
+{{ uCamel(create_table) }}::{{ uCamel(create_table) }}()
+    : TAbstractModel(), d(new {{ uCamel(create_table) }}Object())
 {
-## for column in columns
 {% include "tf_model_init_param_1.inja" %}
-## endfor
-
 }
 
-{{ uCamel(create table) }}::{{ uCamel(create table) }}(const {{ uCamel(create table) }} &other)
-    : TAbstractModel(), d(new {{ uCamel(create table) }}Object(*other.d))
+{{ uCamel(create_table) }}::{{ uCamel(create_table) }}(const {{ uCamel(create_table) }} &other)
+    : TAbstractModel(), d(new {{ uCamel(create_table) }}Object(*other.d))
 { }
 
-{{ uCamel(create table) }}::{{ uCamel(create table) }}(const {{ uCamel(create table) }}Object &object)
-    : TAbstractModel(), d(new {{ uCamel(create table) }}Object(object))
+{{ uCamel(create_table) }}::{{ uCamel(create_table) }}(const {{ uCamel(create_table) }}Object &object)
+    : TAbstractModel(), d(new {{ uCamel(create_table) }}Object(object))
 { }
 
-{{ uCamel(create table) }}::~{{ uCamel(create table) }}()
+{{ uCamel(create_table) }}::~{{ uCamel(create_table) }}()
 {
     // If the reference count becomes 0,
-    // the shared data object '{{ uCamel(create table) }}Object' is deleted.
+    // the shared data object '{{ uCamel(create_table) }}Object' is deleted.
 }
 
 ## for column in columns
 
-{{ map("qt_type", column/type) }} {{ uCamel(create table) }}::{{ lCamel(column/name) }}() const
+{{ map("qt_type", column/type) }} {{ uCamel(create_table) }}::{{ lCamel(column/name) }}() const
 {
     return d->{{column/name}};
 }
 
-## if existsIn(column, "setter") and not column/setter
+## if existsIn(column, "setter")
+## if column/setter
 
-## else
-
-void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({% include "tf_model_create_param.inja" %})
+void {{ uCamel(create_table) }}::set{{ uCamel(column/name) }}({% include "tf_model_create_param.inja" %})
 {
     d->{{column/name}} = {{ lCamel(column/name) }};
 }
 
+## else
+
+## endif
 ## endif
 ## endfor
 
-{{ uCamel(create table) }} &{{ uCamel(create table) }}::operator=(const {{ uCamel(create table) }} &other)
+{{ uCamel(create_table) }} &{{ uCamel(create_table) }}::operator=(const {{ uCamel(create_table) }} &other)
 {
     d = other.d;  // increments the reference count of the data
     return *this;
 }
 
-{{ uCamel(create table) }} {{ uCamel(create table) }}::create(
+{{ uCamel(create_table) }} {{ uCamel(create_table) }}::create(
 ## for column in columns
-## if existsIn(column, "setter") and not column/setter
-
-## else
+## if existsIn(column, "setter")
+## if column/setter
 {{ getValue("need_comma") }}{% include "tf_model_create_param.inja" %}{{ setValue("need_comma|, ") }}
+## else
+
+## endif
 ## endif
 ## endfor
 {{ setValue("need_comma|") }})
 {
-    {{ uCamel(create table) }}Object obj;
+    {{ uCamel(create_table) }}Object obj;
 ## for column in columns
-## if existsIn(column, "setter") and not column/setter
-
-## else
+## if existsIn(column, "setter")
+## if column/setter
 
     obj.{{ column/name }} = {{ lCamel(column/name) }};
+## else
+
+## endif
 ## endif
 ## endfor
 
     if (!obj.create()) {
-        return {{ uCamel(create table) }}();
+        return {{ uCamel(create_table) }}();
     }
-    return {{ uCamel(create table) }}(obj);
+    return {{ uCamel(create_table) }}(obj);
 }
 
-{{ uCamel(create table) }} {{ uCamel(create table) }}::create(const QVariantMap &values)
+{{ uCamel(create_table) }} {{ uCamel(create_table) }}::create(const QVariantMap &values)
 {
-    {{ uCamel(create table) }} model;
+    {{ uCamel(create_table) }} model;
     model.setProperties(values);
     if (!model.d->create()) {
         model.d->clear();
@@ -90,55 +93,55 @@ void {{ uCamel(create table) }}::set{{ uCamel(column/name) }}({% include "tf_mod
 {% include "tf_model_cpp_get_pk.inja" %}
 {% include "tf_model_cpp_get_pk_lock.inja" %}
 
-int {{ uCamel(create table) }}::count()
+int {{ uCamel(create_table) }}::count()
 {
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+    TSqlORMapper<{{ uCamel(create_table) }}Object> mapper;
     return mapper.findCount();
 }
 
-QList<{{ uCamel(create table) }}> {{ uCamel(create table) }}::getAll()
+QList<{{ uCamel(create_table) }}> {{ uCamel(create_table) }}::getAll()
 {
-    return tfGetModelListByCriteria<{{ uCamel(create table) }}, {{ uCamel(create table) }}Object>(TCriteria());
+    return tfGetModelListByCriteria<{{ uCamel(create_table) }}, {{ uCamel(create_table) }}Object>(TCriteria());
 }
 
-QJsonArray {{ uCamel(create table) }}::getAllJson()
+QJsonArray {{ uCamel(create_table) }}::getAllJson()
 {
     QJsonArray array;
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+    TSqlORMapper<{{ uCamel(create_table) }}Object> mapper;
 
     if (mapper.find() > 0) {
-        for (TSqlORMapperIterator<{{ uCamel(create table) }}Object> i(mapper); i.hasNext(); ) {
-            array.append(QJsonValue(QJsonObject::fromVariantMap({{ uCamel(create table) }}(i.next()).toVariantMap())));
+        for (TSqlORMapperIterator<{{ uCamel(create_table) }}Object> i(mapper); i.hasNext(); ) {
+            array.append(QJsonValue(QJsonObject::fromVariantMap({{ uCamel(create_table) }}(i.next()).toVariantMap())));
         }
     }
     return array;
 }
 
-void {{ uCamel(create table) }}::getAllXml(QDomDocument &dom, QDomElement &element, const QString &prefix)
+void {{ uCamel(create_table) }}::getAllXml(QDomDocument &dom, QDomElement &element, const QString &prefix)
 {
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+    TSqlORMapper<{{ uCamel(create_table) }}Object> mapper;
 
     if (mapper.find() > 0) {
-        for (TSqlORMapperIterator<{{ uCamel(create table) }}Object> i(mapper); i.hasNext(); ) {
-            element.appendChild({{ uCamel(create table) }}(i.next()).toXml(dom,prefix));
+        for (TSqlORMapperIterator<{{ uCamel(create_table) }}Object> i(mapper); i.hasNext(); ) {
+            element.appendChild({{ uCamel(create_table) }}(i.next()).toXml(dom,prefix));
         }
     }
 }
 
-QDomElement {{ uCamel(create table) }}::getAllXml(QDomDocument &dom, const QString &prefix)
+QDomElement {{ uCamel(create_table) }}::getAllXml(QDomDocument &dom, const QString &prefix)
 {
-    QDomElement ret = dom.createElement(prefix + "ArrayOf{{ uCamel(create table) }}");
-    TSqlORMapper<{{ uCamel(create table) }}Object> mapper;
+    QDomElement ret = dom.createElement(prefix + "ArrayOf{{ uCamel(create_table) }}");
+    TSqlORMapper<{{ uCamel(create_table) }}Object> mapper;
 
     if (mapper.find() > 0) {
-        for (TSqlORMapperIterator<{{ uCamel(create table) }}Object> i(mapper); i.hasNext(); ) {
-            ret.appendChild({{ uCamel(create table) }}(i.next()).toXml(dom,prefix));
+        for (TSqlORMapperIterator<{{ uCamel(create_table) }}Object> i(mapper); i.hasNext(); ) {
+            ret.appendChild({{ uCamel(create_table) }}(i.next()).toXml(dom,prefix));
         }
     }
     return ret;
 }
 
-QDomElement {{ uCamel(create table) }}::toXml(QDomDocument &dom, const QString &prefix) const {
+QDomElement {{ uCamel(create_table) }}::toXml(QDomDocument &dom, const QString &prefix) const {
     static QVector<QString> variableNames;
 
     static const TModelObject *md = nullptr;
@@ -158,7 +161,7 @@ QDomElement {{ uCamel(create table) }}::toXml(QDomDocument &dom, const QString &
         }
     }
 
-    QDomElement ret = dom.createElement(prefix + "{{ uCamel(create table) }}");
+    QDomElement ret = dom.createElement(prefix + "{{ uCamel(create_table) }}");
 
     for (int i = metaObj->propertyOffset(); i < metaObj->propertyCount(); ++i) {
         const char *propName = metaObj->property(i).name();
@@ -174,24 +177,24 @@ QDomElement {{ uCamel(create table) }}::toXml(QDomDocument &dom, const QString &
     return ret;
 }
 
-TModelObject *{{ uCamel(create table) }}::modelData()
+TModelObject *{{ uCamel(create_table) }}::modelData()
 {
     return d.data();
 }
 
-const TModelObject *{{ uCamel(create table) }}::modelData() const
+const TModelObject *{{ uCamel(create_table) }}::modelData() const
 {
     return d.data();
 }
 
-QDataStream &operator<<(QDataStream &ds, const {{ uCamel(create table) }} &model)
+QDataStream &operator<<(QDataStream &ds, const {{ uCamel(create_table) }} &model)
 {
     auto varmap = model.toVariantMap();
     ds << varmap;
     return ds;
 }
 
-QDataStream &operator>>(QDataStream &ds, {{ uCamel(create table) }} &model)
+QDataStream &operator>>(QDataStream &ds, {{ uCamel(create_table) }} &model)
 {
     QVariantMap varmap;
     ds >> varmap;
@@ -200,4 +203,4 @@ QDataStream &operator>>(QDataStream &ds, {{ uCamel(create table) }} &model)
 }
 
 // Don't remove below this line
-T_REGISTER_STREAM_OPERATORS({{ uCamel(create table) }})
+T_REGISTER_STREAM_OPERATORS({{ uCamel(create_table) }})

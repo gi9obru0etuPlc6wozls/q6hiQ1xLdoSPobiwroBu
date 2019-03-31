@@ -3,7 +3,7 @@ CREATE
 ## if cmpBool("temporary", true)
  TEMPORARY
 ## endif
- TABLE {{ create table }}
+ TABLE {{ create_table }}
 ## if cmpBool("not exists", true)
  IF NOT EXISTS
 ## endif

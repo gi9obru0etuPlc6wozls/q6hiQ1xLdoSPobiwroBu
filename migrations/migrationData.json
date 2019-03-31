@@ -63,7 +63,7 @@
                             "type": "integer"
                         }
                     ],
-                    "create table": "blog"
+                    "create_table": "blog"
                 }
             ]
         },
