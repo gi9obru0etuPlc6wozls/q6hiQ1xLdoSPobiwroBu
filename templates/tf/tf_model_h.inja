@@ -1,5 +1,5 @@
-#ifndef {{ upper(uCamel(create table)) }}_H
-#define {{ upper(uCamel(create table)) }}_H
+#ifndef {{ upper(uCamel(create_table)) }}_H
+#define {{ upper(uCamel(create_table)) }}_H
 
 #include <QStringList>
 #include <QDateTime>
@@ -9,17 +9,17 @@
 #include <TAbstractModel>
 
 class TModelObject;
-class {{ uCamel(create table) }}Object;
+class {{ uCamel(create_table) }}Object;
 class QJsonArray;
 
 
-class T_MODEL_EXPORT {{ uCamel(create table) }} : public TAbstractModel
+class T_MODEL_EXPORT {{ uCamel(create_table) }} : public TAbstractModel
 {
 public:
-    {{ uCamel(create table) }}();
-    {{ uCamel(create table) }}(const {{ uCamel(create table) }} &other);
-    {{ uCamel(create table) }}(const {{ uCamel(create table) }}Object &object);
-    ~{{ uCamel(create table) }}();
+    {{ uCamel(create_table) }}();
+    {{ uCamel(create_table) }}(const {{ uCamel(create_table) }} &other);
+    {{ uCamel(create_table) }}(const {{ uCamel(create_table) }}Object &object);
+    ~{{ uCamel(create_table) }}();
 
 ## for column in columns
 
@@ -32,14 +32,14 @@ public:
 ## endif
 ## endfor
 
-    {{ uCamel(create table) }} &operator=(const {{ uCamel(create table) }} &other);
+    {{ uCamel(create_table) }} &operator=(const {{ uCamel(create_table) }} &other);
 
     bool create() override { return TAbstractModel::create(); }
     bool update() override { return TAbstractModel::update(); }
     bool save()   override { return TAbstractModel::save(); }
     bool remove() override { return TAbstractModel::remove(); }
 
-    static {{ uCamel(create table) }} create(
+    static {{ uCamel(create_table) }} create(
 ## for column in columns
 ## if existsIn(column, "setter") and not column/setter
 
@@ -48,27 +48,27 @@ public:
 ## endif
 ## endfor
 );{{ setValue("need_comma|") }}
-    static {{ uCamel(create table) }} create(const QVariantMap &values);
+    static {{ uCamel(create_table) }} create(const QVariantMap &values);
 {% include "tf_model_h_get_pk.inja" %}
 {% include "tf_model_h_get_pk_lock.inja" %}
     static int count();
-    static QList<{{ uCamel(create table) }}> getAll();
-    static QList<{{ uCamel(create table) }}> getAll(const int limit,const int offset);
+    static QList<{{ uCamel(create_table) }}> getAll();
+    static QList<{{ uCamel(create_table) }}> getAll(const int limit,const int offset);
     static QJsonArray getAllJson();
     static void getAllXml(QDomDocument &dom, QDomElement &element, const QString &prefix = "");
     static QDomElement getAllXml(QDomDocument &dom, const QString &prefix = "");
     QDomElement toXml(QDomDocument &dom, const QString &prefix) const;
 
 private:
-    QSharedDataPointer<{{ uCamel(create table) }}Object> d;
+    QSharedDataPointer<{{ uCamel(create_table) }}Object> d;
 
     TModelObject *modelData() override;
     const TModelObject *modelData() const override;
-    friend QDataStream &operator<<(QDataStream &ds, const {{ uCamel(create table) }} &model);
-    friend QDataStream &operator>>(QDataStream &ds, {{ uCamel(create table) }} &model);
+    friend QDataStream &operator<<(QDataStream &ds, const {{ uCamel(create_table) }} &model);
+    friend QDataStream &operator>>(QDataStream &ds, {{ uCamel(create_table) }} &model);
 };
 
-Q_DECLARE_METATYPE({{ uCamel(create table) }})
-Q_DECLARE_METATYPE(QList<{{ uCamel(create table) }}>)
+Q_DECLARE_METATYPE({{ uCamel(create_table) }})
+Q_DECLARE_METATYPE(QList<{{ uCamel(create_table) }}>)
 
-#endif // {{ upper(uCamel(create table)) }}_H
+#endif // {{ upper(uCamel(create_table)) }}_H

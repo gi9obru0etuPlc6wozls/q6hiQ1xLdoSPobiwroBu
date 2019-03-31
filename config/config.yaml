@@ -8,17 +8,19 @@ sequences:
   columns:
     merge: name
 actions:
-  create table:
-  - action: generate
-    inga: templates/tf/tf_model_cpp2.inja
-    data: target
-    out: models/{{ lower(lCamel(create table)) }}.cpp
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_model_h.inja
-    data: target
-    out: models/{{ lower(lCamel(create table)) }}.h
-    overwrite: true
+  create_table:
+    - action: generate
+      inga: templates/tf/tf_model_h.inja
+      data: target
+      out: models/{{ lower(lCamel(create table)) }}.h
+      overwrite: true
+  okay:
+    - action: generate
+      inga: templates/tf/tf_model_cpp2.inja
+      data: target
+      out: models/{{lower(lCamel(create_table))}}.cpp
+      overwrite: true
+  untested:
   - action: generate
     inga: templates/tf/tf_model_sqlobject_h.inja
     data: target

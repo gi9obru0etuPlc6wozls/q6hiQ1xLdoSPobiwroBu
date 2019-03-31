@@ -1,0 +1,35 @@
+--- !<tag:framesquared.com,2015:config>
+map: ../config/map.yaml
+paths:
+  migrations dir: ../migrations
+  migrations file: ../migrations/migrationData.json
+  meta dir: ../metadata
+sequences:
+  columns:
+    merge: name
+actions:
+  create_table:
+  - action: generate
+    inga: templates/tf/tf_model_cpp2.inja
+    data: target
+    out: models/{{lower(lCamel(create_table))}}.cpp
+    overwrite: true
+  alter table:
+  - action: generate
+    inga: templates/mysql/table_alter_columns.inja
+    data: patch
+    out: sql/alter_{{ uCamel(alter table) }}.sql
+    overwrite: true
+  - action: execute
+    data: patch
+    run: /usr/bin/psql
+    env:
+      - PGPASSWORD=dbpass
+    args:
+      - -f
+      - "../sql/alter_{{ uCamel(alter table) }}.sql"
+      - -h
+      - 127.0.0.1
+      - -U
+      - dbadmin
+      - postgres

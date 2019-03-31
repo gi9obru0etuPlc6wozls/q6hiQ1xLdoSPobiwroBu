@@ -1,7 +1,7 @@
 --- !<tag:framesquared.com,2015:migration>
 serial: 0001
 up:
-  - create table: blog
+  - create_table: blog
     columns:
       - name: id
         type: integer
