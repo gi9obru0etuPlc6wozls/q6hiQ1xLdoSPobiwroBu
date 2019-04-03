@@ -12,34 +12,42 @@
 
 <h1>Editing Blog</h1>
 
-<%== formTag(urla("save", blog["id"]), Tf::Post) %>
+<%== formTag(urla("save", blog[""]), Tf::Post) %>
+
   <p>
     <label>Title<br /><input type="text" name="blog[title]" value="<%= blog["title"] %>" /></label>
   </p>
+
   <p>
     <label>Body<br /><input type="text" name="blog[body]" value="<%= blog["body"] %>" /></label>
   </p>
+
   <p>
     <label>Col String<br /><input type="text" name="blog[colString]" value="<%= blog["colString"] %>" /></label>
   </p>
+
   <p>
     <label>Col Integer<br /><input type="text" name="blog[colInteger]" value="<%= blog["colInteger"] %>" /></label>
   </p>
+
   <p>
     <label>Col Float<br /><input type="text" name="blog[colFloat]" value="<%= blog["colFloat"] %>" /></label>
   </p>
+
   <p>
     <label>Col Double<br /><input type="text" name="blog[colDouble]" value="<%= blog["colDouble"] %>" /></label>
   </p>
+
   <p>
     <label>Col Numeric<br /><input type="text" name="blog[colNumeric]" value="<%= blog["colNumeric"] %>" /></label>
   </p>
+
   <p>
     <input type="submit" value="Save" />
   </p>
 </form>
 
-<%== linkTo("Show", urla("show", blog["id"])) %> |
+<%== linkTo("Show", urla("show", blog[""])) %> |
 <%== linkTo("Back", urla("index")) %>
 </body>
 </html>

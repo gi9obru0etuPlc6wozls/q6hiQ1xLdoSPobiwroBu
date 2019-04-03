@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%#include "{{ lower(lCamel(create table)) }}.h" %>
+<%#include "{{ lower(lCamel(create_table)) }}.h" %>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -7,15 +7,15 @@
 </head>
 <body>
 
-<h1>Listing {{ uSpace(create table) }}</h1>
+<h1>Listing {{ uSpace(create_table) }}</h1>
 
-<%== linkTo("Create a new {{ uSpace(create table) }}", urla("create")) %><br />
+<%== linkTo("Create a new {{ uSpace(create_table) }}", urla("create")) %><br />
 <br />
 <table border="1" cellpadding="5" style="border: 1px #d0d0d0 solid; border-collapse: collapse;">
   <tr>
 ## for column in columns
-## if not mapBool("exclude", column/name)
-## if not existsIn(column, "serial") and column/serial
+## if not mapCompare("exclude", column/name, true)
+## if not compare(column, "serial", true)
 ## if existsIn(column, "type") and not column/type == "serial"
 
     <th>{{ uSpace(column/name) }}</th>
@@ -25,12 +25,12 @@
 ## endfor
 
   </tr>
-<% tfetch(QList<{{ uCamel(create table) }}>, {{ lCamel(create table) }}List); %>
-<% for (const auto &i : {{ lCamel(create table) }}List) { %>
+<% tfetch(QList<{{ uCamel(create_table) }}>, {{ lCamel(create_table) }}List); %>
+<% for (const auto &i : {{ lCamel(create_table) }}List) { %>
   <tr>
 ## for column in columns
-## if not mapBool("exclude", column/name)
-## if not existsIn(column, "serial") and column/serial
+## if not mapCompare("exclude", column/name, true)
+## if not compare(column, "serial", true)
 ## if existsIn(column, "type") and not column/type == "serial"
 
     <td><%= i.{{ lCamel(column/name) }}() %></td>

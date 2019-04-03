@@ -10,73 +10,73 @@ sequences:
 actions:
   create_table:
     - action: generate
-      inga: templates/tf/tf_model_h.inja
+      inga: templates/tf/view/show_erb.inja
       data: target
-      out: models/{{ lower(lCamel(create table)) }}.h
+      out: views/{{ lower(lCamel(create_table)) }}/show.erb
+      overwrite: true
+    - action: generate
+      inga: templates/tf/view/save_erb.inja
+      data: target
+      out: views/{{ lower(lCamel(create_table)) }}/save.erb
+      overwrite: true
+    - action: generate
+      inga: templates/tf/view/index_erb.inja
+      data: target
+      out: views/{{ lower(lCamel(create_table)) }}/index.erb
+      overwrite: true
+    - action: generate
+      inga: templates/tf/view/create_erb.inja
+      data: target
+      out: views/{{ lower(lCamel(create_table)) }}/create.erb
       overwrite: true
   okay:
+  untested:
     - action: generate
       inga: templates/tf/tf_model_cpp2.inja
       data: target
       out: models/{{lower(lCamel(create_table))}}.cpp
       overwrite: true
-  untested:
-  - action: generate
-    inga: templates/tf/tf_model_sqlobject_h.inja
-    data: target
-    out: models/sqlobjects/{{ lower(lCamel(create table)) }}object.h
-    overwrite: true
-  - action: generate
-    inga: templates/mysql/table_create.inja
-    data: target
-    out: sql/{{ uCamel(create table) }}.sql
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_controller_h.inja
-    data: target
-    out: controllers/{{ lCamel(create table) }}controller.h
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_controller_cpp.inja
-    data: target
-    out: controllers/{{ lCamel(create table) }}controller.cpp
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_view_create_erb.inja
-    data: target
-    out: views/{{ lower(lCamel(create table)) }}/create.erb
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_view_index_erb.inja
-    data: target
-    out: views/{{ lower(lCamel(create table)) }}/index.erb
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_view_save_erb.inja
-    data: target
-    out: views/{{ lower(lCamel(create table)) }}/save.erb
-    overwrite: true
-  - action: generate
-    inga: templates/tf/tf_view_show_erb.inja
-    data: target
-    out: views/{{ lower(lCamel(create table)) }}/show.erb
-    overwrite: true
+    - action: generate
+      inga: templates/tf/tf_model_h.inja
+      data: target
+      out: models/{{ lower(lCamel(create_table)) }}.h
+      overwrite: true
+    - action: generate
+      inga: templates/tf/tf_model_sqlobject_h.inja
+      data: target
+      out: models/sqlobjects/{{ lower(lCamel(create table)) }}object.h
+      overwrite: true
+    - action: generate
+      inga: templates/mysql/table_create.inja
+      data: target
+      out: sql/{{ uCamel(create table) }}.sql
+      overwrite: true
+    - action: generate
+      inga: templates/tf/tf_controller_h.inja
+      data: target
+      out: controllers/{{ lCamel(create table) }}controller.h
+      overwrite: true
+    - action: generate
+      inga: templates/tf/tf_controller_cpp.inja
+      data: target
+      out: controllers/{{ lCamel(create table) }}controller.cpp
+      overwrite: true
   alter table:
-  - action: generate
-    inga: templates/mysql/table_alter_columns.inja
-    data: patch
-    out: sql/alter_{{ uCamel(alter table) }}.sql
-    overwrite: true
-  - action: execute
-    data: patch
-    run: /usr/bin/psql
-    env:
-      - PGPASSWORD=dbpass
-    args:
-      - -f
-      - "../sql/alter_{{ uCamel(alter table) }}.sql"
-      - -h
-      - 127.0.0.1
-      - -U
-      - dbadmin
-      - postgres
+    - action: generate
+      inga: templates/mysql/table_alter_columns.inja
+      data: patch
+      out: sql/alter_{{ uCamel(alter table) }}.sql
+      overwrite: true
+    - action: execute
+      data: patch
+      run: /usr/bin/psql
+      env:
+        - PGPASSWORD=dbpass
+      args:
+        - -f
+        - "../sql/alter_{{ uCamel(alter table) }}.sql"
+        - -h
+        - 127.0.0.1
+        - -U
+        - dbadmin
+        - postgres

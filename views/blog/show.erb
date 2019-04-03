@@ -11,17 +11,22 @@
 <p style="color: green"><%=$ notice %></p>
 
 <h1>Showing Blog</h1>
-<dt>ID</dt><dd><%= blog.id() %></dd><br />
-<dt>Title</dt><dd><%= blog.title() %></dd><br />
-<dt>Body</dt><dd><%= blog.body() %></dd><br />
-<dt>Col String</dt><dd><%= blog.colString() %></dd><br />
-<dt>Col Integer</dt><dd><%= blog.colInteger() %></dd><br />
-<dt>Col Float</dt><dd><%= blog.colFloat() %></dd><br />
-<dt>Col Double</dt><dd><%= blog.colDouble() %></dd><br />
-<dt>Col Numeric</dt><dd><%= blog.colNumeric() %></dd><br />
-<dt>Lock Revision</dt><dd><%= blog.lockRevision() %></dd><br />
 
-<%== linkTo("Edit", urla("save", blog.id())) %> |
+<dt>Title</dt><dd><%= blog.title() %></dd><br />
+
+<dt>Body</dt><dd><%= blog.body() %></dd><br />
+
+<dt>Col String</dt><dd><%= blog.colString() %></dd><br />
+
+<dt>Col Integer</dt><dd><%= blog.colInteger() %></dd><br />
+
+<dt>Col Float</dt><dd><%= blog.colFloat() %></dd><br />
+
+<dt>Col Double</dt><dd><%= blog.colDouble() %></dd><br />
+
+<dt>Col Numeric</dt><dd><%= blog.colNumeric() %></dd><br />
+
+<%== linkTo("Edit", urla("save", blog.())) %> |
 <%== linkTo("Back", urla("index")) %>
 
 </body>
