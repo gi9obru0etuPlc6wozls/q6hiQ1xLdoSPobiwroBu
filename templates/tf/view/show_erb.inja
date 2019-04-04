@@ -22,7 +22,7 @@
 ## endif
 ## endfor
 
-<%== linkTo("Edit", urla("save", {{ lCamel(create_table) }}.{% include "tf_view_get_pk.inja" %}())) %> |
+<%== linkTo("Edit", urla("save", {{ lCamel(create_table) }}.{% include "get_pk.inja" %}())) %> |
 <%== linkTo("Back", urla("index")) %>
 
 </body>

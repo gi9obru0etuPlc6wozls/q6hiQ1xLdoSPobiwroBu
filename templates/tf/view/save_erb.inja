@@ -12,7 +12,7 @@
 
 <h1>Editing {{ uSpace(create_table) }}</h1>
 
-<%== formTag(urla("save", {{ lCamel(create_table) }}["{% include "tf_view_get_pk.inja" %}"]), Tf::Post) %>
+<%== formTag(urla("save", {{ lCamel(create_table) }}["{% include "get_pk.inja" %}"]), Tf::Post) %>
 ## for column in columns
 ## if not mapCompare("exclude", column/name, true)
 ## if not compare(column, "serial", true)
@@ -31,7 +31,7 @@
   </p>
 </form>
 
-<%== linkTo("Show", urla("show", {{ lCamel(create_table) }}["{% include "tf_view_get_pk.inja" %}"])) %> |
+<%== linkTo("Show", urla("show", {{ lCamel(create_table) }}["{% include "get_pk.inja" %}"])) %> |
 <%== linkTo("Back", urla("index")) %>
 </body>
 </html>

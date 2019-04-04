@@ -12,7 +12,7 @@
 
 <h1>Editing Blog</h1>
 
-<%== formTag(urla("save", blog[""]), Tf::Post) %>
+<%== formTag(urla("save", blog["id"]), Tf::Post) %>
 
   <p>
     <label>Title<br /><input type="text" name="blog[title]" value="<%= blog["title"] %>" /></label>
@@ -47,7 +47,7 @@
   </p>
 </form>
 
-<%== linkTo("Show", urla("show", blog[""])) %> |
+<%== linkTo("Show", urla("show", blog["id"])) %> |
 <%== linkTo("Back", urla("index")) %>
 </body>
 </html>
