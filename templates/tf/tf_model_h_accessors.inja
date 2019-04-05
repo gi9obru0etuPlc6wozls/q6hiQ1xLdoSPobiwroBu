@@ -1,0 +1,29 @@
+## for column in columns
+
+    {{ map("qt_type", column/type) }} {{ lCamel(column/name) }}() const;
+## if not compare(column, "setter", false)
+
+## else
+
+    void set{{ uCamel(column/name) }}(
+{% include "tf_model_create_param.inja" %}
+);
+## endif
+## endfor
+
+
+## if column/type == "serial"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "ubigint"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "integer"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "float"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "double"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else if column/type == "numeric"
+{{ map("qt_type", column/type) }} {{ lCamel(column/name) }}
+## else
+const {{map("qt_type", column/type)}} &{{lCamel(column/name)}}
+## endif

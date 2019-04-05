@@ -1,0 +1,22 @@
+#ifndef {{ upper(uCamel(create_table)) }}CONTROLLER_H
+#define {{ upper(uCamel(create_table)) }}CONTROLLER_H
+
+#include "applicationcontroller.h"
+#include <QDomDocument>
+
+class T_CONTROLLER_EXPORT {{ uCamel(create_table) }}Controller : public ApplicationController
+{
+    Q_OBJECT
+public:
+    {{ uCamel(create_table) }}Controller() : ApplicationController() {}
+
+public slots:
+    void index();
+    void show(const QString &{% include "pk_name.inja" %});
+    void xml(const QString &{% include "pk_name.inja" %});
+    void create();
+    void save(const QString &{% include "pk_name.inja" %});
+    void remove(const QString &{% include "pk_name.inja" %});
+};
+
+#endif // {{ upper(uCamel(create_table)) }}CONTROLLER_H

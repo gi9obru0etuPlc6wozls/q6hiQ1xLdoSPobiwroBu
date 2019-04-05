@@ -23,15 +23,15 @@ qt_type:
   serial:   qulonglong
   date:     QDateTime
 qt_qvariant:
-  string:   "{{ lCamel(column/name) }}"
-  integer:  "{{ lCamel(column/name) }}.toInt()"
-  float:    "{{ lCamel(column/name) }}.toDouble()"
-  double:   "{{ lCamel(column/name) }}.toDouble()"
-  numeric:  "{{ lCamel(column/name) }}.toDouble()"
+  string:   "{{ lCamel(name) }}"
+  integer:  "{{ lCamel(name) }}.toInt()"
+  float:    "{{ lCamel(name) }}.toDouble()"
+  double:   "{{ lCamel(name) }}.toDouble()"
+  numeric:  "{{ lCamel(name) }}.toDouble()"
   uuid:     "uuid_xyzzy"
-  ubigint:  "{{ lCamel(column/name) }}.toULongLong()"
-  serial:   "{{ lCamel(column/name) }}.toULongLong()"
-  date:     "QDateTime::fromString({{ lCamel(column/name) }})"
+  ubigint:  "{{ lCamel(name) }}.toULongLong()"
+  serial:   "{{ lCamel(name) }}.toULongLong()"
+  date:     "QDateTime::fromString({{ lCamel(name) }})"
 exclude:
   created_at: true
   updated_at: true

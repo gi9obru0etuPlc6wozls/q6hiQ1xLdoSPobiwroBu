@@ -3,7 +3,7 @@
 
 #include "applicationcontroller.h"
 #include <QDomDocument>
-
+xxx
 
 class T_CONTROLLER_EXPORT BlogController : public ApplicationController
 {

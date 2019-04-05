@@ -96,7 +96,7 @@ void BlogController::save(const QString &id)
         if (model.save()) {
             QString notice = "Updated successfully.";
             tflash(notice);
-            redirect(urla("show", model.id()));
+            redirect(urla("show", model.()));
         } else {
             error = "Failed to update.";
             texport(error);

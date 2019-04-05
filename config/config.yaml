@@ -10,6 +10,17 @@ sequences:
 actions:
   create_table:
     - action: generate
+      inga: templates/tf/controller/cpp.inja
+      data: target
+      out: controllers/{{ lCamel(create_table) }}controller.cpp
+      overwrite: true
+    - action: generate
+      inga: templates/tf/controller/h.inja
+      data: target
+      out: controllers/{{ lCamel(create_table) }}controller.h
+      overwrite: true
+  x_create_table:
+    - action: generate
       inga: templates/tf/view/show_erb.inja
       data: target
       out: views/{{ lower(lCamel(create_table)) }}/show.erb
@@ -29,7 +40,6 @@ actions:
       data: target
       out: views/{{ lower(lCamel(create_table)) }}/create.erb
       overwrite: true
-  okay:
   untested:
     - action: generate
       inga: templates/tf/tf_model_cpp2.inja
@@ -50,16 +60,6 @@ actions:
       inga: templates/mysql/table_create.inja
       data: target
       out: sql/{{ uCamel(create table) }}.sql
-      overwrite: true
-    - action: generate
-      inga: templates/tf/tf_controller_h.inja
-      data: target
-      out: controllers/{{ lCamel(create table) }}controller.h
-      overwrite: true
-    - action: generate
-      inga: templates/tf/tf_controller_cpp.inja
-      data: target
-      out: controllers/{{ lCamel(create table) }}controller.cpp
       overwrite: true
   alter table:
     - action: generate

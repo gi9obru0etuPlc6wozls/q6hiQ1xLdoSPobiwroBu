@@ -1,0 +1,1 @@
+{% for column in columns %}{% if compare(column, "primary_key", true) %}{{ render(map("qt_qvariant", column/type), column) }}{% endif %}{% endfor %}
