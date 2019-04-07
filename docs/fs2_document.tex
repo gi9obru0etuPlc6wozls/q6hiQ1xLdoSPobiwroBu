@@ -154,6 +154,44 @@ The following steps will compile the \input{project_name} tool.
 
 \section{Configuration}
 \subsection{config.yaml}
+All settings for \protect\input{project_name} are configured using YAML and is located in the config.yaml file. This file can be found in the "config" directory by default. The location of the file may be overridden by using -c or --config on the command line.
+
+\subsection{paths}
+The "paths" section provides the locations for files and directories that the system requires.
+
+\subsubsection{map file}
+The "map" key has a string value that is the path to map file. This file is used to translate various values used be the system. The map file contains multiple maps. 
+Each top level key in the file is a distinct map. Each map has a set of key/value pairs.
+Maps are accessed via the "map"\pageref{} and "mapCompare"\ref{} functions.
+
+\begin{figure}[H]
+	\begin{lstlisting}
+	[Map Name]:
+	    [Key]: [Value]
+	\end{lstlisting}
+	\caption{Map file syntax}
+\end{figure}
+
+\subsubsection{migrations dir}
+The value of "migrations dir" contains the directory where the migration files are located. The system will recursively iterate over this directory to discover all migration files during the scan operation\ref{}. See \ref{} for more information regarding the syntax of the migration files. 
+
+\subsubsection{migrations file}
+The value of the "migration file" is the filename where the system will store the migration json file. This file can be thought of as a database of all the migrations.
+
+During scan operations the system stores all discovered migration data in this file.
+
+Migration operations are performed from this file and therefore the scan operation must be performed for the system be aware of migrations.
+
+\subsubsection{meta dir}
+The value of "meta dir" contains the directory where the metadata for each of the entities are stored. The metadata represents the current state of the entity and is updated as each migration is applied to the entity.
+
+\subsection{sequences}
+
+\subsection{actions}
+
+\subsection{map.yaml}
+
+ 
 
 \section{Overview???}
 

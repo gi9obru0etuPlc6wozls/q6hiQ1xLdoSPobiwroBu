@@ -5,4 +5,13 @@
 \BOOKMARK [3][-]{subsubsection.2.1.2}{nlohmann/json}{subsection.2.1}% 5
 \BOOKMARK [2][-]{subsection.2.2}{Building projectname }{section.2}% 6
 \BOOKMARK [1][-]{section.3}{Configuration}{}% 7
-\BOOKMARK [2][-]{subsection.3.1}{Overview}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.1}{config.yaml}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{paths}{section.3}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.1}{map file}{subsection.3.2}% 10
+\BOOKMARK [3][-]{subsubsection.3.2.2}{migrations dir}{subsection.3.2}% 11
+\BOOKMARK [3][-]{subsubsection.3.2.3}{migrations file}{subsection.3.2}% 12
+\BOOKMARK [3][-]{subsubsection.3.2.4}{meta dir}{subsection.3.2}% 13
+\BOOKMARK [2][-]{subsection.3.3}{sequences}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.4}{actions}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.5}{map.yaml}{section.3}% 16
+\BOOKMARK [1][-]{section.4}{Overview???}{}% 17
