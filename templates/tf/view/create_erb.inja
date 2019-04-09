@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<%#include "{{ lower(lCamel(create_table)) }}.h" %>
-<% tfetch(QVariantMap, {{ lCamel(create_table) }}); %>
+<%#include "{{ lCamel( create_table ) }}.h" %>
+<% tfetch(QVariantMap, {{ lCamel( create_table ) }}); %>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -10,22 +10,18 @@
 <p style="color: red"><%=$ error %></p>
 <p style="color: green"><%=$ notice %></p>
 
-<h1>New {{ uSpace(create_table) }}</h1>
+<h1>New {{ uSpace( create_table ) }}</h1>
 
 <%== formTag(urla("create"), Tf::Post) %>
 ## for column in columns
 ## if not mapCompare("exclude", column/name, true)
-## if not compare(column, "serial", true)
-## if existsIn(column, "type") and not column/type == "serial"
-
+## if not compare(column, "primary_key", true)
   <p>
-    <label>{{ uSpace(column/name) }}<br /><input name="{{ lCamel(create_table) }}[{{ lCamel(column/name) }}]" value="<%= {{ lCamel(create_table) }}["{{ lCamel(column/name) }}"] %>" /></label>
+    <label>{{ uSpace( column/name ) }}<br /><input name="{{ lCamel( create_table ) }}[{{ lCamel( column/name ) }}]" value="<%= {{ lCamel( create_table ) }}["{{ lCamel( column/name ) }}"] %>" /></label>
   </p>
 ## endif
 ## endif
-## endif
 ## endfor
-
   <p>
     <input type="submit" value="Create" />
   </p>

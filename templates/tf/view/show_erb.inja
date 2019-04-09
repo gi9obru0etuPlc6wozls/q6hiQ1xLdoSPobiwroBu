@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<%#include "{{ lower(lCamel(create_table)) }}.h" %>
-<% tfetch({{ uCamel(create_table) }}, {{ lCamel(create_table) }}); %>
+<%#include "{{ lCamel( create_table ) }}.h" %>
+<% tfetch({{ uCamel( create_table ) }}, {{ lCamel( create_table ) }}); %>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -10,19 +10,12 @@
 <p style="color: red"><%=$ error %></p>
 <p style="color: green"><%=$ notice %></p>
 
-<h1>Showing Blog</h1>
+<h1>Showing {{ uSpace( create_table ) }}</h1>
 ## for column in columns
-## if not mapCompare("exclude", column/name, true)
-## if not compare(column, "serial", true)
-## if existsIn(column, "type") and not column/type == "serial"
-
-<dt>{{ uSpace(column/name) }}</dt><dd><%= {{ lCamel(create_table) }}.{{ lCamel(column/name) }}() %></dd><br />
-## endif
-## endif
-## endif
+<dt>{{ uSpace( column/name ) }}</dt><dd><%= {{ lCamel( create_table ) }}.{{ lCamel( column/name ) }}() %></dd><br />
 ## endfor
 
-<%== linkTo("Edit", urla("save", {{ lCamel(create_table) }}.{% include "get_pk.inja" %}())) %> |
+<%== linkTo("Edit", urla("save", {{ lCamel( create_table ) }}.{{ include_file("pk_get_name.inja") }}())) %> |
 <%== linkTo("Back", urla("index")) %>
 
 </body>

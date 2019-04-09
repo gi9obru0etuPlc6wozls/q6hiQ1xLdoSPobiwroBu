@@ -1,0 +1,5 @@
+{% for column in columns %}\
+{% if compare(column, "primary_key", true) %}\
+{{ lCamel(column/name) }}\
+{% endif %}\
+{% endfor %}

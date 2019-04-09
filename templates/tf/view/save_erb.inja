@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<%#include "{{ lower(lCamel(create_table)) }}.h" %>
-<% tfetch(QVariantMap, {{ lCamel(create_table) }}); %>
+<%#include "{{ lCamel( create_table ) }}.h" %>
+<% tfetch(QVariantMap, {{ lCamel( create_table ) }}); %>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -10,28 +10,31 @@
 <p style="color: red"><%=$ error %></p>
 <p style="color: green"><%=$ notice %></p>
 
-<h1>Editing {{ uSpace(create_table) }}</h1>
+<h1>Editing Blog</h1>
 
-<%== formTag(urla("save", {{ lCamel(create_table) }}["{% include "get_pk.inja" %}"]), Tf::Post) %>
+<%== formTag(urla("save", {{ lCamel( create_table ) }}["{{ include_file("pk_get_name.inja") }}"]), Tf::Post) %>
 ## for column in columns
-## if not mapCompare("exclude", column/name, true)
-## if not compare(column, "serial", true)
-## if existsIn(column, "type") and not column/type == "serial"
-
+## if compare(column, "primary_key", true)
   <p>
-    <label>{{ uSpace(column/name) }}<br /><input type="text" name="{{ lCamel(create_table) }}[{{ lCamel(column/name) }}]" value="<%= {{ lCamel(create_table) }}["{{ lCamel(column/name) }}"] %>" /></label>
+    <label>{{ uSpace( column/name ) }}<br /><input type="text" name="{{ lCamel( create_table ) }}[{{ lCamel( column/name ) }}]" value="<%= {{ lCamel( create_table ) }}["{{ lCamel( column/name ) }}"] %>" readonly="readonly" /></label>
+  </p>
+## endif
+## endfor
+## for column in columns
+## if not compare(column, "primary_key", true)
+## if not mapCompare("exclude", column/name, true)
+  <p>
+    <label>{{ uSpace( column/name ) }}<br /><input type="text" name="{{ lCamel( create_table ) }}[{{ lCamel( column/name ) }}]" value="<%= {{ lCamel( create_table ) }}["{{ lCamel( column/name ) }}"] %>" /></label>
   </p>
 ## endif
 ## endif
-## endif
 ## endfor
-
   <p>
     <input type="submit" value="Save" />
   </p>
 </form>
 
-<%== linkTo("Show", urla("show", {{ lCamel(create_table) }}["{% include "get_pk.inja" %}"])) %> |
+<%== linkTo("Show", urla("show", {{ lCamel( create_table ) }}["{{ include_file("pk_get_name.inja") }}"])) %> |
 <%== linkTo("Back", urla("index")) %>
 </body>
 </html>
