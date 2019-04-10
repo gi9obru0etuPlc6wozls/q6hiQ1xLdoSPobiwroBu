@@ -27,7 +27,9 @@ private:
 
     Environment *env;
     std::string mapRoot;
+    std::string templatePathname;
     nlohmann::json map;
+    nlohmann::json data;
     std::map<std::string, std::string> values;
 
     std::string envRoot = "../";
@@ -46,7 +48,7 @@ public:
 
     //void debugexpression(const Parsed::ElementExpression &e);
 
-    void doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it);
+    void doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json actions);
     void setMap(const nlohmann::json &map);
 
 };

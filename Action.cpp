@@ -13,18 +13,62 @@ Action::Action() { // TODO: add "map" to constructor
     std::cout << "Action::Action()" << std::endl;
 
     actionFunctions["generate"] = &Action::generate;
-    actionFunctions["drop"] = &Action::drop;
+    actionFunctions["drop"] = &Action::drop;         // TODO: Delete?
     actionFunctions["execute"] = &Action::execute;
 
     env = new Environment(envRoot);
 
-    env->add_callback("setValue", 1, [this](Arguments &args) {
-        //std::string text = env->get_argument<std::string>(args, 0, x);
-        std::string text = args.at(0)->get<std::string>();
+    env->add_callback("compare", 3, [this](Arguments &args) {
+        json node = args.at(0)->get<json>();
+        std::string key = args.at(1)->get<std::string>();
 
-        std::vector<std::string> v = split(text, "|");
+        json data;
+        try {
+            data = node.at(key);
+        }
+        catch (nlohmann::json::out_of_range &e) { ;
+            return false;
+        }
 
-        this->values[v[0]] = (v.size() == 2) ? v[1] : "";
+        try {
+            bool op1 = data.get<bool>();
+            bool op2 = args.at(2)->get<bool>();
+            return op1 == op2;
+        }
+        catch (nlohmann::detail::type_error &x) {
+            try {
+                int op1 = data.get<int>();
+                int op2 = args.at(2)->get<int>();
+                return op1 == op2;
+            }
+            catch (nlohmann::detail::type_error &x) {
+                try {
+                    double op1 = data.get<double>();
+                    double op2 = args.at(2)->get<double>();
+                    return op1 == op2;
+                }
+                catch (nlohmann::detail::type_error &x) {
+                    try {
+                        std::string op1 = data.get<std::string>();
+                        std::string op2 = args.at(2)->get<std::string>();
+                        return op1 == op2;
+                    }
+                    catch (nlohmann::detail::type_error &x) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        throw std::runtime_error("compare Error");
+        return false;
+    });
+
+    env->add_callback("setValue", 2, [this](Arguments &args) {
+        std::string key = args.at(0)->get<std::string>();
+        std::string value = args.at(1)->get<std::string>();
+
+        this->values[key] = value;
         return "";
     });
 
@@ -49,24 +93,135 @@ Action::Action() { // TODO: add "map" to constructor
         return r;
     });
 
-    env->add_callback("mapBool", 2, [this](Arguments &args) {
+    env->add_callback("mapCompare", 3, [this](Arguments &args) {
         std::string mapArg = args.at(0)->get<std::string>();
         std::string keyArg = args.at(1)->get<std::string>();
 
-        bool r = false;
+        json data;
         try {
-            r = this->map.at(mapArg).at(keyArg).get<bool>();
+            data = this->map.at(mapArg).at(keyArg);
         }
         catch (nlohmann::json::out_of_range &e) { ;
-            // do nothing
+            return false;
         }
-        return r;
+
+        try {
+            bool op1 = data.get<bool>();
+            bool op2 = args.at(2)->get<bool>();
+            return op1 == op2;
+        }
+        catch (nlohmann::detail::type_error &x) {
+            try {
+                int op1 = data.get<int>();
+                int op2 = args.at(2)->get<int>();
+                return op1 == op2;
+            }
+            catch (nlohmann::detail::type_error &x) {
+                try {
+                    double op1 = data.get<double>();
+                    double op2 = args.at(2)->get<double>();
+                    return op1 == op2;
+                }
+                catch (nlohmann::detail::type_error &x) {
+                    try {
+                        std::string op1 = data.get<std::string>();
+                        std::string op2 = args.at(2)->get<std::string>();
+                        return op1 == op2;
+                    }
+                    catch (nlohmann::detail::type_error &x) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        throw std::runtime_error("map compare Error");
+        return false;
+    });
+
+    env->add_callback("include_file", 1, [this](Arguments &args) {
+        std::string filename = this->templatePathname + args.at(0)->get<std::string>();
+        //filename = envRoot + filename;
+        std::cerr << "filename:" << filename << std::endl;
+
+        if (!file_exists(filename)) {
+            return "File not found: " + filename;
+        }
+
+        std::ifstream t(filename);
+        if (t.fail()) {
+            return "Failed to open: " + filename;
+        }
+
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        std::string subject = buffer.str();
+        std::string replace = "";
+        std::string search = "\\\n";
+        size_t pos = 0;
+
+        while((pos = subject.find(search, pos)) != std::string::npos) {
+            subject.replace(pos, search.length(), replace);
+            pos += replace.length();
+        }
+
+        std::cerr << "subject:" << subject << std::endl;
+        std::cerr << "node:" << this->data.dump(4) << std::endl;
+        return this->env->render(subject, this->data);
+
+    });
+
+    env->add_callback("include_file", 2, [this](Arguments &args) {
+        std::string filename = this->templatePathname + args.at(0)->get<std::string>();
+        json node = args.at(1)->get<json>();
+        //filename = envRoot + filename;
+        std::cerr << "filename:" << filename << std::endl;
+
+        if (!file_exists(filename)) {
+            return "File not found: " + filename;
+        }
+
+        std::ifstream t(filename);
+        if (t.fail()) {
+            return "Failed to open: " + filename;
+        }
+
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        std::string subject = buffer.str();
+        std::string replace = "";
+        std::string search = "\\\n";
+        size_t pos = 0;
+
+        while((pos = subject.find(search, pos)) != std::string::npos) {
+            subject.replace(pos, search.length(), replace);
+            pos += replace.length();
+        }
+
+        std::cerr << "subject:" << subject << std::endl;
+
+        json data;
+        if (node.is_array())
+            data["array"] = node;
+        else
+            data = node;
+
+        std::cerr << "node:" << data.dump(4) << std::endl;
+
+        return this->env->render(subject, data);
+
     });
 
     env->add_callback("render", 1, [this](Arguments &args) {
         std::string arg = args.at(0)->get<std::string>();
         json j;
         return this->env->render(arg, j);
+    });
+
+    env->add_callback("render", 2, [this](Arguments &args) {
+        std::string arg = args.at(0)->get<std::string>();
+        json node = args.at(1)->get<json>();
+        return this->env->render(arg, node);
     });
 
     env->add_callback("lCamel", 1, [this](Arguments &args) {
@@ -120,17 +275,6 @@ Action::Action() { // TODO: add "map" to constructor
     });
 }
 
-void Action::doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json template_it) {
-    std::cout << "Action::doAction()" << std::endl;
-
-    for (auto action = template_it.begin(); action != template_it.end(); ++action) {
-
-        std::string actionName = action->at("action");
-
-        bool b = (this->*actionFunctions[actionName])(target, patch, *action);
-    }
-}
-
 std::string Action::snakeToCamel(const std::string &snake, const bool initCap) {
     std::string r;
 
@@ -159,16 +303,27 @@ void Action::setMap(const nlohmann::json &map) {
     this->map = map;
 }
 
+void Action::doAction(nlohmann::json target, nlohmann::json patch, nlohmann::json actions) {
+    std::cout << "Action::doAction()" << std::endl;
+
+    for (auto action = actions.begin(); action != actions.end(); ++action) {
+
+        std::string actionName = action->at("action");
+
+        bool b = (this->*actionFunctions[actionName])(target, patch, *action);
+    }
+}
+
 bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
     std::cout << "Action::generate()" << std::endl;
 
     std::string templateFileName = action.at("inga");
     bool overwrite = action.at("overwrite");
-    nlohmann::json data = (action.at("data") == "target") ? target : patch;
-    std::cerr << data.dump(4) << std::endl;
+    this->data = (action.at("data") == "target") ? target : patch;
+    std::cerr << this->data.dump(4) << std::endl;
 
     std::string outputTemplate = action.at("out");
-    std::string outputFileName = env->render(outputTemplate, data);
+    std::string outputFileName = env->render(outputTemplate, this->data);
     //data["map"] = this->map;
 
     if (file_exists(envRoot + outputFileName)) {
@@ -184,14 +339,12 @@ bool Action::generate(const nlohmann::json &target, const nlohmann::json &patch,
         std::cerr << "Generating: " << envRoot + outputFileName << std::endl;
     }
 
-    Template temp = env->parse_template(templateFileName);
-    env->write(temp, data, outputFileName);
+    this->templatePathname =  envRoot + templateFileName.substr(0,templateFileName.find_last_of("/\\")) + "/";
 
-    return true;
-}
-
-bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
-    std::cout << "Action::drop()" << std::endl;
+    std::cerr << "templatePathname: " << this->templatePathname << std::endl;
+    std::cerr << "templateFileName: " << envRoot + templateFileName << std::endl;
+    Template parseTemplate = env->parse_template(templateFileName);
+    env->write(parseTemplate, this->data, outputFileName);
 
     return true;
 }
@@ -253,6 +406,12 @@ bool Action::execute(const nlohmann::json &target, const nlohmann::json &patch, 
         std::cerr << "Child returned error." << std::endl;
         return false;
     }
+
+    return true;
+}
+
+bool Action::drop(const nlohmann::json &target, const nlohmann::json &patch, const nlohmann::json &action) {
+    std::cout << "Action::drop()" << std::endl;
 
     return true;
 }
