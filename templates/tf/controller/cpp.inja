@@ -9,32 +9,11 @@ void {{ uCamel(create_table) }}Controller::index()
     render();
 }
 
-void {{ uCamel(create_table) }}Controller::show(const QString &{% include "pk_name.inja" %})
+void {{ uCamel(create_table) }}Controller::show(const QString &{{ include_file("pk_name.inja", columns) }})
 {
-    auto {{ lCamel(create_table) }} = {{ uCamel(create_table) }}::get({% include "pk_type.inja" %});
+    auto {{ lCamel(create_table) }} = {{ uCamel(create_table) }}::get({{ include_file("pk_type.inja", columns) }});
     texport({{ lCamel(create_table) }});
     render();
-}
-
-void {{ uCamel(create_table) }}Controller::xml(const QString &id)
-{
-    setContentType("text/xml");
-
-    QDomDocument doc;
-
-    QDomElement envelope = doc.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "Envelope");
-    envelope.setPrefix("soap");
-
-    QDomElement body = doc.createElement("soap:Body");
-
-    QDomElement response = doc.createElementNS("http://framesquared.com/{{ uCamel(create_table) }}", "m:Get{{ uCamel(create_table) }}Response");
-    {{ uCamel(create_table) }}::getAllXml(doc, response, "m:");
-
-    body.appendChild(response);
-    envelope.appendChild(body);
-    doc.appendChild(envelope);
-
-    renderXml(doc);
 }
 
 void {{ uCamel(create_table) }}Controller::create()
@@ -51,7 +30,7 @@ void {{ uCamel(create_table) }}Controller::create()
         if (!model.isNull()) {
             QString notice = "Created successfully.";
             tflash(notice);
-            redirect(urla("show", model.{% include "pk_name.inja" %}()));
+            redirect(urla("show", model.{{ include_file("pk_name.inja", columns) }}()));
         } else {
             QString error = "Failed to create.";
             texport(error);
@@ -66,11 +45,11 @@ void {{ uCamel(create_table) }}Controller::create()
     }
 }
 
-void {{ uCamel(create_table) }}Controller::save(const QString &{% include "pk_name.inja" %})
+void {{ uCamel(create_table) }}Controller::save(const QString &{{ include_file("pk_name.inja", columns) }})
 {
     switch (httpRequest().method()) {
     case Tf::Get: {
-        auto model = {{ uCamel(create_table) }}::get({% include "pk_type.inja" %});
+        auto model = {{ uCamel(create_table) }}::get({{ include_file("pk_type.inja", columns) }});
         if (!model.isNull()) {
             session().insert("{{ lCamel(create_table) }}_lockRevision", model.lockRevision());
             auto {{ lCamel(create_table) }} = model.toVariantMap();
@@ -81,13 +60,13 @@ void {{ uCamel(create_table) }}Controller::save(const QString &{% include "pk_na
 
     case Tf::Post: {
         QString error;
-        int rev = session().value("{{ lCamel(create_table) }}_lockRevision").toInt();
-        auto model = {{ uCamel(create_table) }}::get({% include "pk_type.inja" %}, rev);
+        int rev = session().value("{{ lCamel(create_table) }}_lockRevision").toInt();  // TODO: Fix me!!!
+        auto model = {{ uCamel(create_table) }}::get({{ include_file("pk_type.inja", columns) }}, rev);
 
         if (model.isNull()) {
             error = "Original data not found. It may have been updated/removed by another transaction.";
             tflash(error);
-            redirect(urla("save", {% include "pk_name.inja" %}));
+            redirect(urla("save", {{ include_file("pk_name.inja", columns) }}));
             break;
         }
 
@@ -96,7 +75,7 @@ void {{ uCamel(create_table) }}Controller::save(const QString &{% include "pk_na
         if (model.save()) {
             QString notice = "Updated successfully.";
             tflash(notice);
-            redirect(urla("show", model.{% include "aram_pk.inja" %}()));
+            redirect(urla("show", model.{{ include_file("pk_name.inja", columns) }}()));
         } else {
             error = "Failed to update.";
             texport(error);
@@ -111,14 +90,14 @@ void {{ uCamel(create_table) }}Controller::save(const QString &{% include "pk_na
     }
 }
 
-void {{ uCamel(create_table) }}Controller::remove(const QString &{% include "pk_name.inja" %})
+void {{ uCamel(create_table) }}Controller::remove(const QString &{{ include_file("pk_name.inja", columns) }})
 {
     if (httpRequest().method() != Tf::Post) {
         renderErrorResponse(Tf::NotFound);
         return;
     }
 
-    auto {{ lCamel(create_table) }} = {{ uCamel(create_table) }}::get({% include "pk_type.inja" %});
+    auto {{ lCamel(create_table) }} = {{ uCamel(create_table) }}::get({{ include_file("pk_type.inja", columns) }});
     {{ lCamel(create_table) }}.remove();
     redirect(urla("index"));
 }

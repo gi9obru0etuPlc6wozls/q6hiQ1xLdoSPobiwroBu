@@ -12,11 +12,10 @@ public:
 
 public slots:
     void index();
-    void show(const QString &{% include "pk_name.inja" %});
-    void xml(const QString &{% include "pk_name.inja" %});
+    void show(const QString &{{ include_file("pk_name.inja", columns) }});
     void create();
-    void save(const QString &{% include "pk_name.inja" %});
-    void remove(const QString &{% include "pk_name.inja" %});
+    void save(const QString &{{ include_file("pk_name.inja", columns) }});
+    void remove(const QString &{{ include_file("pk_name.inja", columns) }});
 };
 
 #endif // {{ upper(uCamel(create_table)) }}CONTROLLER_H
