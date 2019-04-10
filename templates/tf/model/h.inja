@@ -1,0 +1,69 @@
+#ifndef {{ upper(uCamel( create_table )) }}_H
+#define {{ upper(uCamel( create_table )) }}_H
+
+#include <QStringList>
+#include <QDateTime>
+#include <QVariant>
+#include <QSharedDataPointer>
+#include <TGlobal>
+#include <TAbstractModel>
+
+class TModelObject;
+class {{ uCamel( create_table ) }}Object;
+class QJsonArray;
+
+
+class T_MODEL_EXPORT {{ uCamel( create_table ) }} : public TAbstractModel
+{
+public:
+    {{ uCamel( create_table ) }}();
+    {{ uCamel( create_table ) }}(const {{ uCamel( create_table ) }} &other);
+    {{ uCamel( create_table ) }}(const {{ uCamel( create_table ) }}Object &object);
+    ~{{ uCamel( create_table ) }}();
+
+## for column in columns
+    {{ map("qt_type", column/type) }} {{ lCamel(column/name) }}() const;
+## if not compare(column, "setter", false)
+    void set{{ uCamel(column/name) }}({{ include_file("column_set_param.inja", column) }});
+## endif
+## endfor
+    {{ uCamel( create_table ) }} &operator=(const {{ uCamel( create_table ) }} &other);
+
+    bool create() override { return TAbstractModel::create(); }
+    bool update() override { return TAbstractModel::update(); }
+    bool save()   override { return TAbstractModel::save(); }
+    bool remove() override { return TAbstractModel::remove(); }
+
+    static {{ uCamel( create_table ) }} create({{ include_file("columns_set_param.inja", columns) }});
+    static {{ uCamel( create_table ) }} create(const QVariantMap &values);
+## for column in columns
+## if compare(column, "primary_key", true)
+    static {{ uCamel( create_table ) }} get({{ map("qt_type", column/type) }} {{ lCamel(column/name) }});
+## endif
+## endfor
+## for column in columns
+## if compare(column, "primary_key", true)
+## for column1 in columns
+## if column1/name == "lock_revision"
+    static {{ uCamel( create_table ) }} get({{ map("qt_type", column/type) }} {{ lCamel(column/name) }}, {{ map("qt_type", column1/type) }} {{ lCamel(column1/name) }});
+## endif
+## endfor
+## endif
+## endfor
+    static int count();
+    static QList<{{ uCamel( create_table ) }}> getAll();
+    static QJsonArray getAllJson();
+
+private:
+    QSharedDataPointer<{{ uCamel( create_table ) }}Object> d;
+
+    TModelObject *modelData() override;
+    const TModelObject *modelData() const override;
+    friend QDataStream &operator<<(QDataStream &ds, const {{ uCamel( create_table ) }} &model);
+    friend QDataStream &operator>>(QDataStream &ds, {{ uCamel( create_table ) }} &model);
+};
+
+Q_DECLARE_METATYPE({{ uCamel( create_table ) }})
+Q_DECLARE_METATYPE(QList<{{ uCamel( create_table ) }}>)
+
+#endif // {{ upper(uCamel( create_table )) }}_H

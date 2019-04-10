@@ -1,0 +1,13 @@
+## for column in columns
+## if column/type == "serial"
+    d->{{column/name}} = 0;
+## else if column/type == "integer"
+    d->{{column/name}} = 0;
+## else if map("qt_type", column/type) == "float"
+   d->{{column/name}} = 0;
+## else if map("qt_type", column/type) == "double"
+    d->{{column/name}} = 0;
+## else if map("qt_type", column/type) == "numeric"
+    d->{{column/name}} = 0;
+## endif
+## endfor

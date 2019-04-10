@@ -1,0 +1,5 @@
+{% if mapCompare("scalar", type, true) %}\
+{{ map("qt_type", type) }} {{ lCamel(name) }}\
+{% else %}\
+const {{ map("qt_type", type) }} &{{ lCamel(name) }}\
+{% endif %}

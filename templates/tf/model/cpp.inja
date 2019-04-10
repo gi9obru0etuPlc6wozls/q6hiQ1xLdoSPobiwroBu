@@ -1,0 +1,150 @@
+#include <TreeFrogModel>
+#include "{{ lower(uCamel( create_table )) }}.h"
+#include "{{ lower(uCamel( create_table )) }}object.h"
+
+{{ uCamel( create_table ) }}::{{ uCamel( create_table ) }}()
+    : TAbstractModel(), d(new {{ uCamel( create_table ) }}Object())
+{
+## for column in columns
+## if mapCompare("scalar", column/type, true)
+    d->{{ column/name }} = 0;
+## endif
+## endfor
+}
+
+{{ uCamel( create_table ) }}::{{ uCamel( create_table ) }}(const {{ uCamel( create_table ) }} &other)
+    : TAbstractModel(), d(other.d)
+{ }
+
+{{ uCamel( create_table ) }}::{{ uCamel( create_table ) }}(const {{ uCamel( create_table ) }}Object &object)
+    : TAbstractModel(), d(new {{ uCamel( create_table ) }}Object(object))
+{ }
+
+{{ uCamel( create_table ) }}::~{{ uCamel( create_table ) }}()
+{
+    // If the reference count becomes 0,
+    // the shared data object '{{ uCamel( create_table ) }}Object' is deleted.
+}
+
+## for column in columns
+{{ map("qt_type", column/type) }} {{ uCamel( create_table ) }}::{{ lCamel(column/name) }}() const
+{
+    return d->{{ column/name }};
+}
+## if not compare(column, "setter", false)
+
+void {{ uCamel( create_table ) }}::set{{ uCamel(column/name) }}({{ include_file("column_set_param.inja", column) }})
+{
+    d->{{ column/name }} = {{ lCamel(column/name) }};
+}
+## endif
+
+## endfor
+{{ uCamel( create_table ) }} &{{ uCamel( create_table ) }}::operator=(const {{ uCamel( create_table ) }} &other)
+{
+    d = other.d;  // increments the reference count of the data
+    return *this;
+}
+
+{{ uCamel( create_table ) }} {{ uCamel( create_table ) }}::create({{ include_file("columns_set_param.inja", columns) }})
+{
+    {{ uCamel( create_table ) }}Object obj;
+## for column in columns
+## if not compare(column, "setter", false)
+    obj.{{ column/name }} = {{ lCamel(column/name) }};
+## endif
+## endfor
+    if (!obj.create()) {
+        return {{ uCamel( create_table ) }}();
+    }
+    return {{ uCamel( create_table ) }}(obj);
+}
+
+{{ uCamel( create_table ) }} {{ uCamel( create_table ) }}::create(const QVariantMap &values)
+{
+    {{ uCamel( create_table ) }} model;
+    model.setProperties(values);
+    if (!model.d->create()) {
+        model.d->clear();
+    }
+    return model;
+}
+
+## for column in columns
+## if compare(column, "primary_key", true)
+{{ uCamel( create_table ) }} {{ uCamel( create_table ) }}::get({{ map("qt_type", column/type) }} {{ lCamel(column/name) }})
+{
+    TSqlORMapper<{{ uCamel( create_table ) }}Object> mapper;
+    return {{ uCamel( create_table ) }}(mapper.findByPrimaryKey({{ lCamel(column/name) }}));
+}
+
+## endif
+## endfor
+## for column in columns
+## if compare(column, "primary_key", true)
+## for column1 in columns
+## if column1/name == "lock_revision"
+{{ uCamel( create_table ) }} {{ uCamel( create_table ) }}::get({{ map("qt_type", column/type) }} {{ lCamel(column/name) }}, {{ map("qt_type", column1/type) }} {{ lCamel(column1/name) }})
+{
+    TSqlORMapper<{{ uCamel( create_table ) }}Object> mapper;
+    TCriteria cri;
+    cri.add({{ uCamel( create_table ) }}Object::{{ uCamel(column/name) }}, {{ lCamel(column/name) }});
+    cri.add({{ uCamel( create_table ) }}Object::{{ uCamel(column1/name) }}, {{ lCamel(column1/name) }});
+    return {{ uCamel( create_table ) }}(mapper.findFirst(cri));
+}
+
+## endif
+## endfor
+## endif
+## endfor
+int {{ uCamel( create_table ) }}::count()
+{
+    TSqlORMapper<{{ uCamel( create_table ) }}Object> mapper;
+    return mapper.findCount();
+}
+
+QList<{{ uCamel( create_table ) }}> {{ uCamel( create_table ) }}::getAll()
+{
+    return tfGetModelListByCriteria<{{ uCamel( create_table ) }}, {{ uCamel( create_table ) }}Object>(TCriteria());
+}
+
+QJsonArray {{ uCamel( create_table ) }}::getAllJson()
+{
+    QJsonArray array;
+    TSqlORMapper<{{ uCamel( create_table ) }}Object> mapper;
+
+    if (mapper.find() > 0) {
+        for (TSqlORMapperIterator<{{ uCamel( create_table ) }}Object> i(mapper); i.hasNext(); ) {
+            array.append(QJsonValue(QJsonObject::fromVariantMap({{ uCamel( create_table ) }}(i.next()).toVariantMap())));
+        }
+    }
+    return array;
+}
+
+TModelObject *{{ uCamel( create_table ) }}::modelData()
+{
+    return d.data();
+}
+
+const TModelObject *{{ uCamel( create_table ) }}::modelData() const
+{
+    return d.data();
+}
+
+QDataStream &operator<<(QDataStream &ds, const {{ uCamel( create_table ) }} &model)
+{
+    auto varmap = model.toVariantMap();
+    ds << varmap;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, {{ uCamel( create_table ) }} &model)
+{
+    QVariantMap varmap;
+    ds >> varmap;
+    model.setProperties(varmap);
+    return ds;
+}
+
+// Don't remove below this line
+T_REGISTER_STREAM_OPERATORS({{ uCamel( create_table ) }})

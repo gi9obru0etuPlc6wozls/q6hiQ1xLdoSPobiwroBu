@@ -1,0 +1,45 @@
+#ifndef {{ upper(uCamel( create_table )) }}OBJECT_H
+#define {{ upper(uCamel( create_table )) }}OBJECT_H
+
+#include <TSqlObject>
+#include <QSharedData>
+
+
+class T_MODEL_EXPORT {{ uCamel( create_table ) }}Object : public TSqlObject, public QSharedData
+{
+public:
+## for column in columns
+## if mapCompare("scalar", column/type, true)
+    {{ map("qt_type", column/type) }} {{ column/name }} {0};
+## else
+    {{ map("qt_type", column/type) }} {{ column/name }};
+## endif
+## endfor
+
+    enum PropertyIndex {
+## for column in columns
+        {{ uCamel(column/name) }}{% if loop/is_first %} = 0{% endif %},j
+## endfor
+    };
+
+## for column in columns
+## if compare(column, "primary_key", true)
+    {{ map("qt_type", column/type) }} primaryKeyIndex() const override { return {{ uCamel( column/name ) }}; }
+## endif
+## endfor
+## for column in columns
+## if compare(column, "serial", true) or column/type == "serial"
+    {{ map("qt_type", column/type) }} autoValueIndex() const override { return {{ uCamel( column/name ) }}; }
+## endif
+## endfor
+    QString tableName() const override { return QStringLiteral("{{ create_table }}"); }
+
+private:    /*** Don't modify below this line ***/
+    Q_OBJECT
+## for column in columns
+    Q_PROPERTY({{ map("qt_type", column/type) }} {{ column/name }} READ get{{ column/name }} WRITE set{{ column/name }})
+    T_DEFINE_PROPERTY({{ map("qt_type", column/type) }}, {{ column/name }})
+## endfor
+};
+
+#endif // {{ upper(uCamel( create_table )) }}OBJECT_H

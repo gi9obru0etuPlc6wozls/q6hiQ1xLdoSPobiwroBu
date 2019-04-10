@@ -1,0 +1,8 @@
+{{ setValue("comma", "") }}\
+{% for column in array %}\
+{% if not compare(column, "setter", false) %}\
+{{ getValue("comma") }}\
+{{ include_file("column_set_param.inja", column) }}\
+{{ setValue("comma", ", ") }}\
+{% endif %}\
+{% endfor %}
